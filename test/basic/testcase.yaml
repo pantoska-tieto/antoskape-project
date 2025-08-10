@@ -1,0 +1,9 @@
+tests:
+  sample.pytest.shell:
+    min_ram: 40
+    harness: pytest
+    integration_platforms:
+      - native_sim
+      - esp32s3_devkitc/esp32s3/procpu
+    tags:
+      - pytest

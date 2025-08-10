@@ -1,0 +1,14 @@
+sample:
+  name: Blinky Sample
+tests:
+  sample.basic.blinky:
+    platform_allow: esp32s3_devkitc/esp32s3/procpu
+    tags:
+      - LED
+      - gpio
+    filter: dt_enabled_alias_with_parent_compat("led0", "gpio-leds")
+    depends_on: gpio
+    harness: led
+    integration_platforms:
+      - native_sim
+      - esp32s3_devkitc/esp32s3/procpu
