@@ -19,22 +19,22 @@ jobs:
         with:
           path: example-application1
       
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: 3.12
-
-      - name: Setup Zephyr project
-        uses: zephyrproject-rtos/action-zephyr-setup@v1
-        with:
-          app-path: example-application1
-          toolchains: arm-zephyr-eabi
-
-      - name: Build
+      - name: Initialize
+        working-directory: customer-application1
         run: |
-          west build example-application1
+          echo "Checking out Zephyr with custom app..."
+          pwd
+          ls -la
+          echo "Parent app folder"
+          ls -la ..
+          echo "Parent zephyr/ folder"
+          ls -la ../zephyr
+          # prepare west workspace
+          rm -rf ../.west
+          west init -l .
+          west update -o=--depth=1 -n
 
-      - name: Build firmware
+      - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
         working-directory: example-application1
         shell: bash
         run: |
