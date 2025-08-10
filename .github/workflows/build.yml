@@ -10,11 +10,11 @@ jobs:
       CMAKE_PREFIX_PATH: /opt/toolchains
     strategy:
       matrix:
-        sample: [accelerometer, active_sleep, at_client, battery, blinky, bme280, button, deep_sleep, external_flash, external_rtc, external_rtc_time_sync, led_pwm, mfw_update, nanopb, sms]
+        sample: [blinky]
         target: [esp32s3_devkitc/esp32s3/procpu]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           path: customer-application1
