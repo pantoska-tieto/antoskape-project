@@ -43,7 +43,7 @@ jobs:
           cp build/zephyr/merged.hex .out/${{ matrix.sample }}_${{ matrix.target }}_merged.hex
 
       - name: Archive firmware
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: customer-application1_${{ steps.vars.outputs.branch }}_${{ steps.vars.outputs.sha_short }}
           path: customer-application1/.out/
