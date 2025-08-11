@@ -50,5 +50,5 @@ jobs:
       - name: Twister Tests
         working-directory: example-application1
         shell: bash
-        run: |
-          west twister -T test -v --inline-logs --integration
+        # run: west twister -T test -v --inline-logs --integration
+        run: west twister -p esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0  test/shell
