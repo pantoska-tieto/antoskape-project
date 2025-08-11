@@ -21,6 +21,8 @@ tests:
     extra_configs:
       - CONFIG_SHELL_VT100_COLORS=n
   sample.harness.shell:
+    integration_platforms:
+      - esp32s3_devkitc/esp32s3/procpu
     harness: shell
     timeout: 300   # Timeout in seconds
     harness_config:
