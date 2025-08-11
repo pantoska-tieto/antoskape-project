@@ -43,7 +43,7 @@ jobs:
       - name: Flash
         working-directory: example-application1
         shell: bash
-        run: west flash --runner esp32 --esp-device /dev/ttyUSB0
+        run: west flash
 
       - name: Twister Tests
         working-directory: example-application1
