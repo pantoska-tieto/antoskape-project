@@ -5,7 +5,6 @@ common:
     - shell
   platform_exclude: qemu_rx
   # filter: CONFIG_SERIAL and not CONFIG_SMP and dt_chosen_enabled("zephyr,shell-uart")
-  filter: CONFIG_XTENSA
   extra_configs:
     - arch:posix:CONFIG_UART_NATIVE_PTY_0_ON_STDINOUT=y
   min_ram: 40
