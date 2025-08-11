@@ -55,10 +55,10 @@ jobs:
         # run: west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -s sample.harness.shell
 
       - name: Archive test artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         continue-on-error: true
         with:
           name: twister-output
-          path: example-application1/twister-out/*
+          path: twister-out/*
           include-hidden-files: true
           retention-days: 5
