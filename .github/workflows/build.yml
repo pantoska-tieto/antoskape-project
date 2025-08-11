@@ -21,6 +21,7 @@ jobs:
       
       - name: Initialize
         working-directory: customer-application1
+        shell: bash
         run: |
           echo "Checking out Zephyr with custom app..."
           pwd
@@ -40,6 +41,8 @@ jobs:
         run: west build -p always -b ${{ matrix.target }} app-esp32/${{ matrix.sample }}
         
       - name: Flash
+        working-directory: example-application1
+        shell: bash
         run: west flash -v --runner esp32 --esp-device /dev/ttyUSB0
 
       - name: Twister Tests
