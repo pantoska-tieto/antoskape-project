@@ -51,4 +51,4 @@ jobs:
         working-directory: example-application1
         shell: bash
         # run: west twister -T test -v --inline-logs --integration
-        run: west twister -p esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial -T /dev/ttyUSB0  test/shell
+        run: west twister -p esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -T test/shell
