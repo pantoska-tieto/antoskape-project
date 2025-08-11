@@ -40,7 +40,7 @@ jobs:
         run: |
           # west twister -T app-esp32 -v --inline-logs --integration
           west build -p always -b ${{ matrix.target }} app-esp32/${{ matrix.sample }}
-          west flash
+          west -v flash --speed 115200  --esp-idf-port /dev/ttyUSB0 app-esp32/${{ matrix.sample }}
 
       - name: Twister Tests
         working-directory: example-application1
