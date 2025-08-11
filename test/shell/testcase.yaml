@@ -15,12 +15,14 @@ common:
 tests:
   sample.pytest.shell:
     harness: pytest
+    timeout: 300   # Timeout in seconds
   sample.pytest.shell.vt100_colors_off:
     harness: pytest
     extra_configs:
       - CONFIG_SHELL_VT100_COLORS=n
   sample.harness.shell:
     harness: shell
+    timeout: 300   # Timeout in seconds
     harness_config:
       shell_commands: &kernel_commands
         - command: "kernel cycles"
