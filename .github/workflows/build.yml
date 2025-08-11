@@ -1,8 +1,6 @@
 name: Build
 
-on:
-  push:
-  pull_request:
+on: [push, pull_request]
 
 jobs:
   build:
@@ -13,6 +11,8 @@ jobs:
         target: [esp32s3_devkitc/esp32s3/procpu]
     runs-on: self-hosted
     container: zephyrprojectrtos/ci:main-arm64
+    env:
+      CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,7 +39,7 @@ jobs:
         shell: bash
         run: |
           # west twister -T app-esp32 -v --inline-logs --integration
-          west build -p always -b ${{ matrix.target }} -s app-esp32/${{ matrix.sample }}
+          west build -p always -b ${{ matrix.target }} app-esp32/${{ matrix.sample }}
           west flash
 
       - name: Twister Tests
