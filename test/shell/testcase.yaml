@@ -4,7 +4,6 @@ common:
     - pytest
     - shell
   platform_exclude: qemu_rx
-  filter: CONFIG_SERIAL and not CONFIG_SMP and dt_chosen_enabled("zephyr,shell-uart, native-tty-uart")
   min_ram: 40
   integration_platforms:
     - native_sim/native/64
