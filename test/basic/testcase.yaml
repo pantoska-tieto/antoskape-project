@@ -1,5 +1,5 @@
 tests:
-  sample.pytest.shell:
+  sample.pytest.basic:
     min_ram: 40
     harness: pytest
     integration_platforms:
