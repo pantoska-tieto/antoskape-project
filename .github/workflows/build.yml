@@ -37,10 +37,10 @@ jobs:
       - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
         working-directory: example-application1
         shell: bash
-        run: |
-          # west twister -T app-esp32 -v --inline-logs --integration
-          west build -p always -b ${{ matrix.target }} app-esp32/${{ matrix.sample }}
-          west flash -v --runner esp32 --esp-device /dev/ttyUSB0
+        run: west build -p always -b ${{ matrix.target }} app-esp32/${{ matrix.sample }}
+        
+      - name: Flash
+        run: west flash -v --runner esp32 --esp-device /dev/ttyUSB0
 
       - name: Twister Tests
         working-directory: example-application1
