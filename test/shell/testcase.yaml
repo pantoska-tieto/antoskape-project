@@ -9,7 +9,7 @@ common:
     - arch:posix:CONFIG_UART_NATIVE_PTY_0_ON_STDINOUT=y
   min_ram: 40
   integration_platforms:
-    - native_sim
+    - native_sim/native/64
     - qemu_cortex_m3
     - esp32s3_devkitc/esp32s3/procpu
 tests:
