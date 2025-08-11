@@ -10,7 +10,9 @@ jobs:
         sample: [blinky]
         target: [esp32s3_devkitc/esp32s3/procpu]
     runs-on: self-hosted
-    container: zephyrprojectrtos/ci:main-arm64
+    container:
+      image: zephyrprojectrtos/ci:main-arm64
+      options: --device=/dev/ttyUSB0
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
