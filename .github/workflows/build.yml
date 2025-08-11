@@ -51,4 +51,12 @@ jobs:
         working-directory: example-application1
         shell: bash
         # run: west twister -T test -v --inline-logs --integration
-        run: west twister -p esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -T test/shell
+        # run: west twister -vv -platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -T test/shell
+        run: west twister -vv -platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -s sample.harness.shell
+
+      - name: Archive test artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: twister-output
+          path: twister-out/*
+          retention-days: 5
