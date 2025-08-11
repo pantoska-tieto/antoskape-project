@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: example-application1
+          path: customer-application1
       
       - name: Initialize
         working-directory: customer-application1
@@ -38,17 +38,17 @@ jobs:
           west update -o=--depth=1 -n
 
       - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
-        working-directory: example-application1
+        working-directory: customer-application1
         shell: bash
         run: west build -p always -b ${{ matrix.target }} app-esp32/${{ matrix.sample }}
         
       - name: Flash
-        working-directory: example-application1
+        working-directory: customer-application1
         shell: bash
         run: west flash
 
       - name: Twister Tests
-        working-directory: example-application1
+        working-directory: customer-application1
         shell: bash
         # run: west twister -T test -v --inline-logs --integration
         run: west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -T test/shell
