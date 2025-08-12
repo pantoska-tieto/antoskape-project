@@ -51,7 +51,9 @@ jobs:
         working-directory: customer-application1
         shell: bash
         # run: west twister -T test -v --inline-logs --integration
-        run: west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -T test/shell
+        run: |
+          west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -s sample.pytest.shell -T test/shell
+          mkdir twister-tmp && mv -rf twister-out/* twister-tmp/
         # run: west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -s sample.harness.shell
 
       - name: Archive test artifacts
@@ -60,7 +62,7 @@ jobs:
         if: always()
         with:
           name: twister-output
-          path: twister-out
+          path: twister-tmp
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 5
