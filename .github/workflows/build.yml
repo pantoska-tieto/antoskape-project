@@ -52,6 +52,7 @@ jobs:
         # run: west twister -T test -v --inline-logs --integration
         run: |
           west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -s sample.pytest.shell -T test/shell
+          west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -s sample.net.wifi.esp32 -T test/wifi-shell
 
       - name: Archive test artifacts
         uses: actions/upload-artifact@v4
