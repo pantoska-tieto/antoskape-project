@@ -32,7 +32,6 @@ jobs:
           ls -la ..
           echo "Parent zephyr/ folder"
           ls -la ../zephyr
-          # prepare west workspace
           rm -rf ../.west
           west init -l .
           west update -o=--depth=1 -n
@@ -53,7 +52,6 @@ jobs:
         # run: west twister -T test -v --inline-logs --integration
         run: |
           west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -s sample.pytest.shell -T test/shell
-        # run: west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -s sample.harness.shell
 
       - name: Archive test artifacts
         uses: actions/upload-artifact@v4
@@ -61,6 +59,7 @@ jobs:
         if: always()
         with:
           name: twister-output
+          # Relative path to project root. working-directory value is not applicable!
           path: customer-application1/twister-out/
           include-hidden-files: true
           if-no-files-found: error
