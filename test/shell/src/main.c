@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
- #include <shell/shell.h>
- 
 int main(void)
 {
 	/* Shell application source code is injected by applied Kconfg SHELL
