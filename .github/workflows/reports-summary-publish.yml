@@ -1,0 +1,23 @@
+name: Publish summary of all test
+on:
+  workflow_call:
+jobs:
+  publish-test-summaries:
+    runs-on: self-hosted
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Gather summaries
+      uses: actions/download-artifact@v4
+      with:
+        path: test-summary
+        pattern: samples-zephyr-*
+        merge-multiple: true
+    - name: Test Report
+      uses: phoenix-actions/test-reporting@v15
+      if: success() || failure()
+      with:
+        name: Firmware Test Summary
+        path: test-summary/*.xml
+        reporter: java-junit
+        output-to: step-summary
