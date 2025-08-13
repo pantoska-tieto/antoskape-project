@@ -92,4 +92,4 @@ jobs:
     needs: build
     steps:
       - name: Invoke reports summary
-        uses: ./.github/workflows/reports-summary-publish.yml
+        uses: ./reports-summary-publish.yml
