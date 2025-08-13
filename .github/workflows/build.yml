@@ -19,49 +19,60 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          path: customer-application1
+          path: customer-application
       
       - name: Initialize
-        working-directory: customer-application1
+        working-directory: customer-application
         shell: bash
         run: |
           echo "Checking out Zephyr with custom app..."
           pwd
           ls -la
-          echo "Parent app folder"
+          echo "Parent github project folder"
           ls -la ..
           echo "Parent zephyr/ folder"
           ls -la ../zephyr
           rm -rf ../.west
           west init -l .
-          west update -o=--depth=1 -n
+          west update
+          echo "Parent zephyr/ folder"
+          ls -la ../zephyr
+          echo "Parrent modules folder"
+          ls -la ../modules
 
+      # Example for custom application build
       - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
-        working-directory: customer-application1
+        working-directory: customer-application
         shell: bash
         run: west build -p always -b ${{ matrix.target }} app-esp32/${{ matrix.sample }}
         
       - name: Flash
-        working-directory: customer-application1
+        working-directory: customer-application
         shell: bash
         run: west flash
 
       - name: Twister Tests
-        working-directory: customer-application1
+        working-directory: customer-application
         shell: bash
-        # run: west twister -T test -v --inline-logs --integration
+        # MCUmgr test case
         run: |
-          west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -s sample.pytest.shell -T test/shell
-          west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -s sample.net.wifi.esp32 -T test/wifi-shell
+          echo "Testing board..."
+          west build -p always -b esp32s3_devkitc/esp32s3/procpu --sysbuild ../zephyr/samples/subsys/mgmt/mcumgr/smp_svr -- -DEXTRA_CONF_FILE="overlay-shell.conf"
+          west flash
+          west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 --west-flash --enable-slow -T test/mcumgr
+          mkdir -p zephyr-twister-out
+          mv -r "../zephyr/twister-out*/* zephyr-twister-out/
 
       - name: Archive test artifacts
         uses: actions/upload-artifact@v4
         continue-on-error: true
         if: always()
         with:
-          name: twister-output
+          name: test_artifacts
           # Relative path to project root. working-directory value is not applicable!
-          path: customer-application1/twister-out/
+          path: |
+            customer-application/twister-out*/*
+            customer-application/zephyr-twister-out/*
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 5

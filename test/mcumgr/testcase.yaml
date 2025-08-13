@@ -1,0 +1,20 @@
+common:
+  sysbuild: true
+  platform_allow:
+    - esp32s3_devkitc/esp32s3/procpu
+  timeout: 600
+  slow: true
+  tags:
+    - pytest
+    - mcuboot
+    - mcumgr
+tests:
+  boot.with_mcumgr.test_upgrade:
+    platform_allow:
+      - esp32s3_devkitc/esp32s3/procpu
+    integration_platforms:
+      - esp32s3_devkitc/esp32s3/procpu
+    harness: pytest
+    harness_config:
+      pytest_root:
+        - "pytest/test_shell.py"
