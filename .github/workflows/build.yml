@@ -52,7 +52,7 @@ jobs:
         run: west flash
 
       - name: Twister Tests
-        working-directory: zephyr
+        working-directory: customer-application
         shell: bash
         # MCUmgr test case
         run: |
