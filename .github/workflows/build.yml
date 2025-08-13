@@ -52,12 +52,11 @@ jobs:
         run: west flash
 
       - name: Twister Tests
-        working-directory: customer-application
+        working-directory: zephyr
         shell: bash
         # MCUmgr test case
         run: |
           echo "Testing board..."
-          cd ../zephyr
           west build -p always -b esp32s3_devkitc/esp32s3/procpu --sysbuild samples/subsys/mgmt/mcumgr/smp_svr -- -DEXTRA_CONF_FILE="overlay-shell.conf"
           west flash
           cd ../customer-application
