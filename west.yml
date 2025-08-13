@@ -22,7 +22,6 @@ manifest:
   # Project setup for MCUmgr - bootloader folder
   projects:
     - name: zephyr
-      remote: zephyrproject-rtos
       url: https://github.com/zephyrproject-rtos/zephyr
       revision: v4.2.0
       import:
