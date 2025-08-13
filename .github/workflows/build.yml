@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 jobs:
   build:
+    name: Build and Test
     strategy:
       fail-fast: false
       matrix:
@@ -85,7 +86,7 @@ jobs:
           cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml
 
   publish_summary:
-    needs:
-      - build
+    name: Publish summary of test
     if: always()
+    needs: build
     uses: ./.github/workflows/reports-summary-publish.yml
