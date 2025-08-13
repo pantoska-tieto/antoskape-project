@@ -85,11 +85,7 @@ jobs:
           mkdir -p test-summary
           cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml
 
-  publish_summary:
-    name: Publish summary of test
-    runs-on: self-hosted
+  call-workflow:
     if: always()
     needs: build
-    steps:
-      - name: Invoke reports summary
-        uses: ./.github/actions/reports-summary-publish
+    uses: ./.github/workflows/reports-summary-publish
