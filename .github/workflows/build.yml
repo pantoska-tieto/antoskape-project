@@ -87,6 +87,9 @@ jobs:
 
   publish_summary:
     name: Publish summary of test
+    runs-on: self-hosted
     if: always()
     needs: build
-    uses: ./.github/workflows/reports-summary-publish.yml
+    steps:
+      - name: Invoke reports summary
+        uses: ./.github/workflows/reports-summary-publish.yml
