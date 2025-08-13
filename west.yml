@@ -22,6 +22,7 @@ manifest:
 # Project setup for MCUmgr - bootloader folder
 projects:
   - name: zephyr
+    remote: zephyrproject-rtos
     url: https://github.com/zephyrproject-rtos/zephyr
     revision: v4.2.0
     import:
@@ -32,4 +33,3 @@ projects:
         - cmsis      # required by the ARM port
         - hal_nordic # required by the custom_plank board (Nordic based)
         - hal_espressif # required by ESP32 board
-        
