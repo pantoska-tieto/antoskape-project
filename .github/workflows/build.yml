@@ -102,12 +102,15 @@ jobs:
         continue-on-error: true
         if: always()
         with:
-          name: Test summary
-          path: customer-application/test-summary
+          name: summary_artifacts
+          path: customer-application
           pattern: samples-zephyr-*
           merge-multiple: true
           if-no-files-found: error
           retention-days: 5
+
+      - name: Display structure of downloaded files
+        run: ls -la customer-application
 
       - name: Test Report
         uses: phoenix-actions/test-reporting@v15
