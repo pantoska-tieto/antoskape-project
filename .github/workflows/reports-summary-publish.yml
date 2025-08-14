@@ -12,6 +12,6 @@ jobs:
         with:
           artifact: summary_artifacts
           name: Firmware Test Summary
-          path: 'test-summary/*.xml'
+          path: '*.xml'
           reporter: java-junit
           output-to: step-summary
