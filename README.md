@@ -16,14 +16,14 @@ It is representing a typical T3 topology model in conjunction with GitHub workfl
   
   <br/>
 
-## Testing
+## Building and running
 
-Before trigerring a test, make sure you have a proper Zephyr development
+Before starting, make sure you have a proper Zephyr development
 environment. Follow the official
 [Zephyr Getting Started Guide](https://docs.zephyrproject.org/latest/getting_started/index.html).
 
-1. Clone this repo to your customer-application/ directory by initiation workspace in
-"customer-application" folder by the commands:
+1. Clone this repo to your customer-application/ directory by initiation the workspace.<br/>
+Workspace root directory = \<your Zephyr development environment directory\>
 
 ```copy
 cd <your Zephyr development env directory>
@@ -46,7 +46,7 @@ drwxrwxr-x  2 peter peter 4096 Jul 23 14:17 .west
 drwxrwxr-x 42 peter peter 4096 Aug 11 21:56 zephyr
 ```
 
-<br />
+<br/>
 
 2. Update Zephyr environment data within your application directory.
 
@@ -58,26 +58,25 @@ west update
 
 <br />
 
-3. Run a desired test case from test/ directory with "west twister" from workspace root directory with following command (example for ESP32 S3 Devkitc board).
-
-```copy
-west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0  --west-flash -T customer-application/test/shell
-```
-
-<br />
-
-## Building and running
-
-Make sure you already initiated the environment like mentioned in the previous chapter "Testing".
-
-Build and flash the application from workspace root directory with following command (blinky example for ESP32 S3 Devkitc board):
+3. Build and flash the application from workspace root directory with following command (blinky example for ESP32 S3 Devkitc board):
 
 ```copy
 west build -p always -b esp32s3_devkitc/esp32s3/procpu customer-application/app-esp32/blinky
 west flash
 ```
 
-<br />
+<br/>
+
+## Testing
+Make sure you already initiated the environment as mentioned in the previous chapter "Building and running".
+
+1. Run a desired test case from test/ with "west twister" from workspace root directory with following command (example for ESP32 S3 Devkitc board).
+
+```copy
+west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0  --west-flash -T customer-application/test/shell
+```
+
+<br/>
 
 **NOTES:**
 
