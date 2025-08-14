@@ -85,36 +85,7 @@ jobs:
           mkdir -p test-summary
           cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml
 
-      - name: Archive test summary artifacts
-        uses: actions/upload-artifact@v4
-        continue-on-error: true
-        if: always()
-        with:
-          name: summary_artifacts
-          # Relative path to project root. working-directory value is not applicable!
-          path: |
-            customer-application/test-summary
-          if-no-files-found: error
-          retention-days: 5
-
-      - name: Gather summaries
-        uses: actions/download-artifact@v4
-        continue-on-error: true
-        if: always()
-        with:
-          name: summary_artifacts
-          path: customer-application
-          pattern: samples-zephyr-*
-          merge-multiple: true
-
-      - name: Display structure of downloaded files
-        run: ls -la customer-application
-
-      - name: Test Report
-        uses: phoenix-actions/test-reporting@v15
-        if: success() || failure()
-        with:
-          name: Firmware Test Summary
-          path: customer-application/test-summary/*.xml
-          reporter: java-junit
-          output-to: step-summary
+  publish_test_summaries:
+    if: always()
+    needs: build
+    uses: ./.github/workflows/reports-summary-publish.yml
