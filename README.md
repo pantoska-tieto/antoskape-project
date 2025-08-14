@@ -27,7 +27,7 @@ Workspace root directory = \<your Zephyr development environment directory\>
 
 ```copy
 cd <your Zephyr development env directory>
-west init -m git clone https://github.com/pantoska-tieto/antoskape-project.git customer-application
+west init -m https://github.com/pantoska-tieto/antoskape-project --mr main customer-application
 
 Result:
 
