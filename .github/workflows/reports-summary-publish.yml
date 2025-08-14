@@ -10,7 +10,7 @@ jobs:
         uses: phoenix-actions/test-reporting@v15
         if: success() || failure()
         with:
-          artifatct: test_artifacts
+          artifact: test_artifacts
           name: Firmware Test Summary
           path: 'test-summary/*.xml'
           reporter: java-junit
