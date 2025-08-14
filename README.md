@@ -22,9 +22,16 @@ Before trigerring a test, make sure you have a proper Zephyr development
 environment. Follow the official
 [Zephyr Getting Started Guide](https://docs.zephyrproject.org/latest/getting_started/index.html).
 
-1. Make new directory "customer-application" in your Zephyr root workspace.
+1. Clone this repo to your customer-application/ directory by initiation workspace in
+"customer-application" folder by the commands:
 
-```drwxrwxr-x 13 peter peter 4096 Aug 14 17:35 .
+```copy
+cd <your Zephyr development env directory>
+west init -m git clone https://github.com/pantoska-tieto/antoskape-project.git customer-application
+
+Result:
+
+drwxrwxr-x 13 peter peter 4096 Aug 14 17:35 .
 drwxr-x--- 23 peter peter 4096 Jul 30 19:44 ..
 drwxrwxr-x  3 peter peter 4096 Jul 23 14:33 bootloader
 drwxrwxr-x 15 peter peter 4096 Aug 14 16:45 customer-application
@@ -41,11 +48,12 @@ drwxrwxr-x 42 peter peter 4096 Aug 11 21:56 zephyr
 
 <br />
 
-2. Clone this repo to your customer-application/ directory.
+2. Update Zephyr environment data within your application directory.
 
 ```copy
 cd customer-application
-git clone https://github.com/pantoska-tieto/antoskape-project.git .
+west update
+
 ```
 
 <br />
