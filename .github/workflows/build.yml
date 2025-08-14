@@ -106,8 +106,6 @@ jobs:
           path: customer-application
           pattern: samples-zephyr-*
           merge-multiple: true
-          if-no-files-found: error
-          retention-days: 5
 
       - name: Display structure of downloaded files
         run: ls -la customer-application
