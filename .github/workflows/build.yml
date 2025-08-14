@@ -93,7 +93,7 @@ jobs:
           name: summary_artifacts
           # Relative path to project root. working-directory value is not applicable!
           path: |
-            test-summary
+            customer-application/test-summary
           if-no-files-found: error
           retention-days: 5
 
@@ -103,7 +103,7 @@ jobs:
         if: always()
         with:
           name: Test summary
-          path: test-summary
+          path: customer-application/test-summary
           pattern: samples-zephyr-*
           merge-multiple: true
           if-no-files-found: error
@@ -114,6 +114,6 @@ jobs:
         if: success() || failure()
         with:
           name: Firmware Test Summary
-          path: test-summary/*.xml
+          path: customer-application/test-summary/*.xml
           reporter: java-junit
           output-to: step-summary
