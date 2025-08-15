@@ -103,7 +103,7 @@ jobs:
         echo "Testing board..."
         west twister -vv --platform native_sim/native/64 -T test/basic
         mkdir -p zephyr-twister-out
-        mv ../zephyr/twister-out*/* zephyr-twister-out/
+        mv ../zephyr/twister-out*/* zephyr-twister-out/ 2>/dev/null
 
   tests_results:
     name: Store tests results
@@ -120,7 +120,7 @@ jobs:
       if : ${{ always() }}
       run: |
         echo "Checking out customer-application directory..."
-        la -la
+        ls -la
         echo "Checking out customer-application parent directory..."
         ls -la ..
 
@@ -156,7 +156,7 @@ jobs:
       run: |
         rm -rf test-summary
         mkdir -p test-summary
-        cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml
+        cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml 2>/dev/null
 
     - name: Archive test summary artifacts
       uses: actions/upload-artifact@v4
