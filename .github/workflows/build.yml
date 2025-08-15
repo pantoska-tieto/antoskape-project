@@ -58,15 +58,14 @@ jobs:
     needs: build
     if: ${{ !failure() && !cancelled() }}
     steps:
-    - name: Twister Tests
-      working-directory: customer-application
-      shell: bash
-      # MCUmgr test case
-      run: |
-        echo "Testing board..."
-        west twister -vv --platform native_sim/native/64 -T test/basic
-        mkdir -p zephyr-twister-out
-        mv -r "../zephyr/twister-out*/* zephyr-twister-out/
+      - name: Twister Tests
+        working-directory: customer-application
+        shell: bash
+        run: |
+          echo "Testing board..."
+          west twister -vv --platform native_sim/native/64 -T test/basic
+          mkdir -p zephyr-twister-out
+          mv -r "../zephyr/twister-out*/* zephyr-twister-out/
 
   tests_results:
     name: Store tests results
