@@ -74,6 +74,8 @@ jobs:
     runs-on: self-hosted
     needs: build
     if: ${{ !failure() && !cancelled() }}
+    env:
+      CMAKE_PREFIX_PATH: /opt/toolchains
     container:
       image: zephyrprojectrtos/ci:main-arm64
     steps:
@@ -86,9 +88,10 @@ jobs:
         uses: actions/cache/restore@v4
         with:
           path: |
-            ../zephyr
-            ../modules
-            ../.west
+            zephyr
+            modules
+            .west
+            tools
           key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
           restore-keys: |
             zephyr-${{ runner.os }}-
