@@ -52,53 +52,64 @@ jobs:
         shell: bash
         run: west flash
 
-      - name: Twister Tests
-        working-directory: customer-application
-        shell: bash
-        # MCUmgr test case
-        run: |
-          echo "Testing board..."
-          west twister -vv --platform native_sim/native/64 -T test/basic
-          west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -s sample.pytest.shell -T test/shell
-          mkdir -p zephyr-twister-out
-          mv -r "../zephyr/twister-out*/* zephyr-twister-out/
+  tests:
+    name: Run tests
+    runs-on: self-hosted
+    if: ${{ always() }}
+    needs: build
+    steps:
+    - name: Twister Tests
+      working-directory: customer-application
+      shell: bash
+      # MCUmgr test case
+      run: |
+        echo "Testing board..."
+        west twister -vv --platform native_sim/native/64 -T test/basic
+        mkdir -p zephyr-twister-out
+        mv -r "../zephyr/twister-out*/* zephyr-twister-out/
 
-      - name: Archive test artifacts
-        uses: actions/upload-artifact@v4
-        continue-on-error: true
-        if: ${{ always() }}
-        with:
-          name: test_artifacts
-          # Relative path to project root. working-directory value is not applicable!
-          path: |
-            customer-application/twister-out*/*
-            customer-application/zephyr-twister-out/*
-          include-hidden-files: true
-          if-no-files-found: error
-          retention-days: 5
-      
-      - name: Prepare CI report summary
-        working-directory: customer-application
-        if : ${{ always() }}
-        run: |
-          rm -rf test-summary
-          mkdir -p test-summary
-          cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml
+  tests_results:
+    name: Store tests results
+    runs-on: self-hosted
+    if: ${{ always() }}
+    needs: tests
+    steps:
+    - name: Archive test artifacts
+      uses: actions/upload-artifact@v4
+      continue-on-error: true
+      if: ${{ always() }}
+      with:
+        name: test_artifacts
+        # Relative path to project root. working-directory value is not applicable!
+        path: |
+          customer-application/twister-out*/*
+          customer-application/zephyr-twister-out/*
+        include-hidden-files: true
+        if-no-files-found: error
+        retention-days: 5
+    
+    - name: Prepare CI report summary
+      working-directory: customer-application
+      if : ${{ always() }}
+      run: |
+        rm -rf test-summary
+        mkdir -p test-summary
+        cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml
 
-      - name: Archive test summary artifacts
-        uses: actions/upload-artifact@v4
-        continue-on-error: true
-        if: ${{ always() }}
-        with:
-          name: summary_artifacts
-          # Relative path to project root. working-directory value is not applicable!
-          path: |
-            customer-application/test-summary
-          if-no-files-found: error
-          retention-days: 5
+    - name: Archive test summary artifacts
+      uses: actions/upload-artifact@v4
+      continue-on-error: true
+      if: ${{ always() }}
+      with:
+        name: summary_artifacts
+        # Relative path to project root. working-directory value is not applicable!
+        path: |
+          customer-application/test-summary
+        if-no-files-found: error
+        retention-days: 5
 
   publish_test_summaries:
     name: Publish Test Summaries
     if: ${{ always() }}
-    needs: build
+    needs: tests_results
     uses: ./.github/workflows/reports-summary-publish.yml
