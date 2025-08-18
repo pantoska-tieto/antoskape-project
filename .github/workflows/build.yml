@@ -24,6 +24,7 @@ jobs:
     
       - name: Restore Zephyr workspace cache
         id: zephyr-cache
+        # Restore Zephyr workspace installation
         uses: actions/cache/restore@v4
         with:
           path: |
@@ -35,6 +36,7 @@ jobs:
             zephyr-${{ runner.os }}-
 
       - name: Initialize (skip if cached)
+        # If Zephyr workspace does not exist
         working-directory: customer-application
         shell: bash
         run: |
@@ -48,6 +50,7 @@ jobs:
           fi
 
       - name: Save Zephyr workspace cache
+        # If Zephyr workspace does not exist
         if: steps.zephyr-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
         with:
@@ -109,8 +112,6 @@ jobs:
     if: ${{ always() }}
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
-    container:
-      image: zephyrprojectrtos/ci:main-arm64
     steps:
       - name: Check filesystem
         working-directory: customer-application
@@ -120,17 +121,6 @@ jobs:
           ls -la
           echo "Checking out customer-application parent directory..."
           ls -la ..
-
-      - name: Restore Zephyr workspace cache
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            zephyr
-            modules
-            .west
-          key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
-          restore-keys: |
-            zephyr-${{ runner.os }}-
 
       - name: Archive test artifacts
         uses: actions/upload-artifact@v4
