@@ -54,8 +54,8 @@ jobs:
             west init -l .
             west update -o=--depth=1 -n
             sudo apt update -y
-            python -m pip install lz4
-            sudo apt install pigz
+            sudo apt install -y liblz4-dev
+            sudo apt install -y pigz
             sudo mkdir -p /media/cache/pantoska-tieto/antoskape-project/
             sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project/
 
@@ -72,7 +72,6 @@ jobs:
 
       - name: Reproduce tar without silencing stderr
         run: |
-            set -euo pipefail
             tar cf - -C /__w/antoskape-project/antoskape-project modules | lz4 -v > /media/cache/pantoska-tieto/antoskape-project/test.tar.lz4
 
       # Example for custom application build
