@@ -13,7 +13,7 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: ./customer-application
+        working-directory: customer-application
     container:
       image: zephyrprojectrtos/ci:main-arm64
       options: --device=/dev/ttyUSB0
@@ -50,9 +50,6 @@ jobs:
           sudo mkdir -p /media/cache/pantoska-tieto/antoskape-project/
           sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project/
 
-      - name: Install dependencies
-        run: |
-          tar cf - -C . zephyr | lz4 -v > /media/cache/pantoska-tieto/antoskape-project/zephyr-Linux-48bd3636548940863dcc19af32bd4050a6fce195a7a529bd54e06fc1cec6e559.tar.lz4 2>/dev/null
       - name: Restore Zephyr workspace cache
         id: cache-primes
         uses: j3hempsey-actions/local-cache@v1
@@ -79,7 +76,7 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: ./customer-application
+        working-directory: customer-application
     needs: build
     if: ${{ !failure() && !cancelled() }}
     env:
@@ -135,7 +132,7 @@ jobs:
     runs-on: self-hosted
     defaults:
       run:
-        working-directory: ./customer-application
+        working-directory: customer-application
     needs: [build, tests]
     if: ${{ always() }}
     env:
