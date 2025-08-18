@@ -55,8 +55,8 @@ jobs:
         uses: j3hempsey-actions/local-cache@v1
         with:
           path: |
-            zephyr
             modules
+            zephyr
             .west
           key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
           restore-keys: |
