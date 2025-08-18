@@ -59,17 +59,21 @@ jobs:
             sudo mkdir -p /media/cache/pantoska-tieto/antoskape-project/
             sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project/
 
-      - name: Restore Zephyr workspace cache
-        id: cache-zephyr
-        uses: j3hempsey-actions/local-cache@v1
-        with:
-          path: |
-            /__w/antoskape-project/antoskape-project/modules
-            /__w/antoskape-project/antoskape-project/zephyr
-            /__w/antoskape-project/antoskape-project/.west
-          key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
-          restore-keys: |
-            zephyr-${{ runner.os }}-
+      - name: Diagnose cache save
+        run: |
+            set -x
+            echo "WS=$GITHUB_WORKSPACE"
+            ls -la /__w/antoskape-project/antoskape-project || true
+            ls -la /__w/antoskape-project/antoskape-project/modules || true
+            which tar && tar --version
+            which lz4 && lz4 -V || echo "lz4 missing"
+            mkdir -p /media/cache/pantoska-tieto/antoskape-project || true
+            touch /media/cache/pantoska-tieto/antoskape-project/_write_test || echo "cannot write dest dir"
+
+      - name: Reproduce tar without silencing stderr
+        run: |
+            set -euo pipefail
+            tar cf - -C /__w/antoskape-project/antoskape-project modules | lz4 -v > /media/cache/pantoska-tieto/antoskape-project/test.tar.lz4
 
       # Example for custom application build
       - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
