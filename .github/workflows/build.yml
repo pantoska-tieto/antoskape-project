@@ -46,6 +46,7 @@ jobs:
         run: |
           sudo apt update -y
           python -m pip install lz4
+          sudo apt install pigz 
 
       - name: Install dependencies
         run: |
