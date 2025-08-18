@@ -24,10 +24,13 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: customer-application
+
+      - name: Install dependencies
+        run: python -m pip install lz4
       
       - name: Restore Zephyr workspace cache
         id: cache-primes
-        uses: j3hempsey-actions/local-cache@v3
+        uses: j3hempsey-actions/local-cache@v1
         with:
           path: |
             zephyr
@@ -82,7 +85,7 @@ jobs:
 
       - name: Restore Zephyr workspace cache
         id: cache-primes
-        uses: j3hempsey-actions/local-cache@v3
+        uses: j3hempsey-actions/local-cache@v1
         with:
           path: |
             zephyr
@@ -133,7 +136,7 @@ jobs:
     steps:
       - name: Restore Zephyr workspace cache
         id: cache-primes
-        uses: j3hempsey-actions/local-cache@v3
+        uses: j3hempsey-actions/local-cache@v1
         with:
           path: |
             customer-application
