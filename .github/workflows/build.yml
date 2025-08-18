@@ -131,9 +131,9 @@ jobs:
         working-directory: customer-application
         if : ${{ always() }}
         run: |
-          rm -rf customer-application/test-summary
-          mkdir -p customer-application/test-summary
-          cp customer-application/twister-out/twister_suite_report.xml customer-application/test-summary/samples-zephyr-1.xml 2>/dev/null
+          rm -rf test-summary
+          mkdir -p test-summary
+          cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml 2>/dev/null
 
       - name: Archive test summary artifacts
         uses: actions/upload-artifact@v4
