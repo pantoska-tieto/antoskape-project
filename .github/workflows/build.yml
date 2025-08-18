@@ -46,7 +46,9 @@ jobs:
         run: |
           sudo apt update -y
           python -m pip install lz4
-          sudo apt install pigz 
+          sudo apt install pigz
+          mkdir /media/cache/pantoska-tieto/antoskape-project/
+          sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project/
 
       - name: Install dependencies
         run: |
