@@ -29,7 +29,7 @@ jobs:
         # If Zephyr workspace does not existtion
         shell: bash
         # If Zephyr workspace does not exist
-        if: steps.zephyr-cache.outputs.cache-hit != 'true'
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
             echo "Listing initial zephyr filesystem..."
             echo "Current folder: "
@@ -42,10 +42,14 @@ jobs:
             west update -o=--depth=1 -n
 
       - name: Install dependencies
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
           sudo apt update -y
           python -m pip install lz4
 
+      - name: Install dependencies
+        run: |
+          tar cf - -C . zephyr | lz4 -v > /media/cache/pantoska-tieto/antoskape-project/zephyr-Linux-48bd3636548940863dcc19af32bd4050a6fce195a7a529bd54e06fc1cec6e559.tar.lz4 2>/dev/null
       - name: Restore Zephyr workspace cache
         id: cache-primes
         uses: j3hempsey-actions/local-cache@v1
