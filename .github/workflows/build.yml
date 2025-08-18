@@ -94,7 +94,26 @@ jobs:
         run: |
           echo "Testing board..."
           west twister -vv --platform native_sim/native/64 -T test/basic
-          mkdir -p zephyr-twister-out
+
+      - name: Archive single test artifacts
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        if: ${{ always() }}
+        with:
+          name: single_test_artifacts
+          # Relative path to project root. working-directory value is not applicable!
+          path: |
+            customer-application/twister-out*/*
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 5
+
+      - name: Copy single report summary file
+        working-directory: customer-application
+        run: |
+          mkdir -p test-summary
+          cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml 2>/dev/null
+
 
   tests_results:
     name: Store tests results
@@ -103,7 +122,19 @@ jobs:
     if: ${{ always() }}
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
+    container:
+      image: zephyrprojectrtos/ci:main-arm64
     steps:
+      - name: Restore Zephyr workspace cache
+        id: cache-primes
+        uses: j3hempsey-actions/local-cache@v1
+        with:
+          path: |
+            customer-application
+          key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
+          restore-keys: |
+            zephyr-${{ runner.os }}-
+
       - name: Check filesystem
         working-directory: customer-application
         if : ${{ always() }}
@@ -112,28 +143,6 @@ jobs:
           ls -la
           echo "Checking out customer-application parent directory..."
           ls -la ..
-
-      - name: Archive test artifacts
-        uses: actions/upload-artifact@v4
-        continue-on-error: true
-        if: ${{ always() }}
-        with:
-          name: test_artifacts
-          # Relative path to project root. working-directory value is not applicable!
-          path: |
-            customer-application/twister-out*/*
-            customer-application/zephyr-twister-out/*
-          include-hidden-files: true
-          if-no-files-found: error
-          retention-days: 5
-    
-      - name: Prepare CI report summary
-        working-directory: customer-application
-        if : ${{ always() }}
-        run: |
-          rm -rf test-summary
-          mkdir -p test-summary
-          cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml 2>/dev/null
 
       - name: Archive test summary artifacts
         uses: actions/upload-artifact@v4
