@@ -11,6 +11,9 @@ jobs:
         sample: [blinky]
         target: [esp32s3_devkitc/esp32s3/procpu]
     runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./customer-application
     container:
       image: zephyrprojectrtos/ci:main-arm64
       options: --device=/dev/ttyUSB0
@@ -24,7 +27,7 @@ jobs:
       
       - name: Restore Zephyr workspace cache
         id: cache-primes
-        uses: j3hempsey-actions/local-cache@v1
+        uses: j3hempsey-actions/local-cache@v3
         with:
           path: |
             zephyr
@@ -35,8 +38,7 @@ jobs:
             zephyr-${{ runner.os }}-
 
       - name: Initialize (skip if cached)
-        # If Zephyr workspace does not exist
-        working-directory: customer-application
+        # If Zephyr workspace does not existtion
         shell: bash
         # If Zephyr workspace does not exist
         if: steps.zephyr-cache.outputs.cache-hit != 'true'
@@ -52,24 +54,26 @@ jobs:
 
       # Example for custom application build
       - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
-        working-directory: customer-application
         shell: bash
         run: west build -p always -b ${{ matrix.target }} app-esp32/${{ matrix.sample }}
       
       - name: Flash
-        working-directory: customer-application
         shell: bash
         run: west flash
 
   tests:
     name: Run tests
     runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./customer-application
     needs: build
     if: ${{ !failure() && !cancelled() }}
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
     container:
       image: zephyrprojectrtos/ci:main-arm64
+      options: --device=/dev/ttyUSB0
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -78,7 +82,7 @@ jobs:
 
       - name: Restore Zephyr workspace cache
         id: cache-primes
-        uses: j3hempsey-actions/local-cache@v1
+        uses: j3hempsey-actions/local-cache@v3
         with:
           path: |
             zephyr
@@ -89,7 +93,6 @@ jobs:
             zephyr-${{ runner.os }}-
 
       - name: Twister Tests
-        working-directory: customer-application
         shell: bash
         run: |
           echo "Testing board..."
@@ -109,7 +112,6 @@ jobs:
           retention-days: 5
 
       - name: Copy single report summary file
-        working-directory: customer-application
         run: |
           mkdir -p test-summary
           cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml 2>/dev/null
@@ -118,16 +120,20 @@ jobs:
   tests_results:
     name: Store tests results
     runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: ./customer-application
     needs: [build, tests]
     if: ${{ always() }}
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
     container:
       image: zephyrprojectrtos/ci:main-arm64
+      options: --device=/dev/ttyUSB0
     steps:
       - name: Restore Zephyr workspace cache
         id: cache-primes
-        uses: j3hempsey-actions/local-cache@v1
+        uses: j3hempsey-actions/local-cache@v3
         with:
           path: |
             customer-application
@@ -136,7 +142,6 @@ jobs:
             zephyr-${{ runner.os }}-
 
       - name: Check filesystem
-        working-directory: customer-application
         if : ${{ always() }}
         run: |
           echo "Checking out customer-application directory..."
