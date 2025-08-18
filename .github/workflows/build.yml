@@ -39,7 +39,12 @@ jobs:
             echo "Creating Zephyr west workspace..."
             rm -rf ../.west ../zephyr ../modules
             west init -l .
-            west update
+            west update -o=--depth=1 -n
+
+      - name: Install dependencies
+        run: |
+          sudo apt update -y
+          python -m pip install lz4
 
       - name: Restore Zephyr workspace cache
         id: cache-primes
