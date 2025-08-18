@@ -26,8 +26,11 @@ jobs:
           path: customer-application
 
       - name: Install dependencies
-        run: sudo apt-get install -y tar lz4
-      
+        run: |
+          sudo apt update -y
+          pip3 --version
+          python3 -m pip install -y lz4
+          
       - name: Restore Zephyr workspace cache
         id: cache-primes
         uses: j3hempsey-actions/local-cache@v1
