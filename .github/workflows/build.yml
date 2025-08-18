@@ -25,12 +25,22 @@ jobs:
         with:
           path: customer-application
 
-      - name: Install dependencies
+      - name: Initialize (skip if cached)
+        # If Zephyr workspace does not existtion
+        shell: bash
+        # If Zephyr workspace does not exist
+        if: steps.zephyr-cache.outputs.cache-hit != 'true'
         run: |
-          sudo apt update -y
-          pip3 --version
-          python3 -m pip install -y lz4
-          
+            echo "Listing initial zephyr filesystem..."
+            echo "Current folder: "
+            ls -la
+            echo "Parent folder: "
+            ls -la ..
+            echo "Creating Zephyr west workspace..."
+            rm -rf ../.west ../zephyr ../modules
+            west init -l .
+            west update
+
       - name: Restore Zephyr workspace cache
         id: cache-primes
         uses: j3hempsey-actions/local-cache@v1
@@ -42,21 +52,6 @@ jobs:
           key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
           restore-keys: |
             zephyr-${{ runner.os }}-
-
-      - name: Initialize (skip if cached)
-        # If Zephyr workspace does not existtion
-        shell: bash
-        # If Zephyr workspace does not exist
-        if: steps.zephyr-cache.outputs.cache-hit != 'true'
-        run: |
-          if [ ! -d ../zephyr ] || [ ! -d ../modules ] || [ ! -d ../.west ]; then
-            echo "No cache hit; creating West workspace..."
-            rm -rf ../.west ../zephyr ../modules
-            west init -l .
-            west update
-          else
-            echo "Using cached Zephyr workspace"
-          fi
 
       # Example for custom application build
       - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
