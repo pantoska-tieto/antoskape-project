@@ -25,13 +25,26 @@ jobs:
         with:
           path: customer-application
 
+      - name: Restore Zephyr workspace cache
+        id: cache-restore-zephyr
+        uses: j3hempsey-actions/local-cache@v1
+        with:
+          path: |
+            /__w/antoskape-project/antoskape-project/modules
+            /__w/antoskape-project/antoskape-project/zephyr
+            /__w/antoskape-project/antoskape-project/.west
+          key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
+          restore-keys: |
+            zephyr-${{ runner.os }}-
+
       - name: Initialize (skip if cached)
         # If Zephyr workspace does not existtion
         shell: bash
         # If Zephyr workspace does not exist
-        if: steps.cache.outputs.cache-hit != 'true'
+        if: steps.cache-restore-zephyr.outputs.cache-hit != 'true'
         run: |
             echo "Listing initial zephyr filesystem..."
+            pwd
             echo "Current folder: "
             ls -la
             echo "Parent folder: "
@@ -40,24 +53,20 @@ jobs:
             rm -rf ../.west ../zephyr ../modules
             west init -l .
             west update -o=--depth=1 -n
-
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: |
-          sudo apt update -y
-          python -m pip install lz4
-          sudo apt install pigz
-          sudo mkdir -p /media/cache/pantoska-tieto/antoskape-project/
-          sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project/
+            sudo apt update -y
+            python -m pip install lz4
+            sudo apt install pigz
+            sudo mkdir -p /media/cache/pantoska-tieto/antoskape-project/
+            sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project/
 
       - name: Restore Zephyr workspace cache
-        id: cache-primes
+        id: cache-zephyr
         uses: j3hempsey-actions/local-cache@v1
         with:
           path: |
-            modules
-            zephyr
-            .west
+            /__w/antoskape-project/antoskape-project/modules
+            /__w/antoskape-project/antoskape-project/zephyr
+            /__w/antoskape-project/antoskape-project/.west
           key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
           restore-keys: |
             zephyr-${{ runner.os }}-
@@ -95,9 +104,9 @@ jobs:
         uses: j3hempsey-actions/local-cache@v1
         with:
           path: |
-            zephyr
-            modules
-            .west
+            /__w/antoskape-project/antoskape-project/zephyr
+            /__w/antoskape-project/antoskape-project/modules
+            /__w/antoskape-project/antoskape-project/.west
           key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
           restore-keys: |
             zephyr-${{ runner.os }}-
