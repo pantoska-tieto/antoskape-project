@@ -53,28 +53,18 @@ jobs:
             rm -rf ../.west ../zephyr ../modules
             west init -l .
             west update -o=--depth=1 -n
+
+      - name: Installing GitHub actions dependencies
+        run: |
+            echo "Installing dependencies for GitHub actions..."
             sudo apt update -y
             DEBIAN_FRONTEND=noninteractive apt-get install -y tar zstd lz4
             tar --version
             lz4 -V
             zstd --version
             sudo mkdir -p /media/cache/pantoska-tieto/antoskape-project/
-            sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project/
-
-      - name: Diagnose cache save
-        run: |
-            set -x
-            echo "WS=$GITHUB_WORKSPACE"
-            ls -la /__w/antoskape-project/antoskape-project || true
-            ls -la /__w/antoskape-project/antoskape-project/modules || true
-            which tar && tar --version
-            which lz4 && lz4 -V || echo "lz4 missing"
-            mkdir -p /media/cache/pantoska-tieto/antoskape-project || true
-            touch /media/cache/pantoska-tieto/antoskape-project/_write_test || echo "cannot write dest dir"
-
-      - name: Reproduce tar without silencing stderr
-        run: |
-            tar cf - -C /__w/antoskape-project/antoskape-project modules | lz4 -v > /media/cache/pantoska-tieto/antoskape-project/test.tar.lz4
+            sudo chown -R "$USER:$USER" /media/cache/pantoska-tieto/antoskape-project
+            sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project
 
       # Example for custom application build
       - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
@@ -115,6 +105,18 @@ jobs:
           key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
           restore-keys: |
             zephyr-${{ runner.os }}-
+
+      - name: Installing GitHub actions dependencies
+        run: |
+            echo "Installing dependencies for GitHub actions..."
+            sudo apt update -y
+            DEBIAN_FRONTEND=noninteractive apt-get install -y tar zstd lz4
+            tar --version
+            lz4 -V
+            zstd --version
+            sudo mkdir -p /media/cache/pantoska-tieto/antoskape-project/
+            sudo chown -R "$USER:$USER" /media/cache/pantoska-tieto/antoskape-project
+            sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project
 
       - name: Twister Tests
         shell: bash
@@ -160,10 +162,24 @@ jobs:
         uses: j3hempsey-actions/local-cache@v1
         with:
           path: |
-            customer-application
+            /__w/antoskape-project/antoskape-project/modules
+            /__w/antoskape-project/antoskape-project/zephyr
+            /__w/antoskape-project/antoskape-project/.west
           key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
           restore-keys: |
             zephyr-${{ runner.os }}-
+
+      - name: Installing GitHub actions dependencies
+        run: |
+            echo "Installing dependencies for GitHub actions..."
+            sudo apt update -y
+            DEBIAN_FRONTEND=noninteractive apt-get install -y tar zstd lz4
+            tar --version
+            lz4 -V
+            zstd --version
+            sudo mkdir -p /media/cache/pantoska-tieto/antoskape-project/
+            sudo chown -R "$USER:$USER" /media/cache/pantoska-tieto/antoskape-project
+            sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project
 
       - name: Check filesystem
         if : ${{ always() }}
