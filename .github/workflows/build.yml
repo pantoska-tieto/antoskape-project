@@ -83,6 +83,9 @@ jobs:
         with:
           path: customer-application
 
+      - name: Install dependencies
+        run: python -m pip install lz4
+
       - name: Restore Zephyr workspace cache
         id: cache-primes
         uses: j3hempsey-actions/local-cache@v1
@@ -143,6 +146,9 @@ jobs:
           key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
           restore-keys: |
             zephyr-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: python -m pip install lz4
 
       - name: Check filesystem
         if : ${{ always() }}
