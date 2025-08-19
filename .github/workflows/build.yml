@@ -55,9 +55,8 @@ jobs:
             zephyr-${{ runner.os }}-
 
       - name: Initialize (skip if cached)
-        # If Zephyr workspace does not existtion
-        shell: bash
         # If Zephyr workspace does not exist
+        shell: bash
         if: steps.cache-restore-zephyr.outputs.cache-hit != 'true'
         run: |
             echo "Listing initial zephyr filesystem..."
@@ -140,7 +139,7 @@ jobs:
         if: ${{ always() }}
         with:
           name: single_test_artifacts
-          # Relative path to project root. working-directory value is not applicable!
+          # Relative path to project root. 
           path: |
             customer-application/twister-out*/*
           include-hidden-files: true
@@ -158,9 +157,9 @@ jobs:
         if: ${{ always() }}
         with:
           name: summary_artifacts
-          # Relative path to project root. working-directory value is not applicable!
+          # Relative path to project root. 
           path: |
-            customer-application/test-summary
+            customer-application/test-summary/*
           if-no-files-found: error
           retention-days: 5
 
