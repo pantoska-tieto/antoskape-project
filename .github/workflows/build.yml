@@ -44,7 +44,7 @@ jobs:
 
       - name: Restore Zephyr workspace cache
         id: cache-restore-zephyr
-        uses: j3hempsey-actions/local-cache@v3
+        uses: j3hempsey-actions/local-cache@v1
         with:
           path: |
             modules
@@ -118,7 +118,7 @@ jobs:
             
       - name: Restore Zephyr workspace cache
         id: cache-primes
-        uses: j3hempsey-actions/local-cache@v3
+        uses: j3hempsey-actions/local-cache@v1
         with:
           path: |
             modules
@@ -186,7 +186,7 @@ jobs:
             
       - name: Restore Zephyr workspace cache
         id: cache-primes
-        uses: j3hempsey-actions/local-cache@v3
+        uses: j3hempsey-actions/local-cache@v1
         with:
           path: |
             modules
