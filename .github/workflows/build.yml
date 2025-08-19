@@ -52,7 +52,7 @@ jobs:
           script: |
             [root for root, dirs, files in os.walk("test", topdown=True) for file in files if file == "prj.conf"]
         env:
-          TEST_LIST: ${{steps.py-script.outputs.result}}
+          Test_list: ${{steps.py-script.outputs.result}}
 
       - name: Print errors
         if: steps.py-script.outputs.error == 'true'
@@ -78,7 +78,7 @@ jobs:
         shell: bash
 
       - name: Twister tests
-        run: scripts/get_tests_list.sh "${{ github.TEST_LIST }}"
+        run: scripts/get_tests_list.sh "${{ env.Test_list }}"
         shell: bash
 
       - name: Single test artifacts
