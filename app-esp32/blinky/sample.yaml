@@ -10,5 +10,5 @@ tests:
     depends_on: gpio
     harness: led
     integration_platforms:
-      - native_sim/native.64
+      - native_sim/native/64
       - esp32s3_devkitc/esp32s3/procpu

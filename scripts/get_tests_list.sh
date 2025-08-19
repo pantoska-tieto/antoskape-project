@@ -10,7 +10,7 @@ tests="$1"
 echo "Script received list of tests to run: ${tests}"
 
 # Configuration via env (override when calling the script)
-platform="${PLATFORM:-native_sim/native/64}"
+platform="${PLATFORM:-esp32s3_devkitc/esp32s3/procpu}"
 twister_args="${TWISTER_ARGS:--vv}"    # e.g. "--timeout 180 --enable-slow"                   # e.g. "8"
 
 status=0
