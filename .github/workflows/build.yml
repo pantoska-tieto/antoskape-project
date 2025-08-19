@@ -147,6 +147,7 @@ jobs:
           retention-days: 5
 
       - name: Copy single report summary file
+        working-directory: customer-application
         run: |
           mkdir -p test-summary
           cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml 2>/dev/null
