@@ -18,7 +18,7 @@ jobs:
       image: zephyrprojectrtos/ci:main-arm64
       options: |
         --device=/dev/ttyUSB0
-        --volume /media/cache/pantoska-tieto/antoskape-project:/media/cache/pantoska-tieto/antoskape-project
+        -v /media/cache/pantoska-tieto/antoskape-project:/media/cache/pantoska-tieto/antoskape-project
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
@@ -94,7 +94,7 @@ jobs:
       image: zephyrprojectrtos/ci:main-arm64
       options: |
         --device=/dev/ttyUSB0
-        --volume /media/cache/pantoska-tieto/antoskape-project:/media/cache/pantoska-tieto/antoskape-project
+        -v /media/cache/pantoska-tieto/antoskape-project:/media/cache/pantoska-tieto/antoskape-project
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -167,7 +167,7 @@ jobs:
       image: zephyrprojectrtos/ci:main-arm64
       options: |
         --device=/dev/ttyUSB0
-        --volume /media/cache/pantoska-tieto/antoskape-project:/media/cache/pantoska-tieto/antoskape-project
+        -v /media/cache/pantoska-tieto/antoskape-project:/media/cache/pantoska-tieto/antoskape-project
     steps:
       - name: Check cache dir
         run: ls -la /media/cache/pantoska-tieto/antoskape-project
