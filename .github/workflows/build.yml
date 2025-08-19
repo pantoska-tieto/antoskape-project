@@ -16,7 +16,9 @@ jobs:
         working-directory: customer-application
     container:
       image: zephyrprojectrtos/ci:main-arm64
-      options: --device=/dev/ttyUSB0
+      options: |
+        --device=/dev/ttyUSB0
+        --volume /media/cache/pantoska-tieto/antoskape-project:/media/cache/pantoska-tieto/antoskape-project
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
@@ -24,6 +26,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: customer-application
+
+      - name: Check cache dir
+        run: ls -la /media/cache/pantoska-tieto/antoskape-project
 
       - name: Restore Zephyr workspace cache
         id: cache-restore-zephyr
@@ -87,12 +92,17 @@ jobs:
       CMAKE_PREFIX_PATH: /opt/toolchains
     container:
       image: zephyrprojectrtos/ci:main-arm64
-      options: --device=/dev/ttyUSB0
+      options: |
+        --device=/dev/ttyUSB0
+        --volume /media/cache/pantoska-tieto/antoskape-project:/media/cache/pantoska-tieto/antoskape-project
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           path: customer-application
+
+      - name: Check cache dir
+        run: ls -la /media/cache/pantoska-tieto/antoskape-project
 
       - name: Restore Zephyr workspace cache
         id: cache-primes
@@ -155,8 +165,13 @@ jobs:
       CMAKE_PREFIX_PATH: /opt/toolchains
     container:
       image: zephyrprojectrtos/ci:main-arm64
-      options: --device=/dev/ttyUSB0
+      options: |
+        --device=/dev/ttyUSB0
+        --volume /media/cache/pantoska-tieto/antoskape-project:/media/cache/pantoska-tieto/antoskape-project
     steps:
+      - name: Check cache dir
+        run: ls -la /media/cache/pantoska-tieto/antoskape-project
+        
       - name: Restore Zephyr workspace cache
         id: cache-primes
         uses: j3hempsey-actions/local-cache@v1
