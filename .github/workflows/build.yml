@@ -149,8 +149,8 @@ jobs:
       - name: Copy single report summary file
         shell: bash
         run: |
-          mkdir -p test-summary
-          cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml 2>/dev/null
+          sudo mkdir -p test-summary
+          cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml
       
       - name: Archive test summary artifacts
         uses: actions/upload-artifact@v4
