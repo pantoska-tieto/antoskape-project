@@ -3,13 +3,12 @@ set -uo pipefail
 
 # List your Twister test directories here (relative to repo root)
 if [[ $# -lt 1 ]]; then
-  echo "Usage: $0 REF_NAME"
+  echo "Usage: $0 tests"
   exit 2
 fi
 
-REF_NAME="$1"
-echo "Script received list of tests to run: ${REF_NAME}"
-tests = REF_NAME
+tests="$1"
+echo "Script received list of tests to run: ${tests}"
 
 # Configuration via env (override when calling the script)
 platform="${PLATFORM:-native_sim/native/64}"

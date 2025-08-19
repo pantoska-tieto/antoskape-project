@@ -77,16 +77,9 @@ jobs:
         run: chmod +x scripts/get_tests_list.sh
         shell: bash
 
-      - name: Run external script with argument
+      - name: Twister tests
         run: scripts/get_tests_list.sh "${{ github.TEST_LIST }}"
         shell: bash
-
-      - name: Twister Tests
-        shell: bash
-        run: |
-          echo "Testing board..."
-          west twister -vv --platform native_sim/native/64 -T test/basic
-          west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -s sample.pytest.shell -T test/shell
 
       - name: Single test artifacts
         uses: actions/upload-artifact@v4
