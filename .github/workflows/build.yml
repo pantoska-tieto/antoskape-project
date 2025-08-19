@@ -132,7 +132,7 @@ jobs:
         shell: bash
         run: |
           echo "Testing board..."
-          west twister -vv --platform native_sim/native/64 -T test/basic
+          west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -T test/shell
 
       - name: Archive single test artifacts
         uses: actions/upload-artifact@v4
