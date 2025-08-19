@@ -67,7 +67,7 @@ jobs:
             echo "Parent folder: "
             ls -la ..
             echo "Creating Zephyr west workspace..."
-            rm -rf ../.west ../zephyr ../modules
+            rm -rf ../.west
             west init -l .
             west update -o=--depth=1 -n
 
@@ -169,32 +169,10 @@ jobs:
         --device=/dev/ttyUSB0
         -v /media/cache/pantoska-tieto/antoskape-project:/media/cache/pantoska-tieto/antoskape-project
     steps:
-      - name: Check cache dir
-        run: ls -la /media/cache/pantoska-tieto/antoskape-project
-        
-      - name: Installing GitHub actions dependencies (pre-cache)
-        run: |
-            echo "Installing dependencies for GitHub actions..."
-            sudo apt update -y
-            DEBIAN_FRONTEND=noninteractive apt-get install -y tar zstd lz4
-            tar --version
-            lz4 -V
-            zstd --version
-            sudo mkdir -p /media/cache/pantoska-tieto/antoskape-project/
-            sudo chown -R "$USER:$USER" /media/cache/pantoska-tieto/antoskape-project
-            sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project
-            
-      - name: Restore Zephyr workspace cache
-        id: cache-primes
-        uses: j3hempsey-actions/local-cache@v1
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          path: |
-            modules
-            zephyr
-            .west
-          key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
-          restore-keys: |
-            zephyr-${{ runner.os }}-
+          path: customer-application
 
       - name: Check filesystem
         if : ${{ always() }}
