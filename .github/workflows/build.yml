@@ -30,14 +30,26 @@ jobs:
       - name: Check cache dir
         run: ls -la /media/cache/pantoska-tieto/antoskape-project
 
+      - name: Installing GitHub actions dependencies (pre-cache)
+        run: |
+            echo "Installing dependencies for GitHub actions..."
+            sudo apt update -y
+            DEBIAN_FRONTEND=noninteractive apt-get install -y tar zstd lz4
+            tar --version
+            lz4 -V
+            zstd --version
+            sudo mkdir -p /media/cache/pantoska-tieto/antoskape-project/
+            sudo chown -R "$USER:$USER" /media/cache/pantoska-tieto/antoskape-project
+            sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project
+
       - name: Restore Zephyr workspace cache
         id: cache-restore-zephyr
-        uses: j3hempsey-actions/local-cache@v1
+        uses: j3hempsey-actions/local-cache@v3
         with:
           path: |
-            /__w/antoskape-project/antoskape-project/modules
-            /__w/antoskape-project/antoskape-project/zephyr
-            /__w/antoskape-project/antoskape-project/.west
+            modules
+            zephyr
+            .west
           key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
           restore-keys: |
             zephyr-${{ runner.os }}-
@@ -58,18 +70,6 @@ jobs:
             rm -rf ../.west ../zephyr ../modules
             west init -l .
             west update -o=--depth=1 -n
-
-      - name: Installing GitHub actions dependencies
-        run: |
-            echo "Installing dependencies for GitHub actions..."
-            sudo apt update -y
-            DEBIAN_FRONTEND=noninteractive apt-get install -y tar zstd lz4
-            tar --version
-            lz4 -V
-            zstd --version
-            sudo mkdir -p /media/cache/pantoska-tieto/antoskape-project/
-            sudo chown -R "$USER:$USER" /media/cache/pantoska-tieto/antoskape-project
-            sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project
 
       # Example for custom application build
       - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
@@ -104,19 +104,7 @@ jobs:
       - name: Check cache dir
         run: ls -la /media/cache/pantoska-tieto/antoskape-project
 
-      - name: Restore Zephyr workspace cache
-        id: cache-primes
-        uses: j3hempsey-actions/local-cache@v1
-        with:
-          path: |
-            /__w/antoskape-project/antoskape-project/zephyr
-            /__w/antoskape-project/antoskape-project/modules
-            /__w/antoskape-project/antoskape-project/.west
-          key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
-          restore-keys: |
-            zephyr-${{ runner.os }}-
-
-      - name: Installing GitHub actions dependencies
+      - name: Installing GitHub actions dependencies (pre-cache)
         run: |
             echo "Installing dependencies for GitHub actions..."
             sudo apt update -y
@@ -127,6 +115,18 @@ jobs:
             sudo mkdir -p /media/cache/pantoska-tieto/antoskape-project/
             sudo chown -R "$USER:$USER" /media/cache/pantoska-tieto/antoskape-project
             sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project
+            
+      - name: Restore Zephyr workspace cache
+        id: cache-primes
+        uses: j3hempsey-actions/local-cache@v3
+        with:
+          path: |
+            modules
+            zephyr
+            .west
+          key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
+          restore-keys: |
+            zephyr-${{ runner.os }}-
 
       - name: Twister Tests
         shell: bash
@@ -172,19 +172,7 @@ jobs:
       - name: Check cache dir
         run: ls -la /media/cache/pantoska-tieto/antoskape-project
         
-      - name: Restore Zephyr workspace cache
-        id: cache-primes
-        uses: j3hempsey-actions/local-cache@v1
-        with:
-          path: |
-            /__w/antoskape-project/antoskape-project/modules
-            /__w/antoskape-project/antoskape-project/zephyr
-            /__w/antoskape-project/antoskape-project/.west
-          key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
-          restore-keys: |
-            zephyr-${{ runner.os }}-
-
-      - name: Installing GitHub actions dependencies
+      - name: Installing GitHub actions dependencies (pre-cache)
         run: |
             echo "Installing dependencies for GitHub actions..."
             sudo apt update -y
@@ -195,6 +183,18 @@ jobs:
             sudo mkdir -p /media/cache/pantoska-tieto/antoskape-project/
             sudo chown -R "$USER:$USER" /media/cache/pantoska-tieto/antoskape-project
             sudo chmod -R 777 /media/cache/pantoska-tieto/antoskape-project
+            
+      - name: Restore Zephyr workspace cache
+        id: cache-primes
+        uses: j3hempsey-actions/local-cache@v3
+        with:
+          path: |
+            modules
+            zephyr
+            .west
+          key: zephyr-${{ runner.os }}-${{ hashFiles('customer-application/west.yml') }}
+          restore-keys: |
+            zephyr-${{ runner.os }}-
 
       - name: Check filesystem
         if : ${{ always() }}
