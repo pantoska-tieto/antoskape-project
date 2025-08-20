@@ -33,6 +33,7 @@ done
 
 # Configuration via env (override when calling the script)
 platform="${PLATFORM:-esp32s3_devkitc/esp32s3/procpu}"
+serial="${DEVICE_SERIAL:-/dev/ttyUSB0}"  # e.g. "/dev/ttyUSB0"
 twister_args="${TWISTER_ARGS:--vv}"          # e.g. "--timeout 180 --enable-slow"
 jobs="${JOBS:-1}"                         # e.g. "8"
 
@@ -41,8 +42,8 @@ for t in "${tests[@]}"; do
   # Skip empty lines if any
   [[ -z "$t" ]] && continue
 
-  echo "Running: west twister ${twister_args} --platform ${platform} -j ${jobs} --device-testing --device-serial --west-flash --flash-before -T ${t}"
-  if ! west twister ${twister_args} --platform "${platform}" -j "${jobs}" --device-testing --device-serial /dev/ttyUSB0 --west-flash --flash-before -T "${t}"; then
+  echo "Running: west twister ${twister_args} --platform ${platform} -j ${jobs} --device-testing --device-serial ${serial} --west-flash --flash-before -T ${t}"
+  if ! west twister ${twister_args} --platform "${platform}" -j "${jobs}" --device-testing --device-serial ${serial} --west-flash --flash-before -T "${t}"; then
     echo "FAILED: ${t}"
     status=1
   fi

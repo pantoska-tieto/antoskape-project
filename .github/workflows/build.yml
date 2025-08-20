@@ -3,17 +3,37 @@ name: Build
 on:
   push:
     branches:
-      - "*"
+      - main
   workflow_dispatch:
     inputs:
-      logLevel:
-        description: 'Log level'     
-        required: true
-        default: 'warning'
-      tags:
-          description: 'Test scenario tags'
+      runner_label:
+        description: Label of the runner to execute the job
+        required: false
+        default: self-hosted
+        type: string
+      board_target:
+        description: Target board for the build
+        required: false
+        default: esp32s3_devkitc/esp32s3/procpu
+        type: string
+      device_serial:
+        description: Serial device for connecting target board
+        required: false
+        default: /dev/ttyUSB0
+        type: string
+      tests_target:
+        description: Tests scope to run
+        required: false
+        default: repo
+        type: string
   repository_dispatch:
-    types: [on-demand-test]	  
+    types: [on-demand-test]
+    
+env:
+  RUNNER_LABEL: self-hosted
+  BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
+  DEVICE_SERIAL: /dev/ttyUSB0
+  TESTS_TARGET: repo
 
 jobs:
   build:
@@ -24,7 +44,7 @@ jobs:
       matrix:
         sample: [blinky]
         target: [esp32s3_devkitc/esp32s3/procpu]
-    runs-on: self-hosted
+    runs-on: ${{ github.event.inputs.runner_label }}
     defaults:
       run:
         working-directory: customer-application
@@ -34,15 +54,22 @@ jobs:
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
-      - name: Dispatch event run
-        run: |
-          echo "Log level: ${{ github.event.inputs.logLevel }}"
-          echo "Tags: ${{ github.event.inputs.tags }}"
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
           path: customer-application
+
+      - name: Set build env variables
+        run: |
+          echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
+          echo "BOARD_TARGET=${INPUT_BOARD_TARGET:-$BOARD_TARGET}" >> $GITHUB_ENV
+          echo "DEVICE_SERIAL=${INPUT_DEVICE_SERIAL:-$DEVICE_SERIAL}" >> $GITHUB_ENV
+          echo "TESTS_TARGET=${INPUT_TESTS_TARGET:-$TESTS_TARGET}" >> $GITHUB_ENV
+        env:
+          INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
+          INPUT_BOARD_TARGET: ${{ github.event.inputs.board_target }}
+          INPUT_DEVICE_SERIAL: ${{ github.event.inputs.device_serial }}
+          INPUT_TESTS_TARGET: ${{ github.event.inputs.tests_target }}
       
       - name: Initialize
         shell: bash
@@ -57,17 +84,26 @@ jobs:
           west init -l .
           west update -o=--depth=1 -n
 
+      - name: Get tests scope
+        shell: bash
+        run: |
+            echo "TESTS_TARGET=${{ github.event.inputs.tests_target }}" >> $GITHUB_ENV
+
+      - name: Get tests scope
+        shell: bash
+        run: python ./scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }} 
+
       - name: Get tests list
-        shell: python
+        shell: bash
         id: py-script
         run: |
             import os
-            test_list = [root for root, dirs, files in os.walk("test", topdown=True) for file in files if file == "prj.conf"]
-            with open(os.path.join('run_tests.txt'), 'w') as f:
-              for line in test_list:
-                f.write(f"{line}\n")
-            with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-                f.write(f'test_list={os.path.join("run_tests.txt")}\n')
+            import re
+            regex = re.compile('.*_tests.txt')
+            for dir in os.listdir('.'):
+                if regex.match(dir):
+                  with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                    f.write(f'test_list={os.path.join(dir)}\n')
 
       # Example for custom application build
       - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
@@ -84,8 +120,9 @@ jobs:
         shell: bash
 
       - name: Twister tests
-        run: scripts/get_tests_list.sh "${{steps.py-script.outputs.test_list}}"
         shell: bash
+        run: |
+            PLATFORM=${{ env.BOARD_TARGET }} DEVICE_SERIAL=${{ env.DEVICE_SERIAL }} scripts/get_tests_list.sh "${{steps.py-script.outputs.test_list}}"
 
       - name: Single test artifacts
         uses: actions/upload-artifact@v4
