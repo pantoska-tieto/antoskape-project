@@ -83,11 +83,25 @@ jobs:
           retention-days: 5
       
       - name: Prepare CI report summary
+        shell: bash
         if : ${{ always() }}
         run: |
           rm -rf test-summary
           sudo mkdir -p test-summary
-          cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml
+
+      # Collect all test summary reports
+      - name: Prepare CI report summary
+        shell: python
+        if : ${{ always() }}
+        run: |
+          import os
+          import re
+          import shutil
+          regex = re.compile('twister-out.*')
+          for dir in os.listdir('.'):
+              if regex.match(dir):
+                  print(f"Found: {dir}")
+                  shutil.copyfile(os.path.join(dir, "twister_suite_report.xml"), os.path.join("test-summary", f"twister_suite_report{dir.split('-out')[1]}.xml"))
 
       - name: Archive test summary artifacts
         uses: actions/upload-artifact@v4

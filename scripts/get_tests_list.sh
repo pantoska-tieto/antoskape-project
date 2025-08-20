@@ -42,7 +42,7 @@ for t in "${tests[@]}"; do
   [[ -z "$t" ]] && continue
 
   echo "Running: west twister ${twister_args} --platform ${platform} -j ${jobs} -T ${t}"
-  if ! west twister ${twister_args} --platform "${platform}" -j "${jobs}" -T "${t}"; then
+  if ! west twister ${twister_args} --platform "${platform}" -j "${jobs}" --device-testing --device-serial /dev/ttyUSB0 -T "${t}"; then
     echo "FAILED: ${t}"
     status=1
   fi
