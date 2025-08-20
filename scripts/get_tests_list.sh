@@ -41,7 +41,7 @@ for t in "${tests[@]}"; do
   # Skip empty lines if any
   [[ -z "$t" ]] && continue
 
-  echo "Running: west twister ${twister_args} --platform ${platform} -j ${jobs} -T ${t}"
+  echo "Running: west twister ${twister_args} --platform ${platform} -j ${jobs} --device-testing --device-serial -T ${t}"
   if ! west twister ${twister_args} --platform "${platform}" -j "${jobs}" --device-testing --device-serial /dev/ttyUSB0 -T "${t}"; then
     echo "FAILED: ${t}"
     status=1
