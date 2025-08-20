@@ -24,8 +24,6 @@ on:
         required: false
         default: repo
         type: string
-  repository_dispatch:
-    types: [on-demand-test]
     
 env:
   RUNNER_LABEL: self-hosted
