@@ -96,12 +96,7 @@ jobs:
             west init -l .
             west update -o=--depth=1 -n
 
-      - name: Get tests scope
-        shell: bash
-        run: |
-            echo "TESTS_TARGET=${{ github.event.inputs.tests_target }}" >> $GITHUB_ENV
-
-      - name: Get tests scope
+      - name: Create text file with tests scope
         shell: bash
         run: python .github/scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }} 
 
