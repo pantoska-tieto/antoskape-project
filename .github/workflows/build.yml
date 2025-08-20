@@ -34,8 +34,22 @@ env:
   TESTS_TARGET: repo
 
 jobs:
+  process-runner:
+    name: Get workflows runner 
+    runs-on: self-hosted
+    outputs:
+      label: ${{ steps.runner-label.outputs.label }}
+    # Set runner if no workflow_dispatch value is invoked  
+    steps:
+      - name: Set runner label
+        id: runner-label
+        run: echo "label=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_OUTPUT
+        env:
+          INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
+
   build:
     name: Build and Test
+    needs: process-runner
     strategy:
       max-parallel: 1
       fail-fast: false
