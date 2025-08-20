@@ -1,6 +1,17 @@
 name: Build
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - "*"
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+          description: 'Test scenario tags'  
 
 jobs:
   build:
@@ -21,6 +32,11 @@ jobs:
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
+      - name: Dispatch event run
+        run: |
+          echo "Log level: ${{ github.event.inputs.logLevel }}"
+          echo "Tags: ${{ github.event.inputs.tags }}"
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
