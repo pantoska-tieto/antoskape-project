@@ -56,7 +56,7 @@ jobs:
       matrix:
         sample: [blinky]
         target: [esp32s3_devkitc/esp32s3/procpu]
-    runs-on: ${{ github.event.inputs.runner_label }}
+    runs-on: ${{ needs.process-runner.outputs.label }}
     defaults:
       run:
         working-directory: customer-application
