@@ -50,8 +50,8 @@ jobs:
         with:
           fail-on-error: false
           script: |
-            print [root for root, dirs, files in os.walk("app-esp32", topdown=True) for file in files if file == "sample.yaml"]
-            print [root for root, dirs, files in os.walk("test", topdown=True) for file in files if file == "prj.conf"] >> $GITHUB_OUTPUT
+            print([root for root, dirs, files in os.walk("app-esp32", topdown=True) for file in files if file == "prj.conf"])
+            print([root for root, dirs, files in os.walk("test", topdown=True) for file in files if file == "prj.conf"]) >> $GITHUB_OUTPUT
 
       - name: Print errors
         if: steps.py-script.outputs.error == 'true'
