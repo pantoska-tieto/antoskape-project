@@ -45,8 +45,11 @@ jobs:
         run: |
             import os
             test_list = [root for root, dirs, files in os.walk("test", topdown=True) for file in files if file == "prj.conf"]
+            with open(os.path.join('run_tests.txt'), 'w') as f:
+              for line in test_list:
+              f.write(f"{line}\n")
             with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-                f.write(f'tests={test_list}\n')
+                f.write(f'test_list={os.path.join("run_tests.txt")}\n')
 
       # Example for custom application build
       - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
@@ -63,7 +66,7 @@ jobs:
         shell: bash
 
       - name: Twister tests
-        run: scripts/get_tests_list.sh "${{steps.py-script.outputs.tests}}"
+        run: scripts/get_tests_list.sh "${{steps.py-script.outputs.test_list}}"
         shell: bash
 
       - name: Single test artifacts
