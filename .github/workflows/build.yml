@@ -50,9 +50,8 @@ jobs:
         with:
           fail-on-error: false
           script: |
-            [root for root, dirs, files in os.walk("test", topdown=True) for file in files if file == "prj.conf"]
-        env:
-          Test_list: ${{steps.py-script.outputs.result}}
+            print [root for root, dirs, files in os.walk("app-esp32", topdown=True) for file in files if file == "sample.yaml"]
+            print [root for root, dirs, files in os.walk("test", topdown=True) for file in files if file == "prj.conf"] >> $GITHUB_OUTPUT
 
       - name: Print errors
         if: steps.py-script.outputs.error == 'true'
@@ -78,7 +77,7 @@ jobs:
         shell: bash
 
       - name: Twister tests
-        run: scripts/get_tests_list.sh "${{ env.Test_list }}"
+        run: scripts/get_tests_list.sh "${{steps.py-script.outputs.*}}"
         shell: bash
 
       - name: Single test artifacts
