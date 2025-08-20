@@ -101,7 +101,7 @@ jobs:
         run: python .github/scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }} 
 
       - name: Get tests list
-        shell: bash
+        shell: python
         id: py-script
         run: |
             import os
