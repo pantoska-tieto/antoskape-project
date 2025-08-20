@@ -103,7 +103,7 @@ jobs:
 
       - name: Get tests scope
         shell: bash
-        run: python ./scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }} 
+        run: python scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }} 
 
       - name: Get tests list
         shell: bash
