@@ -1,97 +1,131 @@
 name: Build
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - "*"
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+          description: 'Test scenario tags'  
 
 jobs:
   build:
     name: Build and Test
     strategy:
+      max-parallel: 1
       fail-fast: false
       matrix:
         sample: [blinky]
         target: [esp32s3_devkitc/esp32s3/procpu]
     runs-on: self-hosted
+    defaults:
+      run:
+        working-directory: customer-application
     container:
       image: zephyrprojectrtos/ci:main-arm64
       options: --device=/dev/ttyUSB0
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
+      - name: Dispatch event run
+        run: |
+          echo "Log level: ${{ github.event.inputs.logLevel }}"
+          echo "Tags: ${{ github.event.inputs.tags }}"
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           path: customer-application
       
       - name: Initialize
-        working-directory: customer-application
         shell: bash
         run: |
-          echo "Checking out Zephyr with custom app..."
+          echo "Checking out Zephyr env..."
           pwd
+          echo "Current github workspace:"
           ls -la
-          echo "Parent github project folder"
+          echo "Parent github folder"
           ls -la ..
-          echo "Parent zephyr/ folder"
-          ls -la ../zephyr
           rm -rf ../.west
           west init -l .
-          west update
-          echo "Parent zephyr/ folder"
-          ls -la ../zephyr
-          echo "Parrent modules folder"
-          ls -la ../modules
+          west update -o=--depth=1 -n
+
+      - name: Get tests list
+        shell: python
+        id: py-script
+        run: |
+            import os
+            test_list = [root for root, dirs, files in os.walk("test", topdown=True) for file in files if file == "prj.conf"]
+            with open(os.path.join('run_tests.txt'), 'w') as f:
+              for line in test_list:
+                f.write(f"{line}\n")
+            with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                f.write(f'test_list={os.path.join("run_tests.txt")}\n')
 
       # Example for custom application build
       - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
-        working-directory: customer-application
         shell: bash
         run: west build -p always -b ${{ matrix.target }} app-esp32/${{ matrix.sample }}
         
       - name: Flash
-        working-directory: customer-application
         shell: bash
         run: west flash
 
-      - name: Twister Tests
-        working-directory: customer-application
+      # Twister tests section
+      - name: Make script executable
+        run: chmod +x scripts/get_tests_list.sh
         shell: bash
-        # MCUmgr test case
-        run: |
-          echo "Testing board..."
-          west twister -vv --platform native_sim/native/64 -T test/basic
-          west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0 -s sample.pytest.shell -T test/shell
-          mkdir -p zephyr-twister-out
-          mv -r "../zephyr/twister-out*/* zephyr-twister-out/
 
-      - name: Archive test artifacts
+      - name: Twister tests
+        run: scripts/get_tests_list.sh "${{steps.py-script.outputs.test_list}}"
+        shell: bash
+
+      - name: Single test artifacts
         uses: actions/upload-artifact@v4
         continue-on-error: true
         if: ${{ always() }}
         with:
-          name: test_artifacts
-          # Relative path to project root. working-directory value is not applicable!
+          name: single_test_artifacts
+          # Relative path to project root. 
           path: |
             customer-application/twister-out*/*
-            customer-application/zephyr-twister-out/*
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 5
       
       - name: Prepare CI report summary
-        working-directory: customer-application
+        shell: bash
         if : ${{ always() }}
         run: |
           rm -rf test-summary
-          mkdir -p test-summary
-          cp twister-out/twister_suite_report.xml test-summary/samples-zephyr-1.xml
+          sudo mkdir -p test-summary
+
+      # Collect all test summary reports
+      - name: Prepare CI report summary
+        shell: python
+        if : ${{ always() }}
+        run: |
+          import os
+          import re
+          import shutil
+          regex = re.compile('twister-out.*')
+          for dir in os.listdir('.'):
+              if regex.match(dir):
+                  print(f"Found: {dir}")
+                  shutil.copyfile(os.path.join(dir, "twister_suite_report.xml"), os.path.join("test-summary", f"twister_suite_report{dir.split('-out')[1]}.xml"))
 
       - name: Archive test summary artifacts
         uses: actions/upload-artifact@v4
         continue-on-error: true
         if: ${{ always() }}
         with:
-          name: summary_artifacts
-          # Relative path to project root. working-directory value is not applicable!
+          name: summary_test_artifacts
+          # Relative path to project root. 
           path: |
             customer-application/test-summary
           if-no-files-found: error
