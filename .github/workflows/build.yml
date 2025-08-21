@@ -25,7 +25,11 @@ on:
         description: Tests scope to run
         required: false
         default: repo
-        type: string
+        type: choice
+        options:
+          - repo
+          - integration
+          - unit
     
 env:
   RUNNER_LABEL: self-hosted
