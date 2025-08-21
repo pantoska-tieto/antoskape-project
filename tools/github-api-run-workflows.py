@@ -1,8 +1,12 @@
 import requests
 import json
+import os
+from dotenv import load_dotenv, dotenv_values
 
 # Global params
 url = "https://api.github.com/repos/pantoska-tieto/antoskape-project/actions/workflows/build.yml/dispatches"
+# Load environment variables from .env file
+load_dotenv()
 
 def run_workflows(runner_label=None, board_target=None, device_serial=None, tests_target=None):
     """Run remote Github workflows action
@@ -18,7 +22,7 @@ def run_workflows(runner_label=None, board_target=None, device_serial=None, test
     })
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "Bearer <token>"
+        "Authorization": f"Bearer {os.getenv('GITHUB_ACCESS_TOKEN')}"
     }
     try:
         response = requests.request("POST", url, headers=headers, data=payload)

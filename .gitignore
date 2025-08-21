@@ -3,3 +3,4 @@ sources/**
 **/twister-out/
 .vscode/
 .qodo/
+.env
