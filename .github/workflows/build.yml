@@ -152,7 +152,7 @@ jobs:
             sudo mkdir -p test-summary
 
       # Collect all test summary reports
-      - name: Prepare CI report summary
+      - name: Copy files to CI report summary
         shell: python
         if : ${{ always() }}
         run: |
