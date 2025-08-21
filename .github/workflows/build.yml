@@ -127,13 +127,13 @@ jobs:
 
       # Twister tests section
       - name: Make script executable
-        run: chmod +x scripts/get_tests_list.sh
+        run: chmod +x .github/scripts/get_tests_list.sh
         shell: bash
 
       - name: Twister tests
         shell: bash
         run: |
-            PLATFORM=${{ env.BOARD_TARGET }} DEVICE_SERIAL=${{ env.DEVICE_SERIAL }} scripts/get_tests_list.sh "${{steps.py-script.outputs.test_list}}"
+            PLATFORM=${{ env.BOARD_TARGET }} DEVICE_SERIAL=${{ env.DEVICE_SERIAL }} .github/scripts/get_tests_list.sh "${{steps.py-script.outputs.test_list}}"
 
       - name: Single test artifacts
         uses: actions/upload-artifact@v4
