@@ -6,6 +6,7 @@ import pytest
 import time
 from twister_harness import Shell
 from twister_harness import DeviceAdapter
+import os
 
 # Initiate variables
 env_ssid = os.getenv('SSID')
