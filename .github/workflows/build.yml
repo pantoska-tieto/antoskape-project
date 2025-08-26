@@ -36,6 +36,10 @@ env:
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
   DEVICE_SERIAL: /dev/ttyUSB0
   TESTS_TARGET: repo
+  # Environment variables from Github secrets
+  SSID: ${{ secrets.PANT_SSID }}
+  SSID_PWD: ${{ secrets.PANT_SSID_PW }}
+  GIT_TOKEN: ${{ secrets.PANT_TOKEN }}
 
 jobs:
   process-runner:

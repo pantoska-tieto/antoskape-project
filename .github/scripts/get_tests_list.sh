@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # Usage examples:
-#  1) .github/scripts/get_tests_list.sh test/basic samples/basic/blinky
-#  2) .github/scripts/get_tests_list.sh "test/basic samples/basic/blinky"
+#  1) .github/scripts/get_tests_list.sh tests/basic samples/basic/blinky
+#  2) .github/scripts/get_tests_list.sh "tests/basic samples/basic/blinky"
 #  3) .github/scripts/get_tests_list.sh tests.txt   # file with one test per line
 
 if [[ $# -lt 1 ]]; then
