@@ -34,7 +34,7 @@ def test_wifi_connect(shell: Shell):
             try:
                 lines = shell.exec_command("wifi status")
                 response = shell.get_filtered_output(lines)
-                if any([f"SSID: {{env_ssid}}" in line for line in response]):
+                if any([f"SSID: {env_ssid}" in line for line in response]):
                     return True
             except TwisterHarnessTimeoutException:
                 print("Timeout waiting for wifi status expired...")
