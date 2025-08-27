@@ -9,8 +9,8 @@ from twister_harness import DeviceAdapter
 import os
 
 # Initiate variables
-env_ssid = os.getenv('SSID')
-env_ssid_passwd = os.getenv('SSID_PWD')
+env_ssid = os.environ["SSID"]
+env_ssid_passwd = os.environ["SSID_PWD"]
 print(f"pantoska SSID: {env_ssid}")
 
 
