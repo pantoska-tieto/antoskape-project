@@ -10,15 +10,8 @@ import os
 
 # Initiate variables
 # Get the path of the runner file
-env_file = os.getenv("GITHUB_ENV") 
-with open(env_file, "r") as env_file:
-    env_content = env_file.readlines()
-    if any("SSID" in line for line in env_content):
-        env_ssid = os.environ["SSID"]
-    if any("SSID_PWD" in line for line in env_content):
-        env_ssid_passwd = os.environ["SSID_PWD"]
-print(f"pantoska SSID: {env_ssid}")
-
+env_ssid = "Razus13932"
+env_ssid_passwd = "12345678"
 
 @pytest.mark.dependency(name="scan")
 def test_wifi_scan(dut: DeviceAdapter, shell: Shell):
