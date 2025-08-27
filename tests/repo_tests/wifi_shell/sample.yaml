@@ -1,0 +1,19 @@
+common:
+  harness: net
+  tags:
+    - net
+    - wifi
+sample:
+  description: Test wifi driver and APIs functionality
+  name: WiFi sample app
+tests:
+  sample.net.wifi.esp32:
+    harness: pytest
+    platform_allow:
+      - esp32s3_devkitc/esp32s3/procpu
+      - esp32_devkitc/esp32/procpu
+      - esp32s2_saola
+      - esp32c3_devkitm
+      - esp32s3_devkitm/esp32s3/procpu
+      - esp8684_devkitm
+      - esp32c6_devkitc/esp32c6/hpcore
