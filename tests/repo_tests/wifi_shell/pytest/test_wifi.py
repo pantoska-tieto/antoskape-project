@@ -13,9 +13,8 @@ import os
 env_file = os.getenv("GITHUB_ENV")
 print(f"pantoska GITHUB_ENV: {env_file}")
 with open(env_file, "r") as env_file:
-    print("env file !!!\n")
-    print(env_file)
     env_content = env_file.readlines()
+    print(f"env file: !!!\n{env_content}")
     if any("SSID" in line for line in env_content):
         env_ssid = os.environ["SSID"]
     if any("SSID_PWD" in line for line in env_content):
