@@ -5,9 +5,11 @@ Pytest fixture file for
 """
 import pytest
 import json
+import os
 
 
-@pytest.fixture
-def get_secrets():
-    with open('../vars.json', 'r') as f:
+@pytest.fixture(scope="module")
+def get_secrets(request):
+    # Root path - pytest.ini location
+    with open(os.path.join(request.config.rootpath, "vars.json"), "r") as f:
         return json.load(f)

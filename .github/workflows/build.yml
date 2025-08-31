@@ -109,7 +109,7 @@ jobs:
       - name: Create json file with secrets variables
         shell: bash
         run: |
-            printf '%s\n' '$SECRETS_JSON' > vars.json
+            echo $SECRETS_JSON > vars.json
             ls -la
             cat vars.json
 
