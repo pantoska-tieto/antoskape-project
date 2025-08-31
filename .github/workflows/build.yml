@@ -36,10 +36,7 @@ env:
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
   DEVICE_SERIAL: /dev/ttyUSB0
   TESTS_TARGET: repo
-  # Environment variables from Github secrets
-  SSID: ${{ secrets.PANT_SSID }}
-  SSID_PWD: ${{ secrets.PANT_SSID_PW }}
-  GIT_TOKEN: ${{ secrets.PANT_TOKEN }}
+  SECRETS_JSON: ${{ toJSON(secrets) }}
 
 jobs:
   process-runner:
@@ -103,10 +100,18 @@ jobs:
             rm -rf ../.west
             west init -l .
             west update -o=--depth=1 -n
+            west blobs fetch hal_espressif
 
       - name: Create text file with tests scope
         shell: bash
-        run: python .github/scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }} 
+        run: python .github/scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }}
+
+      - name: Create json file with secrets variables
+        shell: bash
+        run: |
+            echo $SECRETS_JSON > vars.json
+            ls -la
+            cat vars.json
 
       - name: Get tests list
         shell: python
