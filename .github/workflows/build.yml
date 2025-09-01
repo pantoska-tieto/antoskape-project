@@ -103,6 +103,12 @@ jobs:
             west init -l .
             west update -o=--depth=1 -n
             west blobs fetch hal_espressif
+            
+      # Install lib extras for testing
+      - name: Install lib extras
+        shell: bash
+        run: |
+            sudo apt install -y iperf
 
       # Install Python extras for testing
       - name: Install Python extra packages

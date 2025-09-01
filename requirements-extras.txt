@@ -2,4 +2,4 @@
 # These are installed with: pip install -r requirements-extras.txt
 
 # wifi zperf testcases
-iperf
+pytest-asyncio
