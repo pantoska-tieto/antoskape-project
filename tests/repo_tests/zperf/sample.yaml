@@ -11,6 +11,8 @@ sample:
 tests:
   sample.net.zperf:
     harness: pytest
+    harness_config:
+      pytest_dut_scope: module
     platform_allow: 
       - qemu_x86
       - esp32s3_devkitc/esp32s3/procpu

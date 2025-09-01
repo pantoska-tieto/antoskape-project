@@ -8,38 +8,37 @@ from twister_harness import DeviceAdapter
 import logging
 import re
 import sys
+import os
+from pathlib import Path
+
 
 logger = logging.getLogger(__name__)
-# setting path
-sys.path.append("../../../test")
-from test.tools import tools as tools
+# setting path for tools module
+_p = Path(os.path.abspath(__file__)).parents[3]
+sys.path.append(f"{str(_p)}/tests")
+from tools import tools
 
 
-@pytest.mark.dependency(name="connect_wifi")
+@pytest.mark.dependency(name="connect_wifi", scope="module")
 def test_wifi_connect(wifi_connect, shell: Shell):
-    logger.info("Testcase: check data transport with zperf tool:")
-    if wifi_connect:
-        logger.info("Wifi connection established, starting zperf test...")
-    else:
-        pytest.skip("WiFi connection could not be established, skipping zperf test.")
+    logger.info("Connect to wifi network.")
+    assert wifi_connect, "WiFi connection could not be established, skipping zperf test."
+    logger.info("Wifi connection established, starting zperf test...")
 
+@pytest.mark.dependency(depends=["connect_wifi"], scope="module")
+def test_udp_from_runner_to_dut(request, dut: DeviceAdapter, shell: Shell):
+    config = request.config
+    dut_ip = config.getini("dut_ip_address")
 
-@pytest.mark.dependency(depends=["connect_wifi"])
-def test_zperf_communication(shell: Shell):
-    logger.info("Testcase: check network communication ESP32 -> host runner.")
-    # Start iperf server on Raspi
-    logger.info("Start iperf server listening...")
-    out, err = tools.run_cmd("iperf -s -l 1K -B 192.168.1.199")
-    _r = re.search("Server listening on TCP port", out)
-    if _r:
-        logger.info(
-            f"Iperf server is listening for data..."
-        )
-    else:
-        raise Exception("Iperf server could not be started!")
+    logger.info("Testcase: check UDP communication host runner -> DUT.")
+    # Initiate UDP port on DUT
+    lines = shell.exec_command("zperf udp download 5001")
 
-    # Send data from ESP32 to Raspi
-    lines = shell.exec_command("zperf tcp upload 192.168.1.199 5001 10 1K 5M")
-    lines = dut.readlines_until("Rate", timeout=30)
-    assert any("Upload completed!" in l for l in lines), "Data transfer from UUT to host runner failed!"
-    logger.info("Network communication ESP32 -> host runner succeeded.")  
+    # Send UDP packets from host runner
+    logger.info("Start UDP packets upload with iperf tool...")
+    _out, _err, _ret = tools.run_cmd(["iperf", "-l", "1K", "-u", "-c", f"{dut_ip}", "-b", "1M"])
+
+    # Read response message from DUT
+    lines = dut.readlines_until("rate", timeout=30)
+    assert any("received packets" in l for l in lines), "UDP packets were not received on DUT!"
+    logger.info("UDP packets were received successfully on DUT.")     

@@ -2,8 +2,10 @@
 Tools for testing
 
 """
+import pytest
 import logging
 import subprocess
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -17,11 +19,16 @@ def run_cmd(cmd):
         """
         logger.info(f"CLI command to execute: {cmd}.")
         try:
-            p = subprocess.Popen(
-                cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
-            )
-            out, err = p.communicate()
+            res = subprocess.run(cmd, capture_output=True, text=True)
             # Return output from command (byte string to string format)
-            return out.decode("utf-8"), err.decode("utf-8")
+            return res.stdout, res.stderr, res.returncode
         except Exception as e:
             logger.error(f"[Error] Failure during CLI command execution: {str(e)}.")
+
+def search_pattern(data, regex):
+    for line in data.split("\n"):
+        _r = re.match(regex, line)
+        if _r:
+            return True
+            break
+    return False 
