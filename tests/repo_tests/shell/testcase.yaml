@@ -15,13 +15,18 @@ common:
 tests:
   sample.pytest.shell:
     harness: pytest
+    harness_config:
+      pytest_dut_scope: session
   sample.pytest.shell.vt100_colors_off:
     harness: pytest
     extra_configs:
       - CONFIG_SHELL_VT100_COLORS=n
+    harness_config:
+      pytest_dut_scope: session
   sample.harness.shell:
     harness: shell
     harness_config:
+      pytest_dut_scope: session
       shell_commands: &kernel_commands
         - command: "kernel cycles"
           expected: "cycles: .* hw cycles"
@@ -34,3 +39,4 @@ tests:
       - CONFIG_SHELL_VT100_COLORS=n
     harness_config:
       shell_commands: *kernel_commands
+      pytest_dut_scope: session

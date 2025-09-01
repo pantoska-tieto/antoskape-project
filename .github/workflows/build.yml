@@ -36,6 +36,7 @@ env:
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
   DEVICE_SERIAL: /dev/ttyUSB0
   TESTS_TARGET: repo
+  # Pass all secrets as json to pytest
   SECRETS_JSON: ${{ toJSON(secrets) }}
 
 jobs:
@@ -88,6 +89,7 @@ jobs:
           INPUT_DEVICE_SERIAL: ${{ github.event.inputs.device_serial }}
           INPUT_TESTS_TARGET: ${{ github.event.inputs.tests_target }}
       
+      # Initiate Zephyr environment
       - name: Initialize
         shell: bash
         run: |
@@ -102,17 +104,24 @@ jobs:
             west update -o=--depth=1 -n
             west blobs fetch hal_espressif
 
+      # Install Python extras for testing
+      - name: Install Python extra packages
+        shell: bash
+        run: pip install -r requirements-extras.txt
+
+      # Generate testcase paths to run with twister
       - name: Create text file with tests scope
         shell: bash
         run: python .github/scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }}
 
+      # Pass secrets into json file
       - name: Create json file with secrets variables
         shell: bash
         run: |
             echo $SECRETS_JSON > vars.json
-            ls -la
             cat vars.json
 
+      # Put list of testcases into output variable for shell script usage
       - name: Get tests list
         shell: python
         id: py-script
@@ -144,6 +153,7 @@ jobs:
         run: |
             PLATFORM=${{ env.BOARD_TARGET }} DEVICE_SERIAL=${{ env.DEVICE_SERIAL }} .github/scripts/get_tests_list.sh "${{steps.py-script.outputs.test_list}}"
 
+      # Archive all test artifacts
       - name: Single test artifacts
         uses: actions/upload-artifact@v4
         continue-on-error: true
@@ -157,6 +167,7 @@ jobs:
           if-no-files-found: error
           retention-days: 5
       
+      # Prepare test summary report folder
       - name: Prepare CI report summary
         shell: bash
         if : ${{ always() }}
@@ -164,7 +175,7 @@ jobs:
             rm -rf test-summary
             sudo mkdir -p test-summary
 
-      # Collect all test summary reports
+      # Collect all test summary reports into one folder
       - name: Copy files to CI report summary
         shell: python
         if : ${{ always() }}
@@ -178,6 +189,7 @@ jobs:
                 print(f"Found: {dir}")
                 shutil.copyfile(os.path.join(dir, "twister_suite_report.xml"), os.path.join("test-summary", f"twister_suite_report{dir.split('-out')[1]}.xml"))
 
+      # Archive test summary report
       - name: Archive test summary artifacts
         uses: actions/upload-artifact@v4
         continue-on-error: true
