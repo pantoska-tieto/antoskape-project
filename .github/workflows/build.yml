@@ -108,7 +108,7 @@ jobs:
       - name: Install lib extras
         shell: bash
         run: |
-            sudo apt install -y iperf
+            sudo apt-get install -y iperf
 
       # Install Python extras for testing
       - name: Install Python extra packages
