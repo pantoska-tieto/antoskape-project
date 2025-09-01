@@ -1,0 +1,18 @@
+common:
+  tags:
+    - net
+    - zperf
+  platform_exclude:
+    - sam_e70_xplained/same70q21
+  min_ram: 64
+sample:
+  description: Network performance measurement tool for Zephyr
+  name: zperf
+tests:
+  sample.net.zperf:
+    harness: pytest
+    harness_config:
+      pytest_dut_scope: module
+    platform_allow: 
+      - qemu_x86
+      - esp32s3_devkitc/esp32s3/procpu

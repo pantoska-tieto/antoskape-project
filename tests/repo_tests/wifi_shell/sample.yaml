@@ -9,6 +9,8 @@ sample:
 tests:
   sample.net.wifi.esp32:
     harness: pytest
+    harness_config:
+      pytest_dut_scope: session
     platform_allow:
       - esp32s3_devkitc/esp32s3/procpu
       - esp32_devkitc/esp32/procpu
