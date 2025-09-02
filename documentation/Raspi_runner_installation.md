@@ -24,7 +24,7 @@ tar xzf ./actions-runner-linux-x64-2.305.0.tar.gz
 2\. When download is complete, configure the runner with your username, repo details and GitHub token provided in GitHub repository settings (where you are setting up the runner):
 
 ```
-./config.sh --url https://github.com/your-username/your-repo --token YOUR_RUNNER_TOK
+./config.sh --url https://github.com/your-username/your-repo --token YOUR_RUNNER_TOKEN
 ```
 
 3\. Start the runner (without 'sudo' in command!):
