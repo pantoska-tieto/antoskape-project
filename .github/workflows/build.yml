@@ -69,7 +69,7 @@ jobs:
       run:
         working-directory: customer-application
     container:
-      image: zephyrprojectrtos/ci:main-arm64
+      image: zephyrprojectrtos/ci:v0.28.4-arm64
       options: --device=/dev/ttyUSB0
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
