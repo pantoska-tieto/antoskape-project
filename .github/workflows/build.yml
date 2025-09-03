@@ -152,10 +152,6 @@ jobs:
         run: west flash
 
       # Twister tests section
-      - name: Make script executable
-        run: chmod +x .github/scripts/get_tests_list.sh
-        shell: bash
-
       - name: Twister tests
         shell: bash
         run: |

@@ -1,8 +1,13 @@
 import argparse
 import logging
 import subprocess
+import os
+from pathlib import Path
 
+# Setup workspace environment
 logger = logging.getLogger(__name__)
+_p = Path(os.path.abspath(__file__)).parents[2]
+os.chdir(_p)
 
 def define_args():
     """Define CLI arguments set
