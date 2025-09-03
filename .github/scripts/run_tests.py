@@ -7,7 +7,7 @@ from pathlib import Path
 # Setup workspace environment
 logger = logging.getLogger(__name__)
 _p = Path(os.path.abspath(__file__)).parents[2]
-os.chdir(_p)
+os.chdir(os.path.join(_p))
 
 def define_args():
     """Define CLI arguments set
@@ -60,10 +60,11 @@ def run_cmd(cmd):
 if __name__ == "__main__":
     parser = define_args()
     args = parser.parse_args()
+    print(os.getcwd())
     if args.test_list and args.test_list != "":
         with open(args.test_list, "r") as file:
             tests = file.readlines()
             logger.info(f"Selected tests to run:\n")
             [logger.info(t.replace("\n", "")) for t in tests]
-        for line in tests:
-            run_cmd(f'west twister -vv --platform {args.platform} -j 1 --device-testing --device-serial {args.device_serial} --west-flash --flash-before -T {line.replace("\n", "")}')
+            for line in tests:
+                run_cmd(f'west twister -vv --platform {args.platform} -j 1 --device-testing --device-serial {args.device_serial} --west-flash --flash-before -T {line.replace("\n", "")}')
