@@ -11,7 +11,7 @@ on:
       runner_label:
         description: Label of the runner to execute the job
         required: true
-        default: self-hosted
+        default: raspberrypi
         type: string
       board_target:
         description: Target board for the build
@@ -28,11 +28,15 @@ on:
         required: false
         type: string
       test_pattern:
-        description: Pattern to match demanded tests (regex)
+        description: Pattern to filter specific tests (regex)
         required: false
         type: string
       pytest_args:
         description: Arguments to the pytest subprocess (extend YAML config)
+        required: false
+        type: string
+      test_scenario:
+        description: Test suite scenario to run
         required: false
         type: string
       tests_target:
@@ -48,20 +52,21 @@ on:
           - zephyr(all tests)
     
 env:
-  RUNNER_LABEL: self-hosted
+  RUNNER_LABEL: raspberrypi
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
   DEVICE_SERIAL: /dev/ttyUSB0
   TESTS_TARGET: app/repo
-  TEST_TAG: ""
-  TEST_PATTERN: ""
-  PYTEST_ARGS: ""
+  TEST_TAG: N/A
+  TEST_PATTERN: N/A
+  PYTEST_ARGS: N/A
+  TEST_SCENARIO: N/A
   # Pass all secrets as json to pytest
   SECRETS_JSON: ${{ toJSON(secrets) }}
 
 jobs:
   process-runner:
     name: Get workflows runner 
-    runs-on: self-hosted
+    runs-on: raspberrypi
     outputs:
       label: ${{ steps.runner-label.outputs.label }}
     # Set runner if no workflow_dispatch value is invoked  
@@ -105,6 +110,7 @@ jobs:
             echo "TEST_TAG=${INPUT_TEST_TAG:-$TEST_TAG}" >> $GITHUB_ENV
             echo "TEST_PATTERN=${INPUT_TEST_PATTERN:-$TEST_PATTERN}" >> $GITHUB_ENV
             echo "PYTEST_ARGS=${INPUT_PYTEST_ARGS:-$PYTEST_ARGS}" >> $GITHUB_ENV
+            echo "TEST_SCENARIO=${INPUT_TEST_SCENARIO:-$TEST_SCENARIO}" >> $GITHUB_ENV
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
           INPUT_BOARD_TARGET: ${{ github.event.inputs.board_target }}
@@ -113,6 +119,7 @@ jobs:
           INPUT_TEST_TAG: ${{ github.event.inputs.test_tag }}
           INPUT_TEST_PATTERN: ${{ github.event.inputs.test_pattern }}
           INPUT_PYTEST_ARGS: ${{ github.event.inputs.pytest_args }}
+          INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
       
       # Initiate Zephyr environment
       - name: Initialize
@@ -140,10 +147,18 @@ jobs:
         shell: bash
         run: pip install -r requirements-extras.txt
 
-      # Generate testcase paths to run with twister
+      # Generate testcase paths to run with twister command
       - name: Create text file with tests scope
         shell: bash
+        # No test scenario is filtered
+        if : ${{ env.TEST_SCENARIO == 'N/A' || '' }} 
         run: python .github/scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }}
+
+      - name: Create text file with tests scope
+        shell: bash
+        # Specific test scenario is filtered
+        if : ${{ env.TEST_SCENARIO != 'N/A' || '' }} 
+        run: python .github/scripts/get_tests_list.py --tests_scenario ${{ env.TESTS_TARGET }}
 
       # Pass secrets into json file
       - name: Create json file with secrets variables
@@ -181,8 +196,9 @@ jobs:
             python .github/scripts/run_tests.py --platform ${{ env.BOARD_TARGET }} \
             --device_serial ${{ env.DEVICE_SERIAL }} \
             --tag ${{ env.TEST_TAG }} \
-            --test-pattern ${{ env.TEST_PATTERN }} \
-            --pytest-args ${{ env.PYTEST_ARGS }} \
+            --test_pattern ${{ env.TEST_PATTERN }} \
+            --pytest_args ${{ env.PYTEST_ARGS }} \
+            --scenario ${{ env.TEST_SCENARIO }} \
             --test_list ${{steps.py-script.outputs.test_list}} \
       # Archive all test artifacts
       - name: Single test artifacts

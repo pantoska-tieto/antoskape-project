@@ -41,13 +41,25 @@ def define_args():
         "--tag",
         required=False,
         default=None,
-        help="Serial port for connecting DUT",
+        help="Test tags to filter tests",
     )
     parser.add_argument(
-        "--arguments",
+        "--test_pattern",
         required=False,
         default=None,
-        help="Serial port for connecting DUT",
+        help="To filter tests matching the specified pattern",
+    )
+    parser.add_argument(
+        "--pytest_args",
+        required=False,
+        default=None,
+        help="Arguments to the pytest subprocess",
+    )
+    parser.add_argument(
+        "--scenario",
+        required=False,
+        default=None,
+        help="Test suite scenario to run",
     )
     return parser
 
@@ -70,11 +82,24 @@ def run_cmd(cmd):
 if __name__ == "__main__":
     parser = define_args()
     args = parser.parse_args()
+    # Extra arguments to be passed to west twister command
+    arguments = ""
+    if args.tag and (args.tag != "N/A" or args.tag != ""):
+        arguments += f" --tag {args.tag}"
+    if args.test_pattern and (args.test_pattern != "N/A" or args.test_pattern != ""):
+        arguments += f" --test-pattern {args.test_pattern}"
+    if args.pytest_args and (args.pytest_args != "N/A" or args.pytest_args != ""):
+        arguments += f" --pytest-args {args.pytest_args}"
+    if args.scenario and (args.scenario != "N/A" or args.scenario != ""):
+        arguments += f" --scenario {args.scenario}"
+
     if args.test_list and args.test_list != "":
         with open(args.test_list, "r") as file:
             tests = file.readlines()
             print(f"Selected tests to run:\n")
             [print(t.replace("\n", "")) for t in tests]
         for line in tests:
-            out, err, code = run_cmd(f'west twister -vv --platform {args.platform} -j 1 --device-testing --device-serial {args.device_serial} --west-flash --flash-before -T {line.replace("\n", "")}')
+            out, err, code = run_cmd(f'west twister -vv --platform {args.platform} -j 1 --device-testing --device-serial {args.device_serial} --west-flash --flash-before {line.replace("\n", "")}{arguments}')
             print(out)
+    else:
+         raise Exception("No test list provided!")
