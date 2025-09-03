@@ -154,7 +154,7 @@ jobs:
         if : ${{ env.TEST_SCENARIO == 'N/A' || '' }} 
         run: python .github/scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }}
 
-      - name: Create text file with tests scope
+      - name: Create text file with test scenario
         shell: bash
         # Specific test scenario is filtered
         if : ${{ env.TEST_SCENARIO != 'N/A' || '' }} 
