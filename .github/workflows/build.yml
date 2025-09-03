@@ -10,7 +10,7 @@ on:
     inputs:
       runner_label:
         description: Label of the runner to execute the job
-        required: false
+        required: true
         default: self-hosted
         type: string
       board_target:
@@ -23,21 +23,38 @@ on:
         required: false
         default: /dev/ttyUSB0
         type: string
+      test_tag:
+        description: Test TAGs to filter tests
+        required: false
+        type: string
+      test_pattern:
+        description: Pattern to match demanded tests (regex)
+        required: false
+        type: string
+      pytest_args:
+        description: Arguments to the pytest subprocess (extend YAML config)
+        required: false
+        type: string
       tests_target:
         description: Tests scope to run
         required: false
-        default: repo
+        default: app/repo
         type: choice
         options:
-          - repo
-          - integration
-          - unit
+          - app/repo
+          - app/integration
+          - app/unit
+          - app(all tests)
+          - zephyr(all tests)
     
 env:
   RUNNER_LABEL: self-hosted
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
   DEVICE_SERIAL: /dev/ttyUSB0
-  TESTS_TARGET: repo
+  TESTS_TARGET: app/repo
+  TEST_TAG: ""
+  TEST_PATTERN: ""
+  PYTEST_ARGS: ""
   # Pass all secrets as json to pytest
   SECRETS_JSON: ${{ toJSON(secrets) }}
 
@@ -85,11 +102,17 @@ jobs:
             echo "BOARD_TARGET=${INPUT_BOARD_TARGET:-$BOARD_TARGET}" >> $GITHUB_ENV
             echo "DEVICE_SERIAL=${INPUT_DEVICE_SERIAL:-$DEVICE_SERIAL}" >> $GITHUB_ENV
             echo "TESTS_TARGET=${INPUT_TESTS_TARGET:-$TESTS_TARGET}" >> $GITHUB_ENV
+            echo "TEST_TAG=${INPUT_TEST_TAG:-$TEST_TAG}" >> $GITHUB_ENV
+            echo "TEST_PATTERN=${INPUT_TEST_PATTERN:-$TEST_PATTERN}" >> $GITHUB_ENV
+            echo "PYTEST_ARGS=${INPUT_PYTEST_ARGS:-$PYTEST_ARGS}" >> $GITHUB_ENV
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
           INPUT_BOARD_TARGET: ${{ github.event.inputs.board_target }}
           INPUT_DEVICE_SERIAL: ${{ github.event.inputs.device_serial }}
           INPUT_TESTS_TARGET: ${{ github.event.inputs.tests_target }}
+          INPUT_TEST_TAG: ${{ github.event.inputs.test_tag }}
+          INPUT_TEST_PATTERN: ${{ github.event.inputs.test_pattern }}
+          INPUT_PYTEST_ARGS: ${{ github.event.inputs.pytest_args }}
       
       # Initiate Zephyr environment
       - name: Initialize
@@ -155,8 +178,12 @@ jobs:
       - name: Twister tests
         shell: bash
         run: |
-            python .github/scripts/run_tests.py --platform ${{ env.BOARD_TARGET }} --device_serial ${{ env.DEVICE_SERIAL }} --test_list ${{steps.py-script.outputs.test_list}} 
-
+            python .github/scripts/run_tests.py --platform ${{ env.BOARD_TARGET }} \
+            --device_serial ${{ env.DEVICE_SERIAL }} \
+            --tag ${{ env.TEST_TAG }} \
+            --test-pattern ${{ env.TEST_PATTERN }} \
+            --pytest-args ${{ env.PYTEST_ARGS }} \
+            --test_list ${{steps.py-script.outputs.test_list}} \
       # Archive all test artifacts
       - name: Single test artifacts
         uses: actions/upload-artifact@v4
@@ -191,7 +218,9 @@ jobs:
             for dir in os.listdir('.'):
               if regex.match(dir):
                 print(f"Found: {dir}")
-                shutil.copyfile(os.path.join(dir, "twister_suite_report.xml"), os.path.join("test-summary", f"twister_suite_report{dir.split('-out')[1]}.xml"))
+                shutil.copyfile(os.path.join(dir, "twister_suite_report.xml"), \
+                os.path.join("test-summary", \
+                f"twister_suite_report{dir.split('-out')[1]}.xml"))
 
       # Archive test summary report
       - name: Archive test summary artifacts

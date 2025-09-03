@@ -1,11 +1,9 @@
 import argparse
-import logging
 import subprocess
 import os
 from pathlib import Path
 
 # Setup workspace environment
-logger = logging.getLogger(__name__)
 _p = Path(os.path.abspath(__file__)).parents[2]
 os.chdir(os.path.join(_p))
 
@@ -39,6 +37,18 @@ def define_args():
         default=None,
         help="Serial port for connecting DUT",
     )
+    parser.add_argument(
+        "--tag",
+        required=False,
+        default=None,
+        help="Serial port for connecting DUT",
+    )
+    parser.add_argument(
+        "--arguments",
+        required=False,
+        default=None,
+        help="Serial port for connecting DUT",
+    )
     return parser
 
 def run_cmd(cmd):
@@ -49,13 +59,13 @@ def run_cmd(cmd):
         :return: str err: stderr output from Popen method
         :return: str returncode: return code from Popen method
         """
-        logger.info(f"CLI command to execute: {cmd}.")
+        print(f"CLI command to execute: {cmd}.")
         try:
             res = subprocess.run(cmd, capture_output=True, text=True, shell=True)
             # Return output from command (byte string to string format)
             return res.stdout, res.stderr, res.returncode
         except Exception as e:
-            logger.error(f"Failure during CLI command execution: {str(e)}.")
+            print(f"[ERROR] Failure during CLI command execution: {str(e)}.")
 
 if __name__ == "__main__":
     parser = define_args()
@@ -63,7 +73,8 @@ if __name__ == "__main__":
     if args.test_list and args.test_list != "":
         with open(args.test_list, "r") as file:
             tests = file.readlines()
-            logger.info(f"Selected tests to run:\n")
-            [logger.info(t.replace("\n", "")) for t in tests]
+            print(f"Selected tests to run:\n")
+            [print(t.replace("\n", "")) for t in tests]
         for line in tests:
-            run_cmd(f'west twister -vv --platform {args.platform} -j 1 --device-testing --device-serial {args.device_serial} --west-flash --flash-before -T {line.replace("\n", "")}')
+            out, err, code = run_cmd(f'west twister -vv --platform {args.platform} -j 1 --device-testing --device-serial {args.device_serial} --west-flash --flash-before -T {line.replace("\n", "")}')
+            print(out)

@@ -89,7 +89,7 @@ Run a desired test case from test/ with "west twister" from workspace root direc
 - example for application added to existing workspace.
 
 ```copy
-west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0  --west-flash -T customer-application/test/shell
+west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0  --west-flash --flash-before -T customer-application/test/shell
 ```
 
 <br/>
