@@ -84,13 +84,13 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # Extra arguments to be passed to west twister command
     arguments = ""
-    if args.tag and (args.tag != "N/A" or args.tag != ""):
+    if args.tag and (args.tag != "N/A" and args.tag != ""):
         arguments += f" --tag {args.tag}"
-    if args.test_pattern and (args.test_pattern != "N/A" or args.test_pattern != ""):
+    if args.test_pattern and (args.test_pattern != "N/A" and args.test_pattern != ""):
         arguments += f" --test-pattern {args.test_pattern}"
-    if args.pytest_args and (args.pytest_args != "N/A" or args.pytest_args != ""):
+    if args.pytest_args and (args.pytest_args != "N/A" and args.pytest_args != ""):
         arguments += f" --pytest-args {args.pytest_args}"
-    if args.scenario and (args.scenario != "N/A" or args.scenario != ""):
+    if args.scenario and (args.scenario != "N/A" and args.scenario != ""):
         arguments += f" --scenario {args.scenario}"
 
     if args.test_list and args.test_list != "":
