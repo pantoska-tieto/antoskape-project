@@ -159,7 +159,7 @@ jobs:
       - name: Twister tests
         shell: bash
         run: |
-            PLATFORM=${{ env.BOARD_TARGET }} DEVICE_SERIAL=${{ env.DEVICE_SERIAL }} .github/scripts/get_tests_list.sh "${{steps.py-script.outputs.test_list}}"
+            python .github/scripts/run_tests.py --platform ${{ env.BOARD_TARGET }} --device_serial ${{ env.DEVICE_SERIAL }} --test_list ${{steps.py-script.outputs.test_list}} 
 
       # Archive all test artifacts
       - name: Single test artifacts
