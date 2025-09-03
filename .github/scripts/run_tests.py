@@ -6,6 +6,8 @@ from pathlib import Path
 
 # Setup workspace environment
 logger = logging.getLogger(__name__)
+_p = Path(os.path.abspath(__file__)).parents[2]
+os.chdir(os.path.join(_p))
 
 def define_args():
     """Define CLI arguments set
@@ -49,22 +51,19 @@ def run_cmd(cmd):
         """
         logger.info(f"CLI command to execute: {cmd}.")
         try:
-            res = subprocess.run(cmd, capture_output=True, text=True)
+            res = subprocess.run(cmd, capture_output=True, text=True, shell=True)
             # Return output from command (byte string to string format)
             return res.stdout, res.stderr, res.returncode
         except Exception as e:
             logger.error(f"Failure during CLI command execution: {str(e)}.")
 
 if __name__ == "__main__":
-    _p = Path(os.path.abspath(__file__)).parents[2]
-    os.chdir(os.path.join(_p))
     parser = define_args()
     args = parser.parse_args()
-    print(f"Current script working dir: {os.getcwd()}")
     if args.test_list and args.test_list != "":
         with open(args.test_list, "r") as file:
             tests = file.readlines()
             logger.info(f"Selected tests to run:\n")
             [logger.info(t.replace("\n", "")) for t in tests]
-            for line in tests:
-                run_cmd(f'west twister -vv --platform {args.platform} -j 1 --device-testing --device-serial {args.device_serial} --west-flash --flash-before -T {line.replace("\n", "")}')
+        for line in tests:
+            run_cmd(f'west twister -vv --platform {args.platform} -j 1 --device-testing --device-serial {args.device_serial} --west-flash --flash-before -T {line.replace("\n", "")}')
