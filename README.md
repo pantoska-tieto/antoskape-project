@@ -3,7 +3,7 @@
 This repo is representing **custom Zephyr RTOS application** for building and testing custom testcases with Pytest framework. It is using structure based on basic Zephyr example applicationn
 https://github.com/zephyrproject-rtos/example-application
 
-It is representing a typical T3 topology model in conjunction with GitHub workflows/actions and CI/CD automation process.
+It is representing a typical T2 topology model in conjunction with GitHub workflows/actions and CI/CD automation process.
 <br/>
 
 ## General description
