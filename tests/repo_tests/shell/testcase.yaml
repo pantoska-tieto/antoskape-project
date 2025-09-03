@@ -17,6 +17,7 @@ tests:
     harness: pytest
     harness_config:
       pytest_dut_scope: session
+    tags: antoska
   sample.pytest.shell.vt100_colors_off:
     harness: pytest
     extra_configs:
