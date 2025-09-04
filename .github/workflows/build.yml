@@ -11,7 +11,7 @@ on:
       runner_label:
         description: Label of the runner to execute the job
         required: true
-        default: raspberrypi
+        default: "[raspberrypi, production]"
         type: string
       board_target:
         description: Target board for the build
@@ -52,7 +52,7 @@ on:
           - zephyr(all tests)
     
 env:
-  RUNNER_LABEL: raspberrypi
+  RUNNER_LABEL: "[raspberrypi, production]"
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
   DEVICE_SERIAL: /dev/ttyUSB0
   TESTS_TARGET: app/repo
@@ -66,11 +66,28 @@ env:
 jobs:
   process-runner:
     name: Get workflows runner 
-    runs-on: raspberrypi
+    runs-on: "[raspberrypi, production]"
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        arch: [X64, ARM64]
     outputs:
       label: ${{ steps.runner-label.outputs.label }}
+      container: ${{ steps.set-container-arch.outputs.label }}      
     # Set runner if no workflow_dispatch value is invoked  
     steps:
+      - name: Set container based on runner architecture
+        id: set-container-arch
+        shell: bash
+        run: |
+            if [ ${{ matrix.arch }} == 'ARM64' ]; then
+            echo "container=zephyrprojectrtos/ci:v0.28.4-arm64" >> $GITHUB_OUTPUT
+            fi
+            if [ ${{ matrix.arch }} == 'X64' ]; then
+            echo "container=CONTAINER=zephyrprojectrtos/ci:v0.28.4-amd64" >> $GITHUB_OUTPUT
+            fi
+
       - name: Set runner label
         id: runner-label
         run: echo "label=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_OUTPUT
@@ -91,7 +108,7 @@ jobs:
       run:
         working-directory: customer-application
     container:
-      image: zephyrprojectrtos/ci:v0.28.4-arm64
+      image: ${{ needs.process-runner.outputs.container }}
       options: --device=/dev/ttyUSB0
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
