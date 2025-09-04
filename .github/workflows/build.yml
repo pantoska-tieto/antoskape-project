@@ -11,7 +11,7 @@ on:
       runner_label:
         description: Label of the runner to execute the job
         required: true
-        default: "[raspberrypi, production]"
+        default: raspberrypi5-production
         type: string
       board_target:
         description: Target board for the build
@@ -52,7 +52,7 @@ on:
           - zephyr(all tests)
     
 env:
-  RUNNER_LABEL: "[raspberrypi, production]"
+  RUNNER_LABEL: raspberrypi5-production
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
   DEVICE_SERIAL: /dev/ttyUSB0
   TESTS_TARGET: app/repo
@@ -66,7 +66,7 @@ env:
 jobs:
   process-runner:
     name: Get workflows runner 
-    runs-on: "[raspberrypi, production]"
+    runs-on: raspberrypi5-production
     strategy:
       max-parallel: 1
       fail-fast: false
@@ -74,17 +74,17 @@ jobs:
         arch: [X64, ARM64]
     outputs:
       label: ${{ steps.runner-label.outputs.label }}
-      container: ${{ steps.set-container-arch.outputs.label }}      
+      container: ${{ steps.set-container-arch.outputs.container }}      
     # Set runner if no workflow_dispatch value is invoked  
     steps:
       - name: Set container based on runner architecture
         id: set-container-arch
         shell: bash
         run: |
-            if [ ${{ matrix.arch }} == 'ARM64' ]; then
+            if [ ${{ runner.arch }} == 'ARM64' ]; then
             echo "container=zephyrprojectrtos/ci:v0.28.4-arm64" >> $GITHUB_OUTPUT
             fi
-            if [ ${{ matrix.arch }} == 'X64' ]; then
+            if [ ${{ runner.arch }} == 'X64' ]; then
             echo "container=CONTAINER=zephyrprojectrtos/ci:v0.28.4-amd64" >> $GITHUB_OUTPUT
             fi
 
