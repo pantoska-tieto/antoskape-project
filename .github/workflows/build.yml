@@ -1,4 +1,5 @@
 name: Build
+run-name: Build and Test on ${{ github.ref_name }} - by ${{ github.actor }}  on ${{ github.event.inputs.runner_label }}
 
 on:
   push:
@@ -67,11 +68,6 @@ jobs:
   process-runner:
     name: Get workflows runner 
     runs-on: raspberrypi5-production
-    strategy:
-      max-parallel: 1
-      fail-fast: false
-      matrix:
-        arch: [X64, ARM64]
     outputs:
       label: ${{ steps.runner-label.outputs.label }}
       container: ${{ steps.set-container-arch.outputs.container }}      
