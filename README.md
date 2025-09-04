@@ -83,14 +83,18 @@ west flash
 ```
 
 <br/>
+Building, flashing and testing jobs can be automated by GitHub workflow process and executed on GitHub runners - machines that execute jobs. Besides the GitHub-hosted runners the users can host own runners/machines and customize the environment used to run jobs - self-hosted runners. This project used self-hosted runners by default. For more details see <a href="documentation/Raspi_runner_installation.md">Raspi_runner_installation</a> guide.
+<br/>
 
 ## Testing
-Run a desired test case from test/ with "west twister" from workspace root directory with following command (example for ESP32 S3 Devkitc board)
+Run a desired test case from tests/ with "west twister" from workspace root directory with following command (example for ESP32 S3 Devkitc board)
 - example for application added to existing workspace.
 
 ```copy
-west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0  --west-flash --flash-before -T customer-application/test/shell
+west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0  --west-flash --flash-before -T customer-application/tests/shell
 ```
+<br/>
+Tests can be triggered from GitHub Actions workflows automatically by workflow .yaml file. This file contains also workflow_dispatch configuration which is used to trigger the workflow manually.  For more details see <a href="documentation/Github_workflow_dispatch_panel.md">Github_workflow_dispatch_panel</a> guide.
 
 <br/>
 
