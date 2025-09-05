@@ -42,10 +42,10 @@ def get_test_paths(scope):
         case "app/unit":
             scope = "unit"
             target = "tests/unit_tests"
-        case "app(all tests)":
+        case "app_all_tests":
             scope = "application"
             target = "tests"
-        case "zephyr(all tests)":
+        case "zephyr_all_tests":
             scope = "zephyr"
             target = "../zephyr/tests"
     return scope, target

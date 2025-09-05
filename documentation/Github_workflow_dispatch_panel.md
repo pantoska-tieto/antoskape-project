@@ -92,8 +92,8 @@ Workflow dispatch panel allows to use 4 types of inputs: `string`, `choice`, `bo
           <code>app/repo -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/repo</code><br/>
           <code>app/integration -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/integration</code><br/>
           <code>app/unit -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/unit</code><br/>
-          <code>app(all tests) -&gt; __w/antoskape-project/antoskape-project/customer-application/tests</code><br/>
-          <code>zephyr(all tests) -&gt; __w/antoskape-project/antoskape-project/zephyr/tests</code></td><td>Target folder where all test cases are selected to run with twister command. This path is assigned to "--testsuite-root" argument if Test suite scenario is filled in previous parameter. Only 1 single string is allowed!<br><br><strong>[CHOICE]</strong><br><strong>Default = app/repo</strong><br><strong>Example = app/unit</strong></td></tr>
+          <code>app_all_tests -&gt; __w/antoskape-project/antoskape-project/customer-application/tests</code><br/>
+          <code>zephyr_all_tests -&gt; __w/antoskape-project/antoskape-project/zephyr/tests</code></td><td>Target folder where all test cases are selected to run with twister command. This path is assigned to "--testsuite-root" argument if Test suite scenario is filled in previous parameter. Only 1 single string is allowed!<br><br><strong>[CHOICE]</strong><br><strong>Default = app/repo</strong><br><strong>Example = app/unit</strong></td></tr>
       </tbody>
 </table>
 <br/>
