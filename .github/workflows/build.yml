@@ -61,10 +61,10 @@ env:
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
   DEVICE_SERIAL: /dev/ttyUSB0
   TESTS_TARGET: "app/repo"
-  TEST_TAG: ""
-  TEST_PATTERN: ""
-  PYTEST_ARGS: ""
-  TEST_SCENARIO: ""
+  TEST_TAG: N/A
+  TEST_PATTERN: N/A
+  PYTEST_ARGS: N/A
+  TEST_SCENARIO: N/A
   # Pass all secrets as json to pytest
   SECRETS_JSON: ${{ toJSON(secrets) }}
 
@@ -168,19 +168,19 @@ jobs:
       - name: Create test list with tests scope
         shell: bash
         # No test scenario is filtered
-        if : ${{ (env.TEST_SCENARIO == '')  && ( env.TEST_PATTERN == '') }} 
+        if : ${{ (env.TEST_SCENARIO == 'N/A' || '')  && ( env.TEST_PATTERN == 'N/A' || '') }} 
         run: python .github/scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }}
 
       - name: Create test list with test scenario
         shell: bash
         # Specific test scenario is filtered
-        if : ${{ (env.TEST_SCENARIO != '') }} 
+        if : ${{ (env.TEST_SCENARIO != 'N/A' || '') }} 
         run: python .github/scripts/get_tests_list.py --tests_scenario ${{ env.TESTS_TARGET }}
 
       - name: Create test list with test pattern
         shell: bash
         # Specific test scenario is filtered
-        if : ${{ (env.TEST_PATTERN != '') }} 
+        if : ${{ (env.TEST_PATTERN != 'N/A' || '') }} 
         run: python .github/scripts/get_tests_list.py --tests_pattern ${{ env.TESTS_TARGET }}        
 
       # Pass secrets into json file
