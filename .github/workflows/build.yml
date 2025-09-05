@@ -26,18 +26,22 @@ on:
       test_tag:
         description: Test TAGs to filter tests
         required: false
+        default: ""
         type: string
       test_pattern:
         description: Pattern to filter specific tests (regex)
         required: false
+        default: ""
         type: string
       pytest_args:
         description: Arguments to the pytest subprocess (extend YAML config)
         required: false
+        default: ""
         type: string
       test_scenario:
         description: Test suite scenario to run
         required: false
+        default: ""
         type: string
       tests_target:
         description: Tests scope to run
