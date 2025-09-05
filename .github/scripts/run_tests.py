@@ -87,7 +87,7 @@ if __name__ == "__main__":
     if args.tag and (args.tag != "N/A" and args.tag != ""):
         arguments += f" --tag {args.tag} --force-tags"
     if args.test_pattern and (args.test_pattern != "N/A" and args.test_pattern != ""):
-        arguments += f" --test-pattern='{args.test_pattern}'"
+        arguments += f" --test-pattern {args.test_pattern}"
     if args.pytest_args and (args.pytest_args != "N/A" and args.pytest_args != ""):
         arguments += f" --pytest-args {args.pytest_args}"
     if args.scenario and (args.scenario != "N/A" and args.scenario != ""):
