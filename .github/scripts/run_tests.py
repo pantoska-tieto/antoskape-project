@@ -75,9 +75,6 @@ def run_cmd(cmd):
         try:
             res = subprocess.run(cmd, capture_output=True, text=True, shell=True)
             # Return output from command (byte string to string format)
-            print(f"Command subprocess.run = stdout: {res.stdout}")
-            print(f"Command subprocess.run = stderr: {res.stderr}")
-            print(f"Command subprocess.run = returncode: {res.returncode}")
             return res.stdout, res.stderr, res.returncode
         except Exception as e:
             print(f"[ERROR] Failure during CLI command execution: {str(e)}.")
@@ -90,7 +87,7 @@ if __name__ == "__main__":
     if args.tag and (args.tag != "N/A" and args.tag != ""):
         arguments += f" --tag {args.tag} --force-tags"
     if args.test_pattern and (args.test_pattern != "N/A" and args.test_pattern != ""):
-        arguments += f" --test-pattern {args.test_pattern}"
+        arguments += f" --test-pattern='{args.test_pattern}'"
     if args.pytest_args and (args.pytest_args != "N/A" and args.pytest_args != ""):
         arguments += f" --pytest-args {args.pytest_args}"
     if args.scenario and (args.scenario != "N/A" and args.scenario != ""):
@@ -104,5 +101,8 @@ if __name__ == "__main__":
         for line in tests:
             out, err, code = run_cmd(f'west twister -vv --platform {args.platform} --device-testing --device-serial {args.device_serial} --west-flash --flash-before {line.replace("\n", "")}{arguments}')
             print(out)
+            # Show test summary reports review
+            print(err)
+            print(f"Return code from 'west twister' command through subprocess.run: {code}")
     else:
          raise Exception("No test list provided!")
