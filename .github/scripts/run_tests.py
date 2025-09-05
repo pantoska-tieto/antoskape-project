@@ -73,7 +73,7 @@ def run_cmd(cmd):
         """
         print(f"CLI command to execute: {cmd}.")
         try:
-            res = subprocess.run(cmd, capture_output=True, text=True, shell=True)
+            res = subprocess.run(cmd, capture_output=True, text=True)
             # Return output from command (byte string to string format)
             return res.stdout, res.stderr, res.returncode
         except Exception as e:
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     if args.tag and (args.tag != "N/A" and args.tag != ""):
         arguments += f" --tag {args.tag} --force-tags"
     if args.test_pattern and (args.test_pattern != "N/A" and args.test_pattern != ""):
-        arguments += f" --test-pattern='{args.test_pattern}'"
+        arguments += f" --test-pattern {args.test_pattern}"
     if args.pytest_args and (args.pytest_args != "N/A" and args.pytest_args != ""):
         arguments += f" --pytest-args {args.pytest_args}"
     if args.scenario and (args.scenario != "N/A" and args.scenario != ""):
@@ -99,7 +99,20 @@ if __name__ == "__main__":
             print(f"Selected tests to run:\n")
             [print(t.replace("\n", "")) for t in tests]
         for line in tests:
-            out, err, code = run_cmd(f'west twister -vv --platform {args.platform} --device-testing --device-serial {args.device_serial} --west-flash --flash-before {line.replace("\n", "")}{arguments}')
+            test_command = ['west', 
+                            'twister', 
+                            '-vv', 
+                            '--platform', 
+                            args.platform, 
+                            '--device-testing', 
+                            '--device-serial', 
+                            args.device_serial, 
+                            '--west-flash', 
+                            '--flash-before']
+            target_path = line.replace("\n", "").split(" ")
+            args = arguments.split(" ")
+            cmd = test_command + target_path + args
+            out, err, code = run_cmd(cmd)
             print(out)
             # Show test summary reports review
             print(err)
