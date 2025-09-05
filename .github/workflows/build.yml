@@ -1,5 +1,4 @@
 name: Build
-run-name: Build and Test on ${{ github.ref_name }} - by ${{ github.actor }}
 
 on:
   push:

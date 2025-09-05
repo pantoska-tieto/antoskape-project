@@ -87,13 +87,13 @@ Workflow dispatch panel allows to use 4 types of inputs: `string`, `choice`, `bo
                 - CONFIG_WIFI_TEST_AUTH_MODE_WPA2=y
                 - CONFIG_ESP32_WIFI_STA_AUTO_DHCPV4=y
               platform_allow:
-          - esp32_devkitc/esp32/procpu</code></td><td><p>Test scenario name to filter when running the testcase. Only 1 single string is allowed!<br><strong>Note:&nbsp;</strong><br>to find the demanded test scenario faster in search process, select the respective "Test scope to run" folder, where the scenario exists, in next option!</p><p><strong>[STRING]</strong><br><strong>Default = N/A</strong><br><strong>Example = esp.wifi.sec.wpa2</strong></p></td></tr>
+          - esp32_devkitc/esp32/procpu</code></td><td><p>Test scenario name to filter when running the testcase. Only 1 single string is allowed!<br><strong>Note:&nbsp;</strong><br>to find the demanded test scenario faster in search process, select the root-folder where the scenario exists in "Test scope to run" option.</p><p><strong>[STRING]</strong><br><strong>Default = N/A</strong><br><strong>Example = esp.wifi.sec.wpa2</strong></p></td></tr>
           <tr><td>Tests scope to run</td><td><p>Select the target folder, where the search proces looks for all test suites located there to run. Test suite is identified by existing project file prj.conf. In case the Test suite scenario parameter is used, the selected folder path is assigned to argument <strong>"--testsuite-root"</strong> in twister command and thus the looking for demanded scenarion is faster. In this case only demanded test scenario is selected to run with twister command and other test suites/test cases are ignored!</p><p>Mapping UI field -&gt; GitHub application folder (note that the native Zephyr RTOS tests in zephyr/tests/ workspace can be selected too): &nbsp;</p>
-          <code>app/repo -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/repo
-        app/integration -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/integration
-        app/unit -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/unit
-        app(all tests) -&gt; __w/antoskape-project/antoskape-project/customer-application/tests
-        zephyr(all tests) -&gt; __w/antoskape-project/antoskape-project/zephyr/tests</code></td><td>Target folder where all test cases are selected to run with twister command. This path is assigned to "--testsuite-root" argument if Test suite scenario is filled in previous parameter. Only 1 single string is allowed!<br><br><strong>[CHOICE]</strong><br><strong>Default = app/repo</strong><br><strong>Example = app/unit</strong></td></tr>
+          <code>app/repo -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/repo</code><br/>
+          <code>app/integration -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/integration</code><br/>
+          <code>app/unit -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/unit</code><br/>
+          <code>app(all tests) -&gt; __w/antoskape-project/antoskape-project/customer-application/tests</code><br/>
+          <code>zephyr(all tests) -&gt; __w/antoskape-project/antoskape-project/zephyr/tests</code></td><td>Target folder where all test cases are selected to run with twister command. This path is assigned to "--testsuite-root" argument if Test suite scenario is filled in previous parameter. Only 1 single string is allowed!<br><br><strong>[CHOICE]</strong><br><strong>Default = app/repo</strong><br><strong>Example = app/unit</strong></td></tr>
       </tbody>
 </table>
 <br/>

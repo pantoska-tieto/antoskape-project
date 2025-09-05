@@ -57,7 +57,7 @@ if __name__ == "__main__":
     # Specific test scenario is specified
     if args.tests_scenario:
         # Store option --testsuite-root to support test scenario filtering
-        with open(os.path.join(f"{scope}_tests.txt"), "w") as f:
+        with open(os.path.join(f"{args.tests_scope}_tests.txt"), "w") as f:
             f.write(f"--testsuite-root {args.tests_scenario}\n")
 
 
