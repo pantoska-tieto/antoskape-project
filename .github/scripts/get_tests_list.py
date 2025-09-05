@@ -71,5 +71,12 @@ if __name__ == "__main__":
         with open("scenario_tests.txt", "w") as f:
             f.write(f"--testsuite-root {target}\n")
 
+    # Specific test pattern is specified
+    if args.tests_pattern:
+        scope, target = get_test_paths(args.tests_pattern)
+        # Store option -s for test pattern filtering
+        with open("pattern_tests.txt", "w") as f:
+            f.write(f"-s {target}\n")
+
 
     
