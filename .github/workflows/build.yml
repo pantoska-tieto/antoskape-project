@@ -171,9 +171,9 @@ jobs:
         if : ${{ (env.TEST_SCENARIO == 'N/A' || '')  && ( env.TEST_PATTERN == 'N/A' || '') }} 
         run: python .github/scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }}
 
-      - name: Create test list with test scenario
+      - name: Create test list with test scenario/test pattern
         shell: bash
-        # Specific test scenario is filtered
+        # Specific test scenario/pattern is filtered
         if : ${{ (env.TEST_SCENARIO != 'N/A' || '')  || ( env.TEST_PATTERN != 'N/A' || '') }} 
         run: python .github/scripts/get_tests_list.py --tests_scenario_pattern ${{ env.TESTS_TARGET }}      
 
