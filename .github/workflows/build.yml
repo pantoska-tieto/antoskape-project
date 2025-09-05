@@ -164,7 +164,7 @@ jobs:
         shell: bash
         run: pip install -r requirements-extras.txt
 
-      # Generate testcase paths to run with twister command
+      # Generate tests paths to run with twister command
       - name: Create test list with tests scope
         shell: bash
         # No test scenario is filtered
@@ -174,14 +174,8 @@ jobs:
       - name: Create test list with test scenario
         shell: bash
         # Specific test scenario is filtered
-        if : ${{ (env.TEST_SCENARIO != 'N/A' || '') }} 
-        run: python .github/scripts/get_tests_list.py --tests_scenario ${{ env.TESTS_TARGET }}
-
-      - name: Create test list with test pattern
-        shell: bash
-        # Specific test scenario is filtered
-        if : ${{ (env.TEST_PATTERN != 'N/A' || '') }} 
-        run: python .github/scripts/get_tests_list.py --tests_pattern ${{ env.TESTS_TARGET }}        
+        if : ${{ (env.TEST_SCENARIO != 'N/A' || '')  || ( env.TEST_PATTERN != 'N/A' || '') }} 
+        run: python .github/scripts/get_tests_list.py --tests_scenario_pattern ${{ env.TESTS_TARGET }}      
 
       # Pass secrets into json file
       - name: Create json file with secrets variables

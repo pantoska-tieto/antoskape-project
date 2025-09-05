@@ -51,51 +51,80 @@ Workflow dispatch panel allows to use 4 types of inputs: `string`, `choice`, `bo
 
 <table>
     <thead>
-      <tr><th><strong>Field title</strong></th>
-      <th><strong>Description</strong></th>
-      <th><strong>Parameter to enter</strong></th></tr>
+      <th><strong>FIELD TITLE</strong></th>
+      <th><strong>DESCRIPTION</strong></th>
+      <th><strong>PARAMETER TO ENTER</strong></th></tr>
     </thead>
       <tbody>
-        <tr><td>Use workflow from</td><td>Git branch/Tag, on which the workflow event is triggered and workflow jobs are started. Despite this field is "string" type, the existing GitHub branches are provided in secondary dropdown menu. By entering a string the demanded branch is filtered from all available branch names.</td><td>Branch name/tag by entering a string &amp; selecting branch/tag in dropdown menu.<br><br><strong>[STRING]</strong></td>
+        <tr><td>Use workflow from</td><td>Git branch/Tag, on which the workflow event is triggered and workflow jobs are started. Despite this field is "string" type, the existing GitHub branches are provided in secondary dropdown menu. By entering a string the demanded branch is filtered from all available branch names.</td><td>Branch name/tag by entering a string &amp; selecting branch/tag in dropdown menu.<br /><br /><strong>[STRING]</strong></td>
         </tr>
-        <tr><td>Label of the runner to execute the job</td><td><a href="https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/apply-labels">GitHub runner</a> on which the workflow jobs running. It can be GitHub-hosted runner (not recommended due to the restricted quota) or self-hosted runner (must be registered and pre-installed in advance).</td><td>String with runner-label matching the registered runner in GitHub. Only 1 single string is allowed!<br><br><strong>[STRING]</strong><br><strong>Default = raspberrypi5-production</strong><br><strong>Example = vmware-test</strong></td></tr>
-        <tr><td>Target board for the build</td><td>Target board Zephyr qualifier (Device Under Test = DUT): The set of additional tokens, separated by a forward slash (<code>/</code>) that follow the <a href="https://docs.zephyrproject.org/latest/glossary.html#term-board-name">board name</a> (and optionally <a href="https://docs.zephyrproject.org/latest/glossary.html#term-board-revision">board revision</a>) to form the <a href="https://docs.zephyrproject.org/latest/glossary.html#term-board-target">board target</a>. The currently accepted qualifiers are <a href="https://docs.zephyrproject.org/latest/glossary.html#term-SoC">SoC</a>, <a href="https://docs.zephyrproject.org/latest/glossary.html#term-CPU-cluster">CPU cluster</a> and <a href="https://docs.zephyrproject.org/latest/glossary.html#term-variant">variant</a>. See <a href="https://docs.zephyrproject.org/latest/hardware/porting/board_porting.html#board-terminology">Board terminology</a> in Zephyr RTOS for additional details.</td><td>Target platform/board qualifier to be build &amp; tested. Only 1 single string is allowed!<br><br><strong>[STRING]</strong><br><strong>Default = esp32s3_devkitc/esp32s3/procpu</strong><br><strong>Example = nrf5340dk/nrf5340/cpuapp</strong></td></tr>
-        <tr><td>Serial device for connecting target board</td><td>Serial port in OS where the DUT is connected to. Depends on the host operating system.</td><td>Serial port for connection the DUT. Only 1 single string is allowed!<br><br><strong>[STRING]</strong><br><strong>Default = /dev/ttyUSB0</strong><br><strong>Example = /dev/ttyACM0&nbsp;</strong></td></tr>
-        <tr><td>Test TAGs to filter tests</td><td><p><a href="https://docs.zephyrproject.org/latest/develop/test/twister.html">Test tag(s)</a> - tags to restrict which tests to run by tag value. Default is to not do any tag filtering. &nbsp;Multiple invocations are treated as a logical 'or' relationship. Test tags are located in sample.yaml or testcase.yaml files within the tests-section.&nbsp;<br><strong>Example:</strong></p>tests:
+        <tr><td>Label of the runner to execute the job</td><td><a href="https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/apply-labels">GitHub runner</a> on which the workflow jobs running. It can be GitHub-hosted runner (not recommended due to the restricted quota) or self-hosted runner (must be registered and pre-installed in advance).</td><td>String with runner-label matching the registered runner in GitHub. Only 1 single string is allowed!<br /><br /><strong>[STRING]</strong><br /><strong>Default = raspberrypi5-production</strong><br /><strong>Example = vmware-test</strong></td></tr>
+        <tr><td>Target board for the build</td><td>Target board Zephyr qualifier (Device Under Test = DUT): The set of additional tokens, separated by a forward slash (<code>/</code>) that follow the <a href="https://docs.zephyrproject.org/latest/glossary.html#term-board-name">board name</a> (and optionally <a href="https://docs.zephyrproject.org/latest/glossary.html#term-board-revision">board revision</a>) to form the <a href="https://docs.zephyrproject.org/latest/glossary.html#term-board-target">board target</a>. The currently accepted qualifiers are <a href="https://docs.zephyrproject.org/latest/glossary.html#term-SoC">SoC</a>, <a href="https://docs.zephyrproject.org/latest/glossary.html#term-CPU-cluster">CPU cluster</a> and <a href="https://docs.zephyrproject.org/latest/glossary.html#term-variant">variant</a>. See <a href="https://docs.zephyrproject.org/latest/hardware/porting/board_porting.html#board-terminology">Board terminology</a> in Zephyr RTOS for additional details.</td><td>Target platform/board qualifier to be build &amp; tested. Only 1 single string is allowed!<br /><br /><strong>[STRING]</strong><br /><strong>Default = esp32s3_devkitc/esp32s3/procpu</strong><br /><strong>Example = nrf5340dk/nrf5340/cpuapp</strong></td></tr>
+        <tr><td>Serial device for connecting target board</td><td>Serial port in OS where the DUT is connected to. Depends on the host operating system.</td><td>Serial port for connection the DUT. Only 1 single string is allowed!<br /><br /><strong>[STRING]</strong><br /><strong>Default = /dev/ttyUSB0</strong><br /><strong>Example = /dev/ttyACM0&nbsp;</strong></td></tr>
+        <tr><td>Test TAGs to filter tests</td><td><p><a href="https://docs.zephyrproject.org/latest/develop/test/twister.html">Test tag(s)</a> - tags to restrict which tests to run by tag value. Default is to not do any tag filtering. &nbsp;Multiple invocations are treated as a logical 'or' relationship. Test tags are located in sample.yaml or testcase.yaml files within the tests-section.&nbsp;<br /><strong>Example:</strong></p>tests:
         testing.ztest.base.verbose_0_userspace:
           filter: CONFIG_ARCH_HAS_USERSPACE
           extra_args: CONF_FILE=prj_verbose_0.conf
           tags:
             - userspace
           extra_configs:
-          - CONFIG_TEST_USERSPACE=y</td><td>Test tags to filter demanded tests to run. Multiple strings separated by space are allowed!<br><br><strong>[STRING]</strong><br><strong>Default = N/A</strong><br><strong>Example = unit sanitary&nbsp;</strong></td></tr>
-          <tr><td>Pattern to filter specific tests (regex)</td><td>The <a href="https://docs.zephyrproject.org/latest/develop/test/twister.html">test pattern</a> to select demanded tests. The twister command runs only the tests matching the specified pattern. The pattern can include<strong> regular expressions!</strong><p><strong>Note:</strong><br>This parameter is mutually exclusive with "Test suite scenario to run" because both parameters can't be applied in the same "west twister" command due to the twister arguments conflict! So in case of using parameter "Pattern to filter specific tests", make sure the "Test suite scenario to run" field is empty!</p></td><td>Test pattern (incl. REGEX) to filter demanded tests to run. Only 1 single string is allowed!<br><br><strong>[STRING]</strong><br><strong>Default = N/A</strong><br><strong>Example = shell.*vt100</strong></td></tr>
-          <tr><td>Arguments to the pytest subprocess (extend YAML config)</td><td><a href="https://docs.zephyrproject.org/latest/develop/test/twister.html">Additional arguments</a> for Pytest subprocess. This parameter will extend the pytest_args from the harness_config in YAML file.&nbsp;<br><strong>Example:</strong><br><code>--pytest-args "--maxfail=2 --disable-warnings"</code><br><br>This will run Twister and pass the arguments --maxfail=2 --disable-warnings to the pytest subprocess, limiting failures to 2 and disabling warnings output.</td><td>Option(s) to be forwarded to pytest subprocess when running Twister tests. Multiple strings separated by space are allowed! Prepend "--" before each option.<br><br><strong>[STRING]</strong><br><strong>Default = N/A</strong><br><strong>Example = --maxfail=2 &nbsp;--disable-warnings</strong></td></tr>
+          - CONFIG_TEST_USERSPACE=y</td><td>Test tags to filter demanded tests to run. Multiple strings separated by space are allowed!<br /><br /><strong>[STRING]</strong><br /><strong>Default = N/A</strong><br /><strong>Example = unit sanitary&nbsp;</strong></td></tr>
+          <tr><td>Pattern to filter specific tests (regex)</td><td><p>The <a href="https://docs.zephyrproject.org/latest/develop/test/twister.html">test pattern</a> to select demanded tests. The twister command runs only the tests matching the specified pattern. The pattern can include<strong> regular expressions!</strong><p><p>In case the Pattern to filter specific tests parameter is used, the selected folder path is assigned to argument <strong>"--testsuite-root"</strong> in twister command and thus the searching for demanded scenarion is faster. In this case only demanded test scenario is selected to run with twister command and other test suites/test cases are ignored!</p></td><td>Test pattern (incl. REGEX) to filter demanded tests to run. Only 1 single string is allowed!<br /><br /><strong>[STRING]</strong><br /><strong>Default = N/A</strong><br /><strong>Example = shell.*vt100</strong></td></tr>
+          <tr><td>Arguments to the pytest subprocess (extend YAML config)</td><td><a href="https://docs.zephyrproject.org/latest/develop/test/twister.html">Additional arguments</a> for Pytest subprocess. This parameter will extend the pytest_args from the harness_config in YAML file.&nbsp;<br /><strong>Example:</strong><br /><code>--pytest-args "--maxfail=2 --disable-warnings"</code><br /><br />This will run Twister and pass the arguments --maxfail=2 --disable-warnings to the pytest subprocess, limiting failures to 2 and disabling warnings output.</td><td>Option(s) to be forwarded to pytest subprocess when running Twister tests. Multiple strings separated by space are allowed! Prepend "--" before each option.<br /><br /><strong>[STRING]</strong><br /><strong>Default = N/A</strong><br /><strong>Example = --maxfail=2 &nbsp;--disable-warnings</strong></td></tr>
           <tr><td>Test suite scenario to run</td><td><p>Each testsuite can consist of multiple <a href="https://docs.zephyrproject.org/latest/develop/test/twister.html">test scenarios.</a> This parameter allows to filter specific scenario to run while other scenarios in the same test suite are ignored.</p><p>Scenarios are named by 'path/relative/to/Zephyr/base/section.subsection_in_testcase_yaml', or just 'section.subsection' identifier. See an example for scenario "esp.wifi.sec.wpa2":</p>
             <code>esp.wifi.sec.none:
-              tags: wifi
-              filter: CONFIG_WIFI_ESP32
-              extra_configs:
-                - CONFIG_ESP32_WIFI_STA_AUTO_DHCPV4=y
-              platform_allow:
-                - esp32_devkitc/esp32/procpu
-                - esp32s2_saola
-            esp.wifi.sec.wpa2:
-              tags: wifi
-              filter: CONFIG_WIFI_ESP32
-              extra_configs:
-                - CONFIG_WIFI_TEST_AUTH_MODE_WPA2=y
-                - CONFIG_ESP32_WIFI_STA_AUTO_DHCPV4=y
-              platform_allow:
-          - esp32_devkitc/esp32/procpu</code></td><td><p>Test scenario name to filter when running the testcase. Only 1 single string is allowed!<br><strong>Note:&nbsp;</strong><br>to find the demanded test scenario faster in search process, select the root-folder where the scenario exists in "Test scope to run" option.</p><p><strong>[STRING]</strong><br><strong>Default = N/A</strong><br><strong>Example = esp.wifi.sec.wpa2</strong></p></td></tr>
-          <tr><td>Tests scope to run</td><td><p>Select the target folder, where the search proces looks for all test suites located there to run. Test suite is identified by existing project file prj.conf. In case the Test suite scenario parameter is used, the selected folder path is assigned to argument <strong>"--testsuite-root"</strong> in twister command and thus the looking for demanded scenarion is faster. In this case only demanded test scenario is selected to run with twister command and other test suites/test cases are ignored!</p><p>Mapping UI field -&gt; GitHub application folder (note that the native Zephyr RTOS tests in zephyr/tests/ workspace can be selected too): &nbsp;</p>
+      tags: wifi
+      filter: CONFIG_WIFI_ESP32
+      extra_configs:
+        - CONFIG_ESP32_WIFI_STA_AUTO_DHCPV4=y
+      platform_allow:
+        - esp32_devkitc/esp32/procpu
+        - esp32s2_saola
+    esp.wifi.sec.wpa2:
+      tags: wifi
+      filter: CONFIG_WIFI_ESP32
+      extra_configs:
+        - CONFIG_WIFI_TEST_AUTH_MODE_WPA2=y
+        - CONFIG_ESP32_WIFI_STA_AUTO_DHCPV4=y
+      platform_allow:
+  - esp32_devkitc/esp32/procpu</code>
+          </td><td><p>Test scenario name to filter when running the testcase. Only 1 single string is allowed!<br /><strong>Note:&nbsp;</strong><br />to find the demanded test scenario faster in search process, select the root-folder where the scenario exists in "Test scope to run" option.</p><p><strong>[STRING]</strong><br /><strong>Default = N/A</strong><br /><strong>Example = esp.wifi.sec.wpa2</strong></p></td></tr>
+          <tr><td>Tests scope to run</td><td><p>Select the target folder, where the search proces looks for all test suites located there to run. Test suite is identified by existing project file prj.conf.</p><p>In case the Test suite scenario parameter is used, the selected folder path is assigned to argument <strong>"--testsuite-root"</strong> in twister command and thus the searching for demanded scenarion is faster. In this case only demanded test scenario is selected to run with twister command and other test suites/test cases are ignored!</p><p>Mapping UI field -&gt; GitHub application folder (note that the native Zephyr RTOS tests in zephyr/tests/ workspace can be selected too): &nbsp;</p>
           <code>app/repo -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/repo</code><br/>
+          <br/>
           <code>app/integration -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/integration</code><br/>
+          <br/>
           <code>app/unit -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/unit</code><br/>
+          <br/>
           <code>app_all_tests -&gt; __w/antoskape-project/antoskape-project/customer-application/tests</code><br/>
-          <code>zephyr_all_tests -&gt; __w/antoskape-project/antoskape-project/zephyr/tests</code></td><td>Target folder where all test cases are selected to run with twister command. This path is assigned to "--testsuite-root" argument if Test suite scenario is filled in previous parameter. Only 1 single string is allowed!<br><br><strong>[CHOICE]</strong><br><strong>Default = app/repo</strong><br><strong>Example = app/unit</strong></td></tr>
+          <br/>
+          <code>zephyr_all_tests -&gt; __w/antoskape-project/antoskape-project/zephyr/tests</code></td><td>Target folder where all test cases are selected to run with twister command. This path is assigned to "--testsuite-root" argument if Test suite scenario is filled in previous parameter. Only 1 single string is allowed!<br /><br /><strong>[CHOICE]</strong><br /><strong>Default = app/repo</strong><br /><strong>Example = app/unit</strong></td></tr>
       </tbody>
 </table>
+<br/>
+
+## Multiple filtering parameters in the same workflow command
+
+Workflow dispatch panel allows users to apply multiple filtering input parameters at the same time - all are passsed as an filtering arguments to the same workflow command. The order of filtering arguments passed to "west twister" command is the same as they are listed in the workflow UI panel (from top to bottom). From concurrency aspect the sooner arguments in command have higher priority than later ones.  See the priority order for workflow dispatch parameters/arguments in following table (0 = highest priority):<br/>
+<br/>
+
+<table>
+    <thead>
+      <th><strong>PARAMETER/ARGUMENT NAME</strong></th>
+      <th><strong>PRIORITY</strong></th>
+    </thead>
+      <tbody>
+        <tr><td>Test TAGs to filter tests</td><td>0</td></tr>
+        <tr><td>Pattern to filter specific tests (regex)</td><td>1</td></tr>
+        <tr><td>Arguments to the pytest subprocess (extend YAML config)</td><td>2</td></tr>
+        <tr><td>Test suite scenario to run</td><td>3</td></tr>
+      </tbody>
+</table>
+<br/>
+
+When running workflow dispatch command with multiple arguments, the filtering criterias are applied with following rules:<br/>
+* if sooner argument result is FALSE (no test found), then the later argument in command is applied,
+* if sooner arguments result is TRUE (test(s) found), then the filtering process is finished and all later arguments are ignored.<br/>
 <br/>
 
 ## Twister command examples
@@ -128,3 +157,33 @@ west twister -vv --platform esp32s3_devkitc/esp32s3/procpu \
     --scenario sample.pytest.shell \
     --testsuite-root tests/repo
 ```
+<br/>
+
+## Zephyr tests terminology
+
+<br/>
+<table>
+    <thead>
+      <th><strong>TERM</strong></th>
+      <th><strong>DESCRIPTION</strong></th>
+    </thead>
+      <tbody>
+        <tr><td>Test suite</td><td><p>Top folder consisting of set of tests (sub-folders).</p>
+                        <p><strong>Example:</strong><br /><code>tests/kernel</code></p></td></tr>
+        <tr><td>Test</td><td><p>Sub-folders under Test suite. These are
+                        named by 'path/relative/to/Zephyr/base/section.subsection_in_testcase_yaml',<br/>or just 'section.subsection'
+                        identifier.</p>
+                        <p><strong>Example:</strong><br /><code>tests/kernel/ipi_cascade</code></p></td></tr>
+        <tr><td>Test scenario</td><td><p>Test scenario is named by 'path/relative/to/Zephyr/base/section.subsect
+                        ion_in_testcase_yaml', or just 'section.subsection' identifier.</p>
+                        <p><strong>Example:</strong><br/>tests/basic/shell consists of scenario <strong>sample.pytest.shell</strong><br /><code>tests:
+    sample.pytest.shell:
+      harness: pytest
+      harness_config:
+        pytest_dut_scope: session
+      tags: antoska</code></p></td></tr>
+        <tr><td>Test case</td><td><p>Test functions = test cases. Test case is on the lowest level in test terminology and is represented by test-function inside test-file.py (in Pytest context).</p>
+        <p><strong>Example:</strong><br />tests/repo_tests/shell/pytest/test_shell.py consists of tes case:<br/>
+        <code>def test_shell_print_version(shell: Shell):</code></p></td></tr>
+      </tbody>
+</table>

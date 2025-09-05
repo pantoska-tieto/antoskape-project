@@ -60,7 +60,7 @@ def get_test_paths(scope):
 if __name__ == "__main__":
     parser = define_args()
     args = parser.parse_args()
-    # Tests from specific folder are filtered (no scenario is specified)
+    # Tests from specific folder are filtered (no scenario/pattern is specified)
     if args.tests_scope:
         scope, target = get_test_paths(args.tests_scope)
         # Get list of demanded tests
@@ -70,19 +70,9 @@ if __name__ == "__main__":
             for line in test_list:
                 f.write(f"-T {line}\n")
 
-    # Specific test scenario is specified
-    if args.tests_scenario:
-        scope, target = get_test_paths(args.tests_scenario)
+    # Specific test scenario/test pattern criteria exists
+    if args.tests_scenario_pattern:
+        scope, target = get_test_paths(args.tests_scenario_pattern)
         # Store option --testsuite-root to support test scenario filtering
-        with open("scenario_tests.txt", "w") as f:
+        with open("scepatt_tests.txt", "w") as f:
             f.write(f"--testsuite-root {target}\n")
-
-    # Specific test pattern is specified
-    if args.tests_pattern:
-        scope, target = get_test_paths(args.tests_pattern)
-        # Store option -s for test pattern filtering
-        with open("pattern_tests.txt", "w") as f:
-            f.write(f"-s {target}\n")
-
-
-    
