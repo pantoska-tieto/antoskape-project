@@ -44,12 +44,13 @@ on:
         required: false
         default: app/repo
         type: choice
+        # Options with a space don't work!
         options:
           - "app/repo"
           - "app/integration"
           - "app/unit"
-          - "app(all tests)"
-          - "zephyr(all tests)"
+          - "app(all_tests)"
+          - "zephyr(all_tests)"
     
 env:
   RUNNER_LABEL: raspberrypi5-production
