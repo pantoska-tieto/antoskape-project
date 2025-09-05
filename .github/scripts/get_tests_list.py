@@ -18,16 +18,10 @@ def define_args():
         help="Tests range to be run",
     )
     parser.add_argument(
-        "--tests_scenario",
+        "--tests_scenario_pattern",
         required=False,
         default=None,
-        help="Specific test scenario to be run",
-    )
-    parser.add_argument(
-        "--tests_pattern",
-        required=False,
-        default=None,
-        help="Specific test pattern to be run",
+        help="Specific test scenario/test pattern to be run",
     )
     return parser
 
