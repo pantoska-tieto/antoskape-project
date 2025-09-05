@@ -32,7 +32,7 @@ def get_test_paths(scope):
     :return: str scope: string to use in filename
     :return: str target: real path to test folder
     """
-    match args.tests_scope:
+    match scope:
         case "app/repo":
             scope = "repo"
             target = "tests/repo_tests"
