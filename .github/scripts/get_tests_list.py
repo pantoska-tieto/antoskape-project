@@ -23,6 +23,12 @@ def define_args():
         default=None,
         help="Specific test scenario to be run",
     )
+    parser.add_argument(
+        "--tests_pattern",
+        required=False,
+        default=None,
+        help="Specific test pattern to be run",
+    )
     return parser
 
 def get_test_paths(scope):
