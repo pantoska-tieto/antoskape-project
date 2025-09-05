@@ -3,6 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import logging
+import timeit
 
 from twister_harness import Shell
 
@@ -21,3 +22,9 @@ def test_shell_print_version(shell: Shell):
     lines = shell.exec_command('kernel version')
     assert any(['Zephyr version' in line for line in lines]), 'expected response not found'
     logger.info('response is valid')
+
+# Benchmarking
+logger.info("Benchmarking: test_shell_print_help()")
+logger.info(timeit.timeit(lambda: test_shell_print_help(), number=10))
+logger.info("Benchmarking: test_shell_print_version()")
+logger.info(timeit.timeit(lambda: test_shell_print_version(), number=10))
