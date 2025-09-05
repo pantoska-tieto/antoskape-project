@@ -82,10 +82,10 @@ jobs:
         shell: bash
         run: |
             if [ ${{ runner.arch }} == 'ARM64' ]; then
-            echo "container=zephyrprojectrtos/ci:main-arm64" >> $GITHUB_OUTPUT
+            echo "container=zephyrprojectrtos/ci:v0.28.4-arm64" >> $GITHUB_OUTPUT
             fi
             if [ ${{ runner.arch }} == 'X64' ]; then
-            echo "container=zephyrprojectrtos/ci:main-amd64" >> $GITHUB_OUTPUT
+            echo "container=zephyrprojectrtos/ci:v0.28.4-amd64" >> $GITHUB_OUTPUT
             fi
 
       - name: Set runner label
