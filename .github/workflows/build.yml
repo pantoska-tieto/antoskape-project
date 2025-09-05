@@ -45,17 +45,17 @@ on:
         default: app/repo
         type: choice
         options:
-          - app/repo
-          - app/integration
-          - app/unit
-          - app(all tests)
-          - zephyr(all tests)
+          - "app/repo"
+          - "app/integration"
+          - "app/unit"
+          - "app(all tests)"
+          - "zephyr(all tests)"
     
 env:
   RUNNER_LABEL: raspberrypi5-production
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
   DEVICE_SERIAL: /dev/ttyUSB0
-  TESTS_TARGET: app/repo
+  TESTS_TARGET: "app/repo"
   TEST_TAG: N/A
   TEST_PATTERN: N/A
   PYTEST_ARGS: N/A
