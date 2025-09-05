@@ -71,7 +71,7 @@ env:
 jobs:
   process-runner:
     name: Get workflows runner 
-    runs-on: raspberrypi5-production
+    runs-on: ubuntu-latest
     outputs:
       label: ${{ steps.runner-label.outputs.label }}
       container: ${{ steps.set-container-arch.outputs.container }}      
