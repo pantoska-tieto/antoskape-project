@@ -75,6 +75,9 @@ def run_cmd(cmd):
         try:
             res = subprocess.run(cmd, capture_output=True, text=True, shell=True)
             # Return output from command (byte string to string format)
+            print(f"Command subprocess.run = stdout: {res.stdout}")
+            print(f"Command subprocess.run = stderr: {res.stderr}")
+            print(f"Command subprocess.run = returncode: {res.returncode}")
             return res.stdout, res.stderr, res.returncode
         except Exception as e:
             print(f"[ERROR] Failure during CLI command execution: {str(e)}.")
