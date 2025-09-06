@@ -77,16 +77,6 @@ jobs:
       container: ${{ steps.set-container-arch.outputs.container }}      
     # Set runner if no workflow_dispatch value is invoked  
     steps:
-      # Workflow benchmark
-      - name: Workflow timer - start
-        shell: python
-        run: |
-            import timeit
-            start_time = timeit.default_timer()
-            with open("workflow-timer.txt", "w") as f:
-              f.write(f"Workflow start time:{start_time}\n")
-              f.close()
-
       - name: Set container based on runner architecture
         id: set-container-arch
         shell: bash
@@ -130,6 +120,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: customer-application
+
+      # Workflow benchmark
+      - name: Workflow timer - start
+        shell: python
+        run: |
+            import timeit
+            start_time = timeit.default_timer()
+            with open("workflow-timer.txt", "w") as f:
+              f.write(f"Workflow start time:{start_time}\n")
+              f.close()
 
       - name: Set build env variables
         run: |
