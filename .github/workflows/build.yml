@@ -71,23 +71,23 @@ env:
 jobs:
   process-runner:
     name: Get workflows runner 
-    runs-on: ubuntu-latest
+    runs-on: ${{ github.event.inputs.runner_label }}
     outputs:
       label: ${{ steps.runner-label.outputs.label }}
       container: ${{ steps.set-container-arch.outputs.container }}      
     # Set runner if no workflow_dispatch value is invoked  
-    steps:
+    steps:     
       - name: Set container based on runner architecture
         id: set-container-arch
         shell: bash
         run: |
-            echo "RUNNER ARCH IN IF CONDITION: ${{ runner.arch }}"
-            if [[ ${{ runner.arch }} == 'ARM64' ]]; then
-            echo "SET CONTAINER IN IF CONDITION: container=zephyrprojectrtos/ci:v0.28.4-arm64"
+            echo "Detected runner architecture: $RUNNER_ARCH"
+            if [[ $RUNNER_ARCH == 'ARM64' ]]; then
+            echo "Set container name to fit the runner arch: zephyrprojectrtos/ci:v0.28.4-arm64"
             echo "container=zephyrprojectrtos/ci:v0.28.4-arm64" >> $GITHUB_OUTPUT
             fi
-            if [[ ${{ runner.arch }} == 'X64' ]]; then
-            echo "SET CONTAINER IN IF CONDITION: container=zephyrprojectrtos/ci:v0.28.4-amd64"
+            if [[ $RUNNER_ARCH == 'X64' ]]; then
+            echo "Set container name to fit the runner arch: zephyrprojectrtos/ci:v0.28.4-amd64"
             echo "container=zephyrprojectrtos/ci:v0.28.4-amd64" >> $GITHUB_OUTPUT
             fi
 
