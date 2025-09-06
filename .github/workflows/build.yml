@@ -113,6 +113,14 @@ jobs:
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
+      - name: Start workflow-metrics action
+        uses: kittychiu/workflow-metrics@v0.4.7
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OWNER_NAME: "pantoska-tieto"
+          REPO_NAME: "antoskape-project"
+          START_DATE: "2025-09-05"
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
@@ -157,12 +165,57 @@ jobs:
       - name: Install lib extras
         shell: bash
         run: |
-            sudo apt-get update && sudo apt-get install -y iperf
+            sudo apt-get update
+            sudo apt-get install -y iperf
+            sudo apt-get install -y sysbench fio
 
       # Install Python extras for testing
       - name: Install Python extra packages
         shell: bash
-        run: pip install -r requirements-extras.txt
+        run: |
+            pip install -r requirements-extras.txt
+
+      - name: CPU Benchmark
+        run: |
+          echo "### CPU Benchmark ###" | tee -a workflow_benchmark.txt
+          sysbench cpu --threads=$(nproc) run | tee -a workflow_benchmark.txt
+
+      - name: Memory Benchmark
+        run: |
+          echo "### Memory Benchmark ###" | tee -a workflow_benchmark.txt
+          sysbench memory --threads=$(nproc) run | tee -a workflow_benchmark.txt
+
+      - name: Disk I/O Benchmark
+        run: |
+          echo "### Disk I/O Benchmark ###" | tee -a workflow_benchmark.txt
+          fio --name=seqwrite --filename=testfile --size=1G --bs=1M --iodepth=1 --rw=write | tee -a workflow_benchmark.txt
+          fio --name=seqread --filename=testfile --size=1G --bs=1M --iodepth=1 --rw=read | tee -a workflow_benchmark.txt
+          rm testfile
+
+      - name: Benchmark - gather System Information
+        run: |
+          echo "### CPU Information ###" | tee -a workflow_benchmark.txt
+          lscpu | tee -a workflow_benchmark.txt
+          echo "\n### Memory Information ###" | tee -a workflow_benchmark.txt
+          free -h | tee -a workflow_benchmark.txt
+          echo "\n### Disk Space Usage ###" | tee -a workflow_benchmark.txt
+          df -h | tee -a workflow_benchmark.txt
+          echo "\n### Operating System Details ###" | tee -a workflow_benchmark.txt
+          uname -a | tee -a workflow_benchmark.txt
+          echo "\n### CPU Details from /proc/cpuinfo ###" | tee -a workflow_benchmark.txt
+          grep 'model name' /proc/cpuinfo | uniq | tee -a workflow_benchmark.txt
+          echo "\n### Total Number of CPU Cores ###" | tee -a workflow_benchmark.txt
+          nproc | tee -a workflow_benchmark.txt
+          echo "\n### Total Number of CPU Threads ###" | tee -a workflow_benchmark.txt
+          lscpu | grep "Thread(s) per core" | tee -a workflow_benchmark.txt
+          echo "\n### Disk Details ###" | tee -a workflow_benchmark.txt
+          lsblk | tee -a workflow_benchmark.txt
+
+      - name: Upload Benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-stats
+          path: workflow_benchmark.txt
 
       # Generate tests paths to run with twister command
       - name: Create test list with tests scope
@@ -267,6 +320,14 @@ jobs:
             customer-application/test-summary
           if-no-files-found: error
           retention-days: 5
+
+      - name: Stop workflow-metrics action (upload files)
+        uses: actions/upload-artifact@v4
+        with:
+          name: workflow-metrics-stats
+          path: |
+            workflow-stats.csv
+            runs.json
 
   publish_test_summaries:
     name: Publish Test Summaries
