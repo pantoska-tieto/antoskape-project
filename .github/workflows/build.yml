@@ -81,10 +81,13 @@ jobs:
         id: set-container-arch
         shell: bash
         run: |
-            if [ ${{ runner.arch }} == 'ARM64' ]; then
+            echo "RUNNER ARCH IN IF CONDITION: ${{ runner.arch }}"
+            if [[ ${{ runner.arch }} == 'ARM64' ]]; then
+            echo "SET CONTAINER IN IF CONDITION: container=zephyrprojectrtos/ci:v0.28.4-arm64"
             echo "container=zephyrprojectrtos/ci:v0.28.4-arm64" >> $GITHUB_OUTPUT
             fi
-            if [ ${{ runner.arch }} == 'X64' ]; then
+            if [[ ${{ runner.arch }} == 'X64' ]]; then
+            echo "SET CONTAINER IN IF CONDITION: container=zephyrprojectrtos/ci:v0.28.4-amd64"
             echo "container=zephyrprojectrtos/ci:v0.28.4-amd64" >> $GITHUB_OUTPUT
             fi
 
