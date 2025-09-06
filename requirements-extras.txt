@@ -1,5 +1,7 @@
-# EXTRAS: needed for testing purposes
+# EXTRAS: needed for testing and support purposes
 # These are installed with: pip install -r requirements-extras.txt
 
 # wifi zperf testcases
 pytest-asyncio
+# pytest fixture
+pytest-repeat
