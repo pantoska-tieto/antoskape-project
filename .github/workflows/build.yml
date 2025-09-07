@@ -68,38 +68,44 @@ env:
   # Pass all secrets as json to pytest
   SECRETS_JSON: ${{ toJSON(secrets) }}
 
-jobs:
+jobs:  
   process-runner:
-    name: Get workflows runner 
-    runs-on: ${{ github.event.inputs.runner_label }}
+    name: Get runner label to execute the workflow
+    runs-on: ubuntu-24.04
     outputs:
       label: ${{ steps.runner-label.outputs.label }}
-      container: ${{ steps.set-container-arch.outputs.container }}      
-    # Set runner if no workflow_dispatch value is invoked  
     steps:
-      - name: Set container based on runner architecture
-        id: set-container-arch
-        shell: bash
-        run: |
-            echo "Detected runner architecture: $RUNNER_ARCH"
-            if [[ $RUNNER_ARCH == 'ARM64' ]]; then
-            echo "Set container name to fit the runner arch: zephyrprojectrtos/ci:v0.28.4-arm64"
-            echo "container=zephyrprojectrtos/ci:v0.28.4-arm64" >> $GITHUB_OUTPUT
-            fi
-            if [[ $RUNNER_ARCH == 'X64' ]]; then
-            echo "Set container name to fit the runner arch: zephyrprojectrtos/ci:v0.28.4-amd64"
-            echo "container=zephyrprojectrtos/ci:v0.28.4-amd64" >> $GITHUB_OUTPUT
-            fi
-
-      - name: Set runner label
+      - name: Read runner label
         id: runner-label
         run: echo "label=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_OUTPUT
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
 
+  process-image:
+    name: Set workflows docker image
+    needs: process-runner
+    runs-on: ${{ needs.process-runner.outputs.label }}
+    outputs:
+      image: ${{ steps.container-arch.outputs.image }}      
+    # Set container name based on runner architecture  
+    steps:
+      - name: Set container based on runner architecture
+        id: container-arch
+        shell: bash
+        run: |
+            echo "Detected runner architecture: $RUNNER_ARCH"
+            if [[ $RUNNER_ARCH == 'ARM64' ]]; then
+            echo "Set container name to fit the runner arch: zephyrprojectrtos/ci:v0.28.4-arm64"
+            echo "image=zephyrprojectrtos/ci:v0.28.4-arm64" >> $GITHUB_OUTPUT
+            fi
+            if [[ $RUNNER_ARCH == 'X64' ]]; then
+            echo "Set container name to fit the runner arch: zephyrprojectrtos/ci:v0.28.4-amd64"
+            echo "image=zephyrprojectrtos/ci:v0.28.4-amd64" >> $GITHUB_OUTPUT
+            fi
+
   build:
     name: Build and Test
-    needs: process-runner
+    needs: [process-image, process-runner]
     strategy:
       max-parallel: 1
       fail-fast: false
@@ -111,7 +117,7 @@ jobs:
       run:
         working-directory: customer-application
     container:
-      image: ${{ needs.process-runner.outputs.container }}
+      image: ${{ needs.process-image.outputs.image }}
       options: --device=/dev/ttyUSB0
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
