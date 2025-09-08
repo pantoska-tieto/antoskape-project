@@ -1,4 +1,4 @@
 tests:
-  base64.ztest_example:
+  utilities.base64:
     tags: base64
     type: unit
