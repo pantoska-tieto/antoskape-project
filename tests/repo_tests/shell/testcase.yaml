@@ -12,6 +12,7 @@ common:
     - native_sim
     - qemu_cortex_m3
     - esp32s3_devkitc/esp32s3/procpu
+    - esp32c3_devkitm
 tests:
   sample.pytest.shell:
     harness: pytest
