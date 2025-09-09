@@ -71,7 +71,9 @@ jobs:
     steps:
       - name: Read runner label
         id: runner-label
-        run: echo "label=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_OUTPUT
+        run: |
+            echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
+            echo "label=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_OUTPUT
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
 
