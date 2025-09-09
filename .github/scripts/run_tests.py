@@ -98,7 +98,7 @@ if __name__ == "__main__":
             [print(t.replace("\n", "")) for t in tests]
 
         # Unit tests for local libs (no device needed)
-        if args.target and "unit_dut" in args.target:
+        if args.target and "app/unit/dut" in args.target:
             cmd_test = "west twister -vv"
         # All other tests (device HW needed)
         else:
