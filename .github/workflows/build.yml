@@ -176,11 +176,12 @@ jobs:
 
       # Setup D-BUS for BLE tests     
       - name: Set DBUS_SESSION_BUS_ADDRESS
+        shell: bash
         run: |
             export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
             eval "$(dbus-launch --sh-syntax)"
             export DBUS_SESSION_BUS_ADDRESS
-            sudo chmod 777 /run/user/$UID/bus
+            sudo chmod 777 /run/user/1002/bus
 
       - name: CPU Benchmark
         run: |
