@@ -16,3 +16,4 @@ tests:
     platform_allow: 
       - qemu_x86
       - esp32s3_devkitc/esp32s3/procpu
+      - esp32c3_devkitm

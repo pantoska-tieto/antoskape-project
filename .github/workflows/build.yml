@@ -102,12 +102,6 @@ jobs:
   build:
     name: Build and Test
     needs: [process-image, process-runner]
-    strategy:
-      max-parallel: 1
-      fail-fast: false
-      matrix:
-        sample: [blinky]
-        target: [esp32s3_devkitc/esp32s3/procpu]
     runs-on: ${{ needs.process-runner.outputs.label }}
     defaults:
       run:
@@ -257,9 +251,9 @@ jobs:
                     f.write(f'test_list={os.path.join(dir)}\n')
 
       # Example for custom application build
-      - name: Build ${{ matrix.sample }} for ${{ matrix.target }}
+      - name: Build app for ${{ env.BOARD_TARGET }}
         shell: bash
-        run: west build -p always -b ${{ matrix.target }} app-esp32/${{ matrix.sample }}
+        run: west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky
         
       - name: Flash
         shell: bash
