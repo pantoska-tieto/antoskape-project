@@ -5,3 +5,5 @@
 pytest-asyncio
 # pytest fixture
 pytest-repeat
+# Bluetooth library
+bleak
