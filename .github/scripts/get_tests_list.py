@@ -18,10 +18,10 @@ def define_args():
         help="Tests range to be run",
     )
     parser.add_argument(
-        "--tests_scenario_pattern",
+        "--tests_scenario",
         required=False,
         default=None,
-        help="Specific test scenario/test pattern to be run",
+        help="Specific test scenario to be run",
     )
     return parser
 
@@ -39,12 +39,12 @@ def get_test_paths(scope):
         case "app/integration":
             scope = "integration"
             target = "tests/integration_tests"
-        case "app/unit":
-            scope = "unit"
-            target = "tests/unit_tests"
-        case "app_all_tests":
-            scope = "application"
-            target = "tests"
+        case "app/unit/dut":
+            scope = "unit_dut"
+            target = "tests/unit_tests/dut"
+        case "app/unit/host":
+            scope = "unit_host"
+            target = "tests/unit_tests/host"
         case "zephyr_all_tests":
             scope = "zephyr"
             target = "../zephyr/tests"
@@ -54,7 +54,7 @@ def get_test_paths(scope):
 if __name__ == "__main__":
     parser = define_args()
     args = parser.parse_args()
-    # Tests from specific folder are filtered (no scenario/pattern is specified)
+    # Tests from specific folder are filtered (no scenario is specified)
     if args.tests_scope:
         scope, target = get_test_paths(args.tests_scope)
         # Get list of demanded tests
@@ -64,9 +64,9 @@ if __name__ == "__main__":
             for line in test_list:
                 f.write(f"-T {line}\n")
 
-    # Specific test scenario/test pattern criteria exists
-    if args.tests_scenario_pattern:
-        scope, target = get_test_paths(args.tests_scenario_pattern)
+    # Specific test scenario criteria exists
+    if args.tests_scenario:
+        scope, target = get_test_paths(args.tests_scenario)
         # Store option --testsuite-root to support test scenario filtering
         with open("scepatt_tests.txt", "w") as f:
             f.write(f"--testsuite-root {target}\n")

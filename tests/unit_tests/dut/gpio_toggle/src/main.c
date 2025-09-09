@@ -54,9 +54,9 @@ ZTEST(gpio_test, test_gpio_toggle_and_verify)
 
         // If LED is shining OFF/ON visually then test pass 
         // gpio_pin_get() is not working for ESP32 boards - permanently reads 1
-        printk("LED state in cycle %d: %s\n", i, led_state ? "ON" : "OFF");
         led_state = !led_state;
         expected_led_state = !expected_led_state;
+        printk("LED state in cycle %d: %s\n", i, led_state ? "ON" : "OFF");
         zassert_equal(expected_led_state, led_state, "GPIO (LED) state mismatch");
         k_msleep(SLEEP_TIME_MS);
     }
