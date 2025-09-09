@@ -28,11 +28,6 @@ on:
         required: false
         default: ""
         type: string
-      test_pattern:
-        description: Pattern to filter specific tests (regex)
-        required: false
-        default: ""
-        type: string
       pytest_args:
         description: Arguments to the pytest subprocess (extend YAML config)
         required: false
@@ -52,8 +47,8 @@ on:
         options:
           - "app/repo"
           - "app/integration"
-          - "app/unit"
-          - "app_all_tests"
+          - "app/unit/dut"
+          - "app/unit/host"
           - "zephyr_all_tests"
     
 env:
@@ -62,7 +57,6 @@ env:
   DEVICE_SERIAL: /dev/ttyUSB0
   TESTS_TARGET: "app/repo"
   TEST_TAG: N/A
-  TEST_PATTERN: N/A
   PYTEST_ARGS: N/A
   TEST_SCENARIO: N/A
   # Pass all secrets as json to pytest
@@ -77,7 +71,9 @@ jobs:
     steps:
       - name: Read runner label
         id: runner-label
-        run: echo "label=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_OUTPUT
+        run: |
+            echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
+            echo "label=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_OUTPUT
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
 
@@ -138,7 +134,6 @@ jobs:
             echo "DEVICE_SERIAL=${INPUT_DEVICE_SERIAL:-$DEVICE_SERIAL}" >> $GITHUB_ENV
             echo "TESTS_TARGET=${INPUT_TESTS_TARGET:-$TESTS_TARGET}" >> $GITHUB_ENV
             echo "TEST_TAG=${INPUT_TEST_TAG:-$TEST_TAG}" >> $GITHUB_ENV
-            echo "TEST_PATTERN=${INPUT_TEST_PATTERN:-$TEST_PATTERN}" >> $GITHUB_ENV
             echo "PYTEST_ARGS=${INPUT_PYTEST_ARGS:-$PYTEST_ARGS}" >> $GITHUB_ENV
             echo "TEST_SCENARIO=${INPUT_TEST_SCENARIO:-$TEST_SCENARIO}" >> $GITHUB_ENV
         env:
@@ -147,7 +142,6 @@ jobs:
           INPUT_DEVICE_SERIAL: ${{ github.event.inputs.device_serial }}
           INPUT_TESTS_TARGET: ${{ github.event.inputs.tests_target }}
           INPUT_TEST_TAG: ${{ github.event.inputs.test_tag }}
-          INPUT_TEST_PATTERN: ${{ github.event.inputs.test_pattern }}
           INPUT_PYTEST_ARGS: ${{ github.event.inputs.pytest_args }}
           INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
       
@@ -227,14 +221,14 @@ jobs:
       - name: Create test list with tests scope
         shell: bash
         # No test scenario is filtered
-        if : ${{ (env.TEST_SCENARIO == 'N/A' || '')  && ( env.TEST_PATTERN == 'N/A' || '') }} 
+        if : ${{ env.TEST_SCENARIO == 'N/A' || '' }} 
         run: python .github/scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }}
 
-      - name: Create test list with test scenario/test pattern
+      - name: Create test list with test scenario
         shell: bash
-        # Specific test scenario/pattern is filtered
-        if : ${{ (env.TEST_SCENARIO != 'N/A' || '')  || ( env.TEST_PATTERN != 'N/A' || '') }} 
-        run: python .github/scripts/get_tests_list.py --tests_scenario_pattern ${{ env.TESTS_TARGET }}      
+        # Specific test scenario is filtered
+        if : ${{ env.TEST_SCENARIO != 'N/A' || '' }} 
+        run: python .github/scripts/get_tests_list.py --tests_scenario ${{ env.TESTS_TARGET }}      
 
       # Pass secrets into json file
       - name: Create json file with secrets variables
@@ -272,10 +266,10 @@ jobs:
             python .github/scripts/run_tests.py --platform ${{ env.BOARD_TARGET }} \
             --device_serial ${{ env.DEVICE_SERIAL }} \
             --tag ${{ env.TEST_TAG }} \
-            --test_pattern ${{ env.TEST_PATTERN }} \
             --pytest_args ${{ env.PYTEST_ARGS }} \
             --scenario ${{ env.TEST_SCENARIO }} \
             --test_list ${{steps.py-script.outputs.test_list}} \
+            --target ${{ env.TESTS_TARGET }}
       # Archive all test artifacts
       - name: Single test artifacts
         uses: actions/upload-artifact@v4

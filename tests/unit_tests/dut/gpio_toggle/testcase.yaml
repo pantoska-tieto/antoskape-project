@@ -1,0 +1,7 @@
+tests:
+  gpio_test.gpio_toggle_and_verify:
+    platform_allow: esp32s3_devkitc/esp32s3/procpu
+    tags:
+      - LED
+      - gpio
+    harness: ztest

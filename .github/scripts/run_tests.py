@@ -44,12 +44,6 @@ def define_args():
         help="Test tags to filter tests",
     )
     parser.add_argument(
-        "--test_pattern",
-        required=False,
-        default=None,
-        help="To filter tests matching the specified pattern",
-    )
-    parser.add_argument(
         "--pytest_args",
         required=False,
         default=None,
@@ -60,6 +54,12 @@ def define_args():
         required=False,
         default=None,
         help="Test suite scenario to run",
+    )
+    parser.add_argument(
+        "--target",
+        required=False,
+        default=None,
+        help="Path to text file with tests list",
     )
     return parser
 
@@ -86,8 +86,6 @@ if __name__ == "__main__":
     arguments = ""
     if args.tag and (args.tag != "N/A" and args.tag != ""):
         arguments += f" --tag {args.tag} --force-tags"
-    if args.test_pattern and (args.test_pattern != "N/A" and args.test_pattern != ""):
-        arguments += f" --test-pattern {args.test_pattern}"
     if args.pytest_args and (args.pytest_args != "N/A" and args.pytest_args != ""):
         arguments += f" --pytest-args {args.pytest_args}"
     if args.scenario and (args.scenario != "N/A" and args.scenario != ""):
@@ -98,8 +96,16 @@ if __name__ == "__main__":
             tests = file.readlines()
             print(f"Selected tests to run:\n")
             [print(t.replace("\n", "")) for t in tests]
+
+        # Unit tests for local libs (no device needed)
+        if args.target and "app/unit/host" in args.target:
+            cmd_test = "west twister -vv"
+        # All other tests (device HW needed)
+        else:
+            cmd_test = f"west twister -vv --platform {args.platform} --device-testing --device-serial {args.device_serial} --west-flash --flash-before"
+
         for line in tests:
-            out, err, code = run_cmd(f'west twister -vv --platform {args.platform} --device-testing --device-serial {args.device_serial} --west-flash --flash-before {line.replace("\n", "")}{arguments}')
+            out, err, code = run_cmd(f'{cmd_test} {line.replace("\n", "")}{arguments}')
             print(out)
             # Show test summary reports review
             print(err)

@@ -11,7 +11,6 @@ from twister_harness import Shell
 
 logger = logging.getLogger(__name__)
 
-@pytest.mark.repeat(5)
 def test_shell_print_help(shell: Shell):
     # Benchmarking start
     start_time = timeit.default_timer()
@@ -32,8 +31,6 @@ def test_shell_print_help(shell: Shell):
         f.write(f"Execution time: {execution_time}sec \n")
         f.close()
 
-
-@pytest.mark.repeat(5)
 def test_shell_print_version(shell: Shell):
     # Benchmarking start
     start_time = timeit.default_timer()

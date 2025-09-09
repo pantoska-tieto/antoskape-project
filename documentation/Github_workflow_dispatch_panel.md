@@ -69,8 +69,7 @@ Workflow dispatch panel allows to use 4 types of inputs: `string`, `choice`, `bo
             - userspace
           extra_configs:
           - CONFIG_TEST_USERSPACE=y</td><td>Test tags to filter demanded tests to run. Multiple strings separated by space are allowed!<br /><br /><strong>[STRING]</strong><br /><strong>Default = N/A</strong><br /><strong>Example = unit sanitary&nbsp;</strong></td></tr>
-          <tr><td>Pattern to filter specific tests (regex)</td><td><p>The <a href="https://docs.zephyrproject.org/latest/develop/test/twister.html">test pattern</a> to select demanded tests. The twister command runs only the tests matching the specified pattern. The pattern can include<strong> regular expressions!</strong><p><p>In case the Pattern to filter specific tests parameter is used, the selected folder path is assigned to argument <strong>"--testsuite-root"</strong> in twister command and thus the searching for demanded scenarion is faster. In this case only demanded test scenario is selected to run with twister command and other test suites/test cases are ignored!</p></td><td>Test pattern (incl. REGEX) to filter demanded tests to run. Only 1 single string is allowed!<br /><br /><strong>[STRING]</strong><br /><strong>Default = N/A</strong><br /><strong>Example = shell.*vt100</strong></td></tr>
-          <tr><td>Arguments to the pytest subprocess (extend YAML config)</td><td><a href="https://docs.zephyrproject.org/latest/develop/test/twister.html">Additional arguments</a> for Pytest subprocess. This parameter will extend the pytest_args from the harness_config in YAML file.&nbsp;<br /><strong>Example:</strong><br /><code>--pytest-args "--maxfail=2 --disable-warnings"</code><br /><br />This will run Twister and pass the arguments --maxfail=2 --disable-warnings to the pytest subprocess, limiting failures to 2 and disabling warnings output.</td><td>Option(s) to be forwarded to pytest subprocess when running Twister tests. Multiple strings separated by space are allowed! Prepend "--" before each option.<br /><br /><strong>[STRING]</strong><br /><strong>Default = N/A</strong><br /><strong>Example = --maxfail=2 &nbsp;--disable-warnings</strong></td></tr>
+          <td>Arguments to the pytest subprocess (extend YAML config)</td><td><a href="https://docs.zephyrproject.org/latest/develop/test/twister.html">Additional arguments</a> for Pytest subprocess. This parameter will extend the pytest_args from the harness_config in YAML file.&nbsp;<br /><strong>Example:</strong><br /><code>--pytest-args "--maxfail=2 --disable-warnings"</code><br /><br />This will run Twister and pass the arguments --maxfail=2 --disable-warnings to the pytest subprocess, limiting failures to 2 and disabling warnings output.</td><td>Option(s) to be forwarded to pytest subprocess when running Twister tests. Multiple strings separated by space are allowed! Prepend "--" before each option.<br /><br /><strong>[STRING]</strong><br /><strong>Default = N/A</strong><br /><strong>Example = --maxfail=2 &nbsp;--disable-warnings</strong></td></tr>
           <tr><td>Test suite scenario to run</td><td><p>Each testsuite can consist of multiple <a href="https://docs.zephyrproject.org/latest/develop/test/twister.html">test scenarios.</a> This parameter allows to filter specific scenario to run while other scenarios in the same test suite are ignored.</p><p>Scenarios are named by 'path/relative/to/Zephyr/base/section.subsection_in_testcase_yaml', or just 'section.subsection' identifier. See an example for scenario "esp.wifi.sec.wpa2":</p>
             <code>esp.wifi.sec.none:
       tags: wifi
@@ -92,13 +91,13 @@ Workflow dispatch panel allows to use 4 types of inputs: `string`, `choice`, `bo
           <tr><td>Tests scope to run</td><td><p>Select the target folder, where the search proces looks for all test suites located there to run. Test suite is identified by existing project file prj.conf.</p><p>In case the Test suite scenario parameter is used, the selected folder path is assigned to argument <strong>"--testsuite-root"</strong> in twister command and thus the searching for demanded scenarion is faster. In this case only demanded test scenario is selected to run with twister command and other test suites/test cases are ignored!</p><p>Mapping UI field -&gt; GitHub application folder (note that the native Zephyr RTOS tests in zephyr/tests/ workspace can be selected too): &nbsp;</p>
           <code>app/repo -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/repo</code><br/>
           <br/>
-          <code>app/integration -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/integration</code><br/>
+          <code>app/integration -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/integration_tests</code><br/>
           <br/>
-          <code>app/unit -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/unit</code><br/>
+          <code>app/unit/dut -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/unit_tests/dut</code><br/>
           <br/>
-          <code>app_all_tests -&gt; __w/antoskape-project/antoskape-project/customer-application/tests</code><br/>
+          <code>app/unit/host -&gt; __w/antoskape-project/antoskape-project/customer-application/tests/unit_tests/host</code><br/>
           <br/>
-          <code>zephyr_all_tests -&gt; __w/antoskape-project/antoskape-project/zephyr/tests</code></td><td>Target folder where all test cases are selected to run with twister command. This path is assigned to "--testsuite-root" argument if Test suite scenario is filled in previous parameter. Only 1 single string is allowed!<br /><br /><strong>[CHOICE]</strong><br /><strong>Default = app/repo</strong><br /><strong>Example = app/unit</strong></td></tr>
+          <code>zephyr_all_tests -&gt; __w/antoskape-project/antoskape-project/zephyr/tests</code></td><td>Target folder where all test cases are selected to run with twister command. This path is assigned to "--testsuite-root" argument if Test suite scenario is filled in previous parameter. Only 1 single string is allowed!<br /><br /><strong>[CHOICE]</strong><br /><strong>Default = app/repo</strong><br /><strong>Example = app/unit/host</strong></td></tr>
       </tbody>
 </table>
 <br/>
@@ -115,9 +114,8 @@ Workflow dispatch panel allows users to apply multiple filtering input parameter
     </thead>
       <tbody>
         <tr><td>Test TAGs to filter tests</td><td>0</td></tr>
-        <tr><td>Pattern to filter specific tests (regex)</td><td>1</td></tr>
-        <tr><td>Arguments to the pytest subprocess (extend YAML config)</td><td>2</td></tr>
-        <tr><td>Test suite scenario to run</td><td>3</td></tr>
+        <tr><td>Arguments to the pytest subprocess (extend YAML config)</td><td>1</td></tr>
+        <tr><td>Test suite scenario to run</td><td>2</td></tr>
       </tbody>
 </table>
 <br/>
@@ -138,8 +136,7 @@ west twister -vv --platform esp32s3_devkitc/esp32s3/procpu \
     --device-testing --device-serial /dev/ttyUSB0 \
     --west-flash \
     --flash-before \
-    --tag net --force-tags 
-    --test-pattern  shell.*vt100 \
+    --tag net --force-tags \
     --pytest-args "--maxfail=2 --disable-warnings" \
     -T tests/repo
 ```
@@ -152,7 +149,6 @@ west twister -vv --platform esp32s3_devkitc/esp32s3/procpu \
     --west-flash \
     --flash-before \
     --tag net --force-tags \
-    --test-pattern  shell.*vt100 \
     --pytest-args "--maxfail=2 --disable-warnings" \
     --scenario sample.pytest.shell \
     --testsuite-root tests/repo
