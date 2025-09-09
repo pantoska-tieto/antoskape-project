@@ -20,7 +20,7 @@ def test_shell_print_help(shell: Shell):
     logger.info('send "help" command')
     lines = shell.exec_command('help')
     assert 'Available commands:' in lines, 'expected response not found'
-    logger.info('response is valid')
+    logger.info('Shell response is valid')
 
     # Benchmarking end
     end_time = timeit.default_timer()
@@ -40,7 +40,7 @@ def test_shell_print_version(shell: Shell):
     logger.info('send "kernel version" command')
     lines = shell.exec_command('kernel version')
     assert any(['Zephyr version' in line for line in lines]), 'expected response not found'
-    logger.info('response is valid')
+    logger.info('Shell response is valid')
 
     # Benchmarking end
     end_time = timeit.default_timer()

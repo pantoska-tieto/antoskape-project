@@ -1,0 +1,14 @@
+sample:
+  name: Bluetooth Peripheral
+  description: Demonstrates the Bluetooth LE Peripheral role
+tests:
+  sample.bluetooth.peripheral:
+    harness: pytest
+    platform_allow:
+      - qemu_x86
+      - nucleo_wb55rg
+      - esp32s3_devkitc/esp32s3/procpu
+      - esp32c3_devkitm
+    integration_platforms:
+      - qemu_x86
+    tags: bluetooth
