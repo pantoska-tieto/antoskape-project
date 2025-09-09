@@ -99,13 +99,13 @@ if __name__ == "__main__":
 
         # Unit tests for local libs (no device needed)
         if args.target and "unit_dut" in args.target:
-            run_cmd = "west twister -vv"
+            cmd_test = "west twister -vv"
         # All other tests (device HW needed)
         else:
-            run_cmd = f"west twister -vv --platform {args.platform} --device-testing --device-serial {args.device_serial} --west-flash --flash-before"
+            cmd_test = f"west twister -vv --platform {args.platform} --device-testing --device-serial {args.device_serial} --west-flash --flash-before"
 
         for line in tests:
-            out, err, code = run_cmd(f'{run_cmd} {line.replace("\n", "")}{arguments}')
+            out, err, code = run_cmd(f'{cmd_test} {line.replace("\n", "")}{arguments}')
             print(out)
             # Show test summary reports review
             print(err)
