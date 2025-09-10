@@ -178,10 +178,9 @@ jobs:
       - name: Set DBUS_SESSION_BUS_ADDRESS
         shell: bash
         run: |
-            export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
-            eval "$(dbus-launch --sh-syntax)"
-            export DBUS_SESSION_BUS_ADDRESS
-            sudo chmod 777 /run/user/1002/bus
+            sudo chmod 777 /run/user/$(id -u)/bus
+            sudo export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+            sudo eval "$(dbus-launch --sh-syntax)"
 
       - name: CPU Benchmark
         run: |
