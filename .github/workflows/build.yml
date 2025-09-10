@@ -109,39 +109,29 @@ jobs:
     defaults:
       run:
         working-directory: customer-application
+    container:
+      image: ${{ needs.process-image.outputs.image }}
+      options: >-
+        --device=/dev/ttyUSB0 \
+        --privileged \
+        --network host \
+        -v /var/run/dbus:/var/run/dbus \
+        -v /run/dbus:/run/dbus \
+        -v /dev:/dev \
+        -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
+        --user $(id -u):$(id -g)
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
       - name: Clean up workspace
         run: |
+            sudo chown -R $(id -u):$(id -g) ${{ github.workspace }}
             sudo find ${{ github.workspace }} -mindepth 1 -delete
 
       - name: Checkout
         uses: actions/checkout@v4
         with:
           path: customer-application
-
-      - name: Debug workspace permissions
-        run: |
-            ls -la ${{ github.workspace }}/customer-application/.git
-            stat ${{ github.workspace }}/customer-application/.git/index.lock || echo "index.lock not found"
-
-
-      - name: Run container with custom setup
-        run: |
-            sudo chown -R $(id -u):$(id -g) ${{ github.workspace }}
-            docker run --rm \
-              --device=/dev/ttyUSB0 \
-              --privileged \
-              --network host \
-              -v /var/run/dbus:/var/run/dbus \
-              -v /run/dbus:/run/dbus \
-              -v /dev:/dev \
-              -v ${{ github.workspace }}:/workspace \
-              -w /workspace/customer-application \
-              -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
-              --user $(id -u):$(id -g) \
-              ${{ needs.process-image.outputs.image }} 
 
       - name: Set build env variables
         run: |
