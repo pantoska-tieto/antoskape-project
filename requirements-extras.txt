@@ -7,3 +7,8 @@ pytest-asyncio
 pytest-repeat
 # Bluetooth library
 bleak
+# Robot test fw
+robotframework
+robotframework-csvlibrary
+robotframework-seriallibrary
+robotframework-pabot
