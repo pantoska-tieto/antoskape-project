@@ -1,6 +1,3 @@
-sample:
-  name: Bluetooth Peripheral
-  description: Demonstrates the Bluetooth LE Peripheral role
 tests:
   sample.bluetooth.peripheral:
     harness: pytest

@@ -69,12 +69,16 @@ jobs:
     runs-on: ubuntu-24.04
     outputs:
       label: ${{ steps.runner-label.outputs.label }}
+      uid: ${{ steps.runner-label.outputs.uid }}
+      gid: ${{ steps.runner-label.outputs.gid }}
     steps:
       - name: Read runner label
         id: runner-label
         run: |
             echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
             echo "label=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_OUTPUT
+            echo "uid=$(id -u)" >> $GITHUB_OUTPUT
+            echo "gid=$(id -g)" >> $GITHUB_OUTPUT
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
 
@@ -111,7 +115,13 @@ jobs:
         working-directory: customer-application
     container:
       image: ${{ needs.process-image.outputs.image }}
-      options: --device=/dev/ttyUSB0
+      options: >
+        --device=/dev/ttyUSB0 
+        --privileged  
+        -v /var/run/dbus:/var/run/dbus 
+        -v /run/dbus:/run/dbus 
+        -v /dev:/dev 
+        -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
