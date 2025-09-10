@@ -111,14 +111,14 @@ jobs:
         working-directory: customer-application
     container:
       image: ${{ needs.process-image.outputs.image }}
-      options: >-
-        --device=/dev/ttyUSB0 \
-        --privileged \
-        --network host \
-        -v /var/run/dbus:/var/run/dbus \
-        -v /run/dbus:/run/dbus \
-        -v /dev:/dev \
-        -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
+      options: >
+        --device=/dev/ttyUSB0 
+        --privileged 
+        --network host 
+        -v /var/run/dbus:/var/run/dbus 
+        -v /run/dbus:/run/dbus 
+        -v /dev:/dev 
+        -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket 
         --user $(id -u):$(id -g)
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
