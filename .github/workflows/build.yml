@@ -245,7 +245,7 @@ jobs:
       - name: Single test artifacts
         uses: actions/upload-artifact@v4
         continue-on-error: true
-        if: ${{ env.TESTS_TARGET != 'app/robot' }} 
+        if: ${{ env.TESTS_TARGET == 'app/robot' }} 
         with:
           name: single_test_artifacts
           # Relative path to project root. 
