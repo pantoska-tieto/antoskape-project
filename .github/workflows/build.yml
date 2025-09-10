@@ -131,7 +131,7 @@ jobs:
         run: |
             sudo chown -R $(id -u):$(id -g) ${{ github.workspace }}
             docker run --rm \
-              --device=/dev/ttyUSB0 \ 
+              --device=/dev/ttyUSB0 \
               --privileged \
               --network host \
               --userns=host \
