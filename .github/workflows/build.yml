@@ -152,7 +152,6 @@ jobs:
       - name: Initialize
         shell: bash
         run: |
-            docker run --rm -it zephyrprojectrtos/ci:v0.28.4-arm64 bash
             echo "Checking out Zephyr env..."
             pwd
             echo "Current github workspace:"
