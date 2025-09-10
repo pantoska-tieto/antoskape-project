@@ -119,6 +119,7 @@ jobs:
 
       - name: Run container with custom setup
         run: |
+            sudo chown -R $(id -u):$(id -g) ${{ github.workspace }}
             docker run --rm \
               --device=/dev/ttyUSB0 \ 
               --privileged \
@@ -129,7 +130,7 @@ jobs:
               -v ${{ github.workspace }}:/workspace \
               -w /workspace/customer-application \
               -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
-              --user $(id -u):$(id -g) \
+              --user root \
               ${{ needs.process-image.outputs.image }} 
 
       - name: Set build env variables
