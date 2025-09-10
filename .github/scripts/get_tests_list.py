@@ -23,6 +23,12 @@ def define_args():
         default=None,
         help="Specific test scenario to be run",
     )
+    parser.add_argument(
+        "--tests_robot",
+        required=False,
+        default=None,
+        help="Robot tests to be run",
+    )
     return parser
 
 def get_test_paths(scope):
@@ -45,6 +51,9 @@ def get_test_paths(scope):
         case "app/unit/host":
             scope = "unit_host"
             target = "tests/unit_tests/host"
+        case "app/robot":
+            scope = "robot"
+            target = "tests/robot_tests"
         case "zephyr_all_tests":
             scope = "zephyr"
             target = "../zephyr/tests"
@@ -68,5 +77,12 @@ if __name__ == "__main__":
     if args.tests_scenario:
         scope, target = get_test_paths(args.tests_scenario)
         # Store option --testsuite-root to support test scenario filtering
-        with open("scepatt_tests.txt", "w") as f:
+        with open("scenario_tests.txt", "w") as f:
             f.write(f"--testsuite-root {target}\n")
+
+    # Robot tests are triggered
+    if args.tests_robot:
+        scope, target = get_test_paths(args.tests_robot)
+        # Robot tests
+        with open("robot_tests.txt", "w") as f:
+            f.write(f"--testlevelsplit tests {target}\n")

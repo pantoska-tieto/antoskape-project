@@ -100,6 +100,9 @@ if __name__ == "__main__":
         # Unit tests for local libs (no device needed)
         if args.target and "app/unit/host" in args.target:
             cmd_test = "west twister -vv"
+        # Robot tests
+        if args.target and "app/robot" in args.target:
+            cmd_test = "pabot"
         # All other tests (device HW needed)
         else:
             cmd_test = f"west twister -vv --platform {args.platform} --device-testing --device-serial {args.device_serial} --west-flash --flash-before"
@@ -109,6 +112,6 @@ if __name__ == "__main__":
             print(out)
             # Show test summary reports review
             print(err)
-            print(f"Return code from 'west twister' command through subprocess.run: {code}")
+            print(f"Return code for test command from subprocess.run: {code}")
     else:
          raise Exception("No test list provided!")

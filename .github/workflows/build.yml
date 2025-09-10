@@ -49,6 +49,7 @@ on:
           - "app/integration"
           - "app/unit/dut"
           - "app/unit/host"
+          - "app/robot"
           - "zephyr_all_tests"
     
 env:
@@ -175,7 +176,13 @@ jobs:
         shell: bash
         # Specific test scenario is filtered
         if : ${{ env.TEST_SCENARIO != 'N/A' || '' }} 
-        run: python .github/scripts/get_tests_list.py --tests_scenario ${{ env.TESTS_TARGET }}      
+        run: python .github/scripts/get_tests_list.py --tests_scenario ${{ env.TESTS_TARGET }} 
+        
+      - name: Create test list with robot tests
+        shell: bash
+        # Specific test scenario is filtered
+        if : ${{ env.TESTS_TARGET == 'app/robot' }} 
+        run: python .github/scripts/get_tests_list.py --tests_robot ${{ env.TESTS_TARGET }} 
 
       # Pass secrets into json file
       - name: Create json file with secrets variables
