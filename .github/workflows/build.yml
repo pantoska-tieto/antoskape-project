@@ -260,9 +260,7 @@ jobs:
           name: single_test_artifacts
           # Relative path to project root. 
           path: |
-            customer-application/output.xml
-            customer-application/log.html
-            customer-application/report.html
+            customer-application/pabot_results/*
           if-no-files-found: error
           retention-days: 5
       
