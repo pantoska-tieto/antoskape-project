@@ -85,4 +85,4 @@ if __name__ == "__main__":
         scope, target = get_test_paths(args.tests_robot)
         # Robot tests
         with open("robot_tests.txt", "w") as f:
-            f.write(f"--testlevelsplit tests {target}\n")
+            f.write(f"--testlevelsplit {target}\n")
