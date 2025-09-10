@@ -129,7 +129,7 @@ jobs:
               -v ${{ github.workspace }}:/workspace \
               -w /workspace/customer-application \
               -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
-              -user 1002:1002 \
+              -user ${{ github.actor_id }} \
               ${{ needs.process-image.outputs.image }} 
 
       - name: Set build env variables
