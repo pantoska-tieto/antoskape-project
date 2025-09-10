@@ -115,8 +115,7 @@ jobs:
       - name: Clean up workspace
         run: |
             sudo rm -rf ${{ github.workspace }}/*
-            ls -la ${{ github.workspace }}
-            
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
