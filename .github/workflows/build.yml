@@ -122,7 +122,7 @@ jobs:
         -v /run/dbus:/run/dbus 
         -v /dev:/dev 
         -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket 
-        --user ${{ needs.process-runner.outputs.uid }}:1000
+        --user ${{ needs.process-runner.outputs.uid }}
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
