@@ -121,8 +121,7 @@ jobs:
         -v /var/run/dbus:/var/run/dbus 
         -v /run/dbus:/run/dbus 
         -v /dev:/dev 
-        -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket 
-        --user 0
+        -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
