@@ -39,7 +39,7 @@ on:
         default: ""
         type: string
       run_tests:
-        description: Start testing
+        description: Target operation with image
         required: true
         default: "Build with testing"
         type: choice
