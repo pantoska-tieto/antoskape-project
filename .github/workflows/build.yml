@@ -41,12 +41,12 @@ on:
       run_tests:
         description: Start testing
         required: true
-        default: "Run tests"
+        default: "Build with testing"
         type: choice
         # Options with a space, parentheses don't work!
         options:
-          - "Run tests"
-          - "Without testing"
+          - "Build only"
+          - "Build with testing"
       tests_target:
         description: Tests scope to run
         required: false
@@ -69,7 +69,7 @@ env:
   TEST_TAG: N/A
   PYTEST_ARGS: N/A
   TEST_SCENARIO: N/A
-  RUN_TESTS: "Run tests"
+  RUN_TESTS: "Build with testing"
   # Pass all secrets as json to jobs
   SECRETS_JSON: ${{ toJSON(secrets) }}
 
@@ -202,7 +202,7 @@ jobs:
 
   start_testing:
     name: Trigger test framework
-    if: ${{ needs.build.outputs.testing == 'Run tests' }}
+    if: ${{ needs.build.outputs.testing == 'Build with testing' }}
     needs: [process-runner, process-image, build] 
     uses: ./.github/workflows/testing.yml
     with:
