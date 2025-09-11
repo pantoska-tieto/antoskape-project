@@ -38,6 +38,15 @@ on:
         required: false
         default: ""
         type: string
+      run_tests:
+        description: Start testing
+        required: true
+        default: "Run tests"
+        type: choice
+        # Options with a space, parentheses don't work!
+        options:
+          - "Run tests"
+          - "Without testing"
       tests_target:
         description: Tests scope to run
         required: false
@@ -60,7 +69,8 @@ env:
   TEST_TAG: N/A
   PYTEST_ARGS: N/A
   TEST_SCENARIO: N/A
-  # Pass all secrets as json to pytest
+  RUN_TESTS: "Run tests"
+  # Pass all secrets as json to jobs
   SECRETS_JSON: ${{ toJSON(secrets) }}
 
 jobs:  
@@ -68,17 +78,12 @@ jobs:
     name: Get runner label to execute the workflow
     runs-on: ubuntu-24.04
     outputs:
-      label: ${{ steps.runner-label.outputs.label }}
-      uid: ${{ steps.runner-label.outputs.uid }}
-      gid: ${{ steps.runner-label.outputs.gid }}
+      label: ${{ env.RUNNER_LABEL }}
     steps:
       - name: Read runner label
         id: runner-label
         run: |
             echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
-            echo "label=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_OUTPUT
-            echo "uid=$(id -u)" >> $GITHUB_OUTPUT
-            echo "gid=$(id -g)" >> $GITHUB_OUTPUT
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
 
@@ -110,6 +115,13 @@ jobs:
     runs-on: ${{ needs.process-runner.outputs.label }}
     outputs:
       test_type: ${{ env.TESTS_TARGET }}
+      testing: ${{ env.RUN_TESTS }}
+      board_target: ${{ env.BOARD_TARGET }}
+      device_serial: ${{ env.DEVICE_SERIAL }}
+      test_tag: ${{ env.TEST_TAG }}
+      pytest_args: ${{ env.PYTEST_ARGS }}
+      test_scenario: ${{ env.TEST_SCENARIO }}
+      tests_target: ${{ env.TESTS_TARGET }}
     defaults:
       run:
         working-directory: customer-application
@@ -139,6 +151,7 @@ jobs:
             echo "TEST_TAG=${INPUT_TEST_TAG:-$TEST_TAG}" >> $GITHUB_ENV
             echo "PYTEST_ARGS=${INPUT_PYTEST_ARGS:-$PYTEST_ARGS}" >> $GITHUB_ENV
             echo "TEST_SCENARIO=${INPUT_TEST_SCENARIO:-$TEST_SCENARIO}" >> $GITHUB_ENV
+            echo "RUN_TESTS=${INPUT_RUN_TESTS:-$RUN_TESTS}" >> $GITHUB_ENV
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
           INPUT_BOARD_TARGET: ${{ github.event.inputs.board_target }}
@@ -147,6 +160,7 @@ jobs:
           INPUT_TEST_TAG: ${{ github.event.inputs.test_tag }}
           INPUT_PYTEST_ARGS: ${{ github.event.inputs.pytest_args }}
           INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
+          INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
       
       # Initiate Zephyr environment
       - name: Initialize
@@ -177,45 +191,6 @@ jobs:
         run: |
             pip install -r requirements-extras.txt
 
-      # Generate tests paths to run with twister command
-      - name: Create test list with tests scope
-        shell: bash
-        # No test scenario is filtered
-        if : ${{ env.TEST_SCENARIO == 'N/A' || '' }} 
-        run: python .github/scripts/get_tests_list.py --tests_scope ${{ env.TESTS_TARGET }}
-
-      - name: Create test list with test scenario
-        shell: bash
-        # Specific test scenario is filtered
-        if : ${{ env.TEST_SCENARIO != 'N/A' || '' }} 
-        run: python .github/scripts/get_tests_list.py --tests_scenario ${{ env.TESTS_TARGET }} 
-        
-      - name: Create test list with robot tests
-        shell: bash
-        # Specific test scenario is filtered
-        if : ${{ env.TESTS_TARGET == 'app/robot' }} 
-        run: python .github/scripts/get_tests_list.py --tests_robot ${{ env.TESTS_TARGET }} 
-
-      # Pass secrets into json file
-      - name: Create json file with secrets variables
-        shell: bash
-        run: |
-            echo $SECRETS_JSON > vars.json
-            cat vars.json
-
-      # Put list of testcases into output variable for shell script usage
-      - name: Get tests list
-        shell: python
-        id: py-script
-        run: |
-            import os
-            import re
-            regex = re.compile('.*_tests.txt')
-            for dir in os.listdir('.'):
-                if regex.match(dir):
-                  with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
-                    f.write(f'test_list={os.path.join(dir)}\n')
-
       # Example for custom application build
       - name: Build app for ${{ env.BOARD_TARGET }}
         shell: bash
@@ -225,85 +200,18 @@ jobs:
         shell: bash
         run: west flash
 
-      # Twister tests section
-      - name: Twister tests
-        shell: bash
-        run: |
-            python .github/scripts/run_tests.py --platform ${{ env.BOARD_TARGET }} \
-            --device_serial ${{ env.DEVICE_SERIAL }} \
-            --tag ${{ env.TEST_TAG }} \
-            --pytest_args ${{ env.PYTEST_ARGS }} \
-            --scenario ${{ env.TEST_SCENARIO }} \
-            --test_list ${{steps.py-script.outputs.test_list}} \
-            --target ${{ env.TESTS_TARGET }}
-
-      # Archive all test artifacts except robot tests
-      - name: Single test artifacts
-        uses: actions/upload-artifact@v4
-        continue-on-error: true
-        if: ${{ env.TESTS_TARGET != 'app/robot' }} 
-        with:
-          name: single_test_artifacts
-          # Relative path to project root. 
-          path: |
-            customer-application/twister-out*/*
-          include-hidden-files: true
-          if-no-files-found: error
-          retention-days: 5
-
-      # Archive robot tests artifacts
-      - name: Single test artifacts
-        uses: actions/upload-artifact@v4
-        continue-on-error: true
-        if: ${{ env.TESTS_TARGET == 'app/robot' }} 
-        with:
-          name: single_test_artifacts
-          # Relative path to project root. 
-          path: |
-            customer-application/pabot_results/*
-          if-no-files-found: error
-          retention-days: 5
-      
-      # Prepare test summary report folder
-      - name: Prepare CI report summary
-        shell: bash
-        if : ${{ env.TESTS_TARGET != 'app/robot' }} 
-        run: |
-            rm -rf test-summary
-            sudo mkdir -p test-summary
-
-      # Collect all test summary reports into one folder
-      - name: Copy files to CI report summary
-        shell: python
-        if : ${{ env.TESTS_TARGET != 'app/robot' }} 
-        run: |
-            import os
-            import re
-            import shutil
-            regex = re.compile('twister-out.*')
-            for dir in os.listdir('.'):
-              if regex.match(dir):
-                print(f"Found: {dir}")
-                shutil.copyfile(os.path.join(dir, "twister_suite_report.xml"), \
-                os.path.join("test-summary", \
-                f"twister_suite_report{dir.split('-out')[1]}.xml"))
-
-      # Archive test summary report
-      - name: Archive test summary artifacts
-        uses: actions/upload-artifact@v4
-        continue-on-error: true
-        if: ${{ env.TESTS_TARGET != 'app/robot' }} 
-        with:
-          name: summary_test_artifacts
-          # Relative path to project root. 
-          path: |
-            customer-application/test-summary
-          if-no-files-found: error
-          retention-days: 5
-
-
-  publish_test_summaries:
-    name: Publish Test Summaries
-    if: ${{ needs.build.outputs.test_type != 'app/robot' }}
-    needs: build
-    uses: ./.github/workflows/reports-summary-publish.yml
+  start_testing:
+    name: Trigger test framework
+    if: ${{ needs.build.outputs.testing == 'Run tests' }}
+    needs: [process-runner, process-image, build] 
+    uses: ./.github/workflows/testing.yml
+    with:
+      docker_image: ${{ needs.process-image.outputs.image }}
+      runner_label: ${{ needs.process-runner.outputs.label }}
+      board_target: ${{ needs.build.outputs.board_target }}
+      device_serial: ${{ needs.build.outputs.device_serial }}
+      test_tag: ${{ needs.build.outputs.test_tag }}
+      pytest_args: ${{ needs.build.outputs.pytest_args }}
+      test_scenario: ${{ needs.build.outputs.test_scenario }}
+      tests_target: ${{ needs.build.outputs.tests_target }}
+    secrets: inherit
