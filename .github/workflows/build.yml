@@ -110,7 +110,7 @@ jobs:
             fi
 
   build:
-    name: Build and Test
+    name: Build Zephyr workspace
     needs: [process-image, process-runner]
     runs-on: ${{ needs.process-runner.outputs.label }}
     outputs:

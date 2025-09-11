@@ -39,7 +39,7 @@ on:
 
 jobs:
   testing:
-    name: Build and Test
+    name: Start testing
     runs-on: ${{ inputs.runner_label }}
     outputs:
       test_type: ${{ inputs.tests_target }}
@@ -125,17 +125,8 @@ jobs:
                   with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
                     f.write(f'test_list={os.path.join(dir)}\n')
 
-      # Example for custom application build
-      - name: Build app for ${{ inputs.board_target }}
-        shell: bash
-        run: west build -p always -b ${{ inputs.board_target }} app-esp32/blinky
-        
-      - name: Flash
-        shell: bash
-        run: west flash
-
-      # Twister tests section
-      - name: Twister tests
+      # Run Twister tests
+      - name: Run Twister tests
         shell: bash
         run: |
             python .github/scripts/run_tests.py --platform ${{ inputs.board_target }} \
@@ -146,8 +137,8 @@ jobs:
             --test_list ${{steps.py-script.outputs.test_list}} \
             --target ${{ inputs.tests_target }}
 
-      # Archive all test artifacts except robot tests
-      - name: Single test artifacts
+      # Archive all test artifacts except Robot tests
+      - name: Single test artifacts for non-Robot tests
         uses: actions/upload-artifact@v4
         continue-on-error: true
         if: ${{ inputs.tests_target != 'app/robot' }} 
@@ -161,7 +152,7 @@ jobs:
           retention-days: 5
 
       # Archive robot tests artifacts
-      - name: Single test artifacts
+      - name: Archive test summary artifacts for Robot-tests
         uses: actions/upload-artifact@v4
         continue-on-error: true
         if: ${{ inputs.tests_target == 'app/robot' }} 
@@ -174,7 +165,7 @@ jobs:
           retention-days: 5
       
       # Prepare test summary report folder
-      - name: Prepare CI report summary
+      - name: Prepare CI report summary for non-Robot tests
         shell: bash
         if : ${{ inputs.tests_target != 'app/robot' }} 
         run: |
@@ -198,7 +189,7 @@ jobs:
                 f"twister_suite_report{dir.split('-out')[1]}.xml"))
 
       # Archive test summary report
-      - name: Archive test summary artifacts
+      - name: Archive test summary artifacts for non-Robot tests
         uses: actions/upload-artifact@v4
         continue-on-error: true
         if: ${{ inputs.tests_target != 'app/robot' }} 

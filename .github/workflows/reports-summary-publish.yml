@@ -1,4 +1,5 @@
 name: Publish tests summary
+
 on:
   workflow_call:
     inputs:
@@ -9,9 +10,10 @@ on:
 
 jobs:
   publish-test-summaries:
+    name: Start testing
     runs-on: ${{ inputs.runner }}
     steps:
-      - name: Test Report
+      - name: Publish tests summary
         uses: phoenix-actions/test-reporting@v15
         if: success() || failure()
         with:
