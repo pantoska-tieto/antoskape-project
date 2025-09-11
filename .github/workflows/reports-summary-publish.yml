@@ -1,17 +1,24 @@
 name: Publish tests summary
+
 on:
   workflow_call:
+    inputs:
+      runner:
+        description: Label of the runner specified in Build workflow
+        required: true
+        type: string
 
 jobs:
   publish-test-summaries:
-    runs-on: self-hosted
+    name: Start testing
+    runs-on: ${{ inputs.runner }}
     steps:
-      - name: Test Report
+      - name: Publish tests summary
         uses: phoenix-actions/test-reporting@v15
         if: success() || failure()
         with:
           artifact: summary_test_artifacts
-          name: Firmware Test Summary
+          name: Zephyr test summary
           path: '*.xml'
           reporter: java-junit
           output-to: step-summary
