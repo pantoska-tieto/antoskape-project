@@ -36,6 +36,11 @@ on:
         required: true
         default: app/repo
         type: string
+      integration_tests:
+        description: Condition to run integration tests only
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   testing:
@@ -135,7 +140,8 @@ jobs:
             --pytest_args ${{ inputs.pytest_args }} \
             --scenario ${{ inputs.test_scenario }} \
             --test_list ${{steps.py-script.outputs.test_list}} \
-            --target ${{ inputs.tests_target }}
+            --target ${{ inputs.tests_target }} \
+            --integration_tests ${{ inputs.integration_tests }}
 
       # Archive all test artifacts except Robot tests
       - name: Single test artifacts for non-Robot tests

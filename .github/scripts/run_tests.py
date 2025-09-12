@@ -23,7 +23,7 @@ def define_args():
         "--test_list",
         required=False,
         default=None,
-        help="List with tests to be run",
+        help="List in text file with tests to be run",
     )
     parser.add_argument(
         "--platform",
@@ -60,6 +60,12 @@ def define_args():
         required=False,
         default=None,
         help="Path to text file with tests list",
+    )
+    parser.add_argument(
+        "--integration_tests",
+        required=False,
+        default=False,
+        help="Condition to run integration tests only",
     )
     return parser
 
@@ -101,8 +107,14 @@ if __name__ == "__main__":
         if args.target and "app/unit/host" in args.target:
             cmd_test = "west twister -vv"
         # Robot tests
-        if args.target and "app/robot" in args.target:
+        elif args.target and "app/robot" in args.target:
             cmd_test = "pabot"
+        # Only integration tests for specific platfom(s)
+        elif args.integration_tests and args.integration_tests == True and args.platform and args.platform != "":
+            cmd_test = f"west twister -vv --platform {args.platform} --device-testing --device-serial --tag integration --west-flash --flash-before"
+        # Only integration tests for all platforms
+        elif args.integration_tests and args.integration_tests == True and args.platform and args.platform == "":
+            cmd_test = "west twister -vv --device-testing --device-serial --tag integration --west-flash --flash-before"
         # All other tests (device HW needed)
         else:
             cmd_test = f"west twister -vv --platform {args.platform} --device-testing --device-serial {args.device_serial} --west-flash --flash-before"
