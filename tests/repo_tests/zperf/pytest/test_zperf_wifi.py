@@ -21,12 +21,14 @@ from tools import tools
 
 @pytest.mark.dependency(name="connect_wifi", scope="module")
 def test_wifi_connect(wifi_connect, shell: Shell):
+    logger.info("Testcase: test wifi connection")
     logger.info("Connect to wifi network.")
     assert wifi_connect, "WiFi connection could not be established, skipping zperf test."
     logger.info("Wifi connection established, starting zperf test...")
 
 @pytest.mark.dependency(depends=["connect_wifi"], scope="module")
 def test_udp_from_runner_to_dut(request, dut: DeviceAdapter, shell: Shell):
+    logger.info("Testcase: test UDP communication host runner -> DUT")
     config = request.config
     dut_ip = config.getini("dut_ip_address")
 

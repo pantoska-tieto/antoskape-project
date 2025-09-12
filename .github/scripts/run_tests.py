@@ -64,20 +64,20 @@ def define_args():
     return parser
 
 def run_cmd(cmd):
-        """Execute CLI command
+    """Execute CLI command
 
-        :param: str cmd: CLI commands to execute
-        :return: str out: stdout output from Popen method
-        :return: str err: stderr output from Popen method
-        :return: str returncode: return code from Popen method
-        """
-        print(f"CLI command to execute: {cmd}.")
-        try:
-            res = subprocess.run(cmd, capture_output=True, text=True, shell=True)
-            # Return output from command (byte string to string format)
-            return res.stdout, res.stderr, res.returncode
-        except Exception as e:
-            print(f"[ERROR] Failure during CLI command execution: {str(e)}.")
+    :param: str cmd: CLI commands to execute
+    :return: str out: stdout output from Popen method
+    :return: str err: stderr output from Popen method
+    :return: str returncode: return code from Popen method
+    """
+    print(f"CLI command to execute: {cmd}.")
+    try:
+        res = subprocess.run(cmd, capture_output=True, text=True, shell=True)
+        # Return output from command (byte string to string format)
+        return res.stdout, res.stderr, res.returncode
+    except Exception as e:
+        print(f"[ERROR] Failure during CLI command execution: {str(e)}.")
 
 if __name__ == "__main__":
     parser = define_args()

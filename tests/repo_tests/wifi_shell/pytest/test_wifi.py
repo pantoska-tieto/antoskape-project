@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 @pytest.mark.dependency(name="scan")
 def test_wifi_scan(get_secrets, dut: DeviceAdapter, shell: Shell):
-    logger.info("Testcase: check available wifi SSIDs.")
+    logger.info("Testcase: check available wifi SSIDs")
     shell.exec_command('wifi scan')
     lines = dut.readlines_until("Scan request done", timeout=20)
     assert any(get_secrets['PANT_SSID'].lower() in l.lower() for l in lines), "Scanning for demanded Wifi SSID failed!"
