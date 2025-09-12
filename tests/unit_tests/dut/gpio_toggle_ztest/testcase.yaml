@@ -2,6 +2,9 @@ tests:
   sample.ztest.gpio:
     platform_allow: esp32s3_devkitc/esp32s3/procpu
     tags:
-      - LED
       - gpio
+      - integration
     harness: ztest
+    integration_platforms:
+      - esp32s3_devkitc/esp32s3/procpu
+      - esp32c3_devkitm

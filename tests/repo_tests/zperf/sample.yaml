@@ -17,3 +17,10 @@ tests:
       - qemu_x86
       - esp32s3_devkitc/esp32s3/procpu
       - esp32c3_devkitm
+    integration_platforms:
+      - esp32s3_devkitc/esp32s3/procpu
+      - esp32c3_devkitm
+    tags:
+      - zperf
+      - wifi
+      - integration

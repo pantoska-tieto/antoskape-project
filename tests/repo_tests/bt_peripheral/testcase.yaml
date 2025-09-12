@@ -8,6 +8,9 @@ tests:
     integration_platforms:
       - qemu_x86
       - esp32s3_devkitc/esp32s3/procpu
+      - esp32c3_devkitm
     harness: pytest
     timeout: 180
-    tags: bluetooth
+    tags: 
+      - bluetooth
+      - integration
