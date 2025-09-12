@@ -5,6 +5,7 @@
  */
 
 #include <zephyr/ztest.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <zephyr/kernel.h>
@@ -34,9 +35,10 @@ static const struct gpio_dt_spec led9 = GPIO_DT_SPEC_GET(LED9_NODE, gpios);
  */
 // static const struct gpio_dt_spec led = GPIO_DT_SPEC_GET(LED0_NODE, gpios);
 int ret;
+int ret9;
 
 
-bool contains_false(const bool *list, int size) {
+bool contains_false(bool *list, int size) {
     for (int i = 0; i < size; i++) {
         if (!list[i]) {
             return true;  // Found a false value
@@ -65,16 +67,14 @@ ZTEST(gpio_test, test_gpio_toggle_and_verify)
     // Initial setup
     bool *list = NULL;      // Start with an empty list of booleans
     int size = 0;           // Current size of the list
-    int init_state = gpio_pin_get(led9.port, led9.pin);
-
+    int init_state = 0;     // Initial state of the LED pin
 
     for (int i = 0; i < SIZE + 1; i++) {
         
         bool *temp = realloc(list, (size + 1) * sizeof(bool));
-                if (temp == NULL) {
-                    free(list);
-                    printf("Memory allocation failed.\n");
-                    return 1;
+        if (temp == NULL) {
+            free(list);
+            printk("Memory allocation failed.\n");
         }
         list = temp;
 
@@ -94,9 +94,11 @@ ZTEST(gpio_test, test_gpio_toggle_and_verify)
             size++;
             init_state = actual_state;
         }
-        zassert_equal(contains_false(*list, size), "GPIO (LED) state mismatch, test failed");
+    
         k_msleep(SLEEP_TIME_MS);
     }
+
+    zassert_true(contains_false(list, size), "GPIO (LED) state mismatch, test failed");
 }
 
 ZTEST_SUITE(gpio_test, NULL, NULL, NULL, NULL, NULL);
