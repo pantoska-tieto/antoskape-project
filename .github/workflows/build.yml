@@ -70,7 +70,7 @@ env:
   PYTEST_ARGS: N/A
   TEST_SCENARIO: N/A
   RUN_TESTS: "Build with testing"
-  INTEGRATION_TESTS: False
+  NO_INTEGRATION_TESTS: true
   # Pass all secrets as json to jobs
   SECRETS_JSON: ${{ toJSON(secrets) }}
 
@@ -123,7 +123,7 @@ jobs:
       pytest_args: ${{ env.PYTEST_ARGS }}
       test_scenario: ${{ env.TEST_SCENARIO }}
       tests_target: ${{ env.TESTS_TARGET }}
-      integration_tests: ${{ env.INTEGRATION_TESTS }}
+      no_integration_tests: ${{ env.NO_INTEGRATION_TESTS }}
     defaults:
       run:
         working-directory: customer-application
@@ -154,7 +154,7 @@ jobs:
             echo "PYTEST_ARGS=${INPUT_PYTEST_ARGS:-$PYTEST_ARGS}" >> $GITHUB_ENV
             echo "TEST_SCENARIO=${INPUT_TEST_SCENARIO:-$TEST_SCENARIO}" >> $GITHUB_ENV
             echo "RUN_TESTS=${INPUT_RUN_TESTS:-$RUN_TESTS}" >> $GITHUB_ENV
-            echo "INTEGRATION_TESTS=${INPUT_INTEGRATION_TESTS:-$INTEGRATION_TESTS}" >> $GITHUB_ENV
+            echo "NO_INTEGRATION_TESTS=${INPUT_NO_INTEGRATION_TESTS:-$NO_INTEGRATION_TESTS}" >> $GITHUB_ENV
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
           INPUT_BOARD_TARGET: ${{ github.event.inputs.board_target }}
@@ -164,7 +164,7 @@ jobs:
           INPUT_PYTEST_ARGS: ${{ github.event.inputs.pytest_args }}
           INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
           INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
-          INPUT_INTEGRATIONN_TESTS: ${{ github.event.inputs.tests_target != 'integration tests' && env.INTEGRATION_TESTS || true }}
+          INPUT_NO_INTEGRATIONN_TESTS: ${{ github.event.inputs.tests_target != 'integration tests' && env.NO_INTEGRATION_TESTS || false }}
 
       # Initiate Zephyr environment
       - name: Initialize
@@ -218,5 +218,5 @@ jobs:
       pytest_args: ${{ needs.build.outputs.pytest_args }}
       test_scenario: ${{ needs.build.outputs.test_scenario }}
       tests_target: ${{ needs.build.outputs.tests_target }}
-      integration_tests: ${{ needs.build.outputs.integration_tests }}
+      no_integration_tests: ${{ needs.build.outputs.no_integration_tests }}
     secrets: inherit
