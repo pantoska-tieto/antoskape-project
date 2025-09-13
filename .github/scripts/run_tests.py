@@ -104,6 +104,9 @@ if __name__ == "__main__":
             print(f"Selected tests to run:\n")
             [print(t.replace("\n", "")) for t in tests]
 
+        print(f"pantoska: args.integration_tests: {args.integration_tests}")
+        print(f"pantoska: args.platform: {args.platform}")
+
         # Unit tests for local libs (no device needed)
         if args.target and "app/unit/host" in args.target:
             cmd_test = "west twister -vv"
