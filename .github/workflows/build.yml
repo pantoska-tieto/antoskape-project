@@ -153,7 +153,7 @@ jobs:
             echo "PYTEST_ARGS=${INPUT_PYTEST_ARGS:-$PYTEST_ARGS}" >> $GITHUB_ENV
             echo "TEST_SCENARIO=${INPUT_TEST_SCENARIO:-$TEST_SCENARIO}" >> $GITHUB_ENV
             echo "RUN_TESTS=${INPUT_RUN_TESTS:-$RUN_TESTS}" >> $GITHUB_ENV
-            if [[ -n "$INPUT_TESTS_TARGET" &&  "$INPUT_TESTS_TARGET" == "integration_tests" ]]; then
+            if [[ $INPUT_TESTS_TARGET &&  $INPUT_TESTS_TARGET == "integration_tests" ]]; then
               echo "INTEGRATION_TESTS=yes" >> $GITHUB_ENV
             fi
             echo "pantoska debug ---------------------"
