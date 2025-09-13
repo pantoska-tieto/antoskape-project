@@ -144,8 +144,6 @@ jobs:
           path: customer-application
 
       - name: Set build env variables
-        id: set-env-vars
-        shell: bash
         run: |
             echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
             echo "BOARD_TARGET=${INPUT_BOARD_TARGET:-$BOARD_TARGET}" >> $GITHUB_ENV
@@ -168,27 +166,57 @@ jobs:
           INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
           INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
 
-      - name: Debug INPUT_TESTS_TARGET
+      # Initiate Zephyr environment
+      - name: Initialize
+        shell: bash
         run: |
-            echo "INPUT_TESTS_TARGET is: $INPUT_TESTS_TARGET"
-            echo "INTEGRATION_TESTS is:${{ steps.set-env-vars.outputs.integration }}"
-        env:
-          INPUT_TESTS_TARGET: ${{ github.event.inputs.tests_target }}
-  
+            echo "Checking out Zephyr env..."
+            pwd
+            echo "Current github workspace:"
+            ls -la
+            echo "Parent github folder"
+            ls -la ..
+            rm -rf ../.west
+            west init -l .
+            west update -o=--depth=1 -n
+            west blobs fetch hal_espressif
+            
+      # Install lib extras for testing
+      - name: Install lib extras
+        shell: bash
+        run: |
+            sudo apt-get update
+            sudo apt-get install -y iperf
+            sudo apt-get install -y sysbench fio
+
+      # Install Python extras for testing
+      - name: Install Python extra packages
+        shell: bash
+        run: |
+            pip install -r requirements-extras.txt
+
+      # Example for custom application build
+      - name: Build app for ${{ env.BOARD_TARGET }}
+        shell: bash
+        run: west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky
+        
+      - name: Flash
+        shell: bash
+        run: west flash
+
   start_testing:
     name: Trigger test framework
-    runs-on: ${{ needs.process-runner.outputs.label }}
     if: ${{ needs.build.outputs.testing == 'Build with testing' }}
     needs: [process-runner, process-image, build] 
-    steps:
-      - name: Show variables from Build
-        run: |
-          echo "List of variables from Build job"
-          echo "testing: ${{ needs.build.outputs.testing }}"
-          echo "board_target: ${{ needs.build.outputs.board_target }}"  
-          echo "device_serial: ${{ needs.build.outputs.device_serial }}"
-          echo "test_tag: ${{ needs.build.outputs.test_tag }}"
-          echo "pytest_args: ${{ needs.build.outputs.pytest_args }}"
-          echo "test_scenario: ${{ needs.build.outputs.test_scenario }}"
-          echo "tests_target: ${{ needs.build.outputs.tests_target }}"
-          echo "integration_tests: ${{ needs.build.outputs.integration_tests }}"
+    uses: ./.github/workflows/testing.yml
+    with:
+      docker_image: ${{ needs.process-image.outputs.image }}
+      runner_label: ${{ needs.process-runner.outputs.label }}
+      board_target: ${{ needs.build.outputs.board_target }}
+      device_serial: ${{ needs.build.outputs.device_serial }}
+      test_tag: ${{ needs.build.outputs.test_tag }}
+      pytest_args: ${{ needs.build.outputs.pytest_args }}
+      test_scenario: ${{ needs.build.outputs.test_scenario }}
+      tests_target: ${{ needs.build.outputs.tests_target }}
+      integration_tests: ${{ needs.build.outputs.integration_tests }}
+    secrets: inherit
