@@ -164,7 +164,7 @@ jobs:
           INPUT_PYTEST_ARGS: ${{ github.event.inputs.pytest_args }}
           INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
           INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
-          INPUT_NO_INTEGRATIONN_TESTS: ${{ (github.event.inputs.tests_target != 'integration tests' && env.NO_INTEGRATION_TESTS == 'true') && 'true' || 'false' }}
+          INPUT_NO_INTEGRATIONN_TESTS: ${{ github.event.inputs.tests_target != 'integration tests' && env.NO_INTEGRATION_TESTS || 'false' }}
 
       # Initiate Zephyr environment
       - name: Initialize
@@ -218,5 +218,5 @@ jobs:
       pytest_args: ${{ needs.build.outputs.pytest_args }}
       test_scenario: ${{ needs.build.outputs.test_scenario }}
       tests_target: ${{ needs.build.outputs.tests_target }}
-      no_integration_tests: ${{ needs.build.outputs.no_integration_tests }}
+      no_integration_tests: ${{ needs.build.outputs.no_integration_tests == 'true' }}
     secrets: inherit
