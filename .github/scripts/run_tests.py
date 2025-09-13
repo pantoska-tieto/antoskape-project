@@ -72,7 +72,7 @@ def define_args():
         "--no_integration_tests",
         required=False,
         type=str2bool,
-        default=True
+        default=True,
         help="Condition to run integration tests only",
     )
     return parser
