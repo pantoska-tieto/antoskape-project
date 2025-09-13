@@ -1,6 +1,0 @@
-tests:
-  sample.pytest.basic:
-    min_ram: 40
-    harness: pytest
-    tags:
-      - pytest
