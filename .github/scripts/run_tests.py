@@ -3,16 +3,10 @@ import subprocess
 import os
 from pathlib import Path
 
+
 # Setup workspace environment
 _p = Path(os.path.abspath(__file__)).parents[2]
 os.chdir(os.path.join(_p))
-
-def str2bool(val):
-    """Parse Boolean value from Github Actions input
-
-    :return: bool: True if no integration tests are run
-    """
-    return str(val).lower() not in ("yes", "true", "t", "1")
 
 def define_args():
     """Define CLI arguments set
@@ -69,10 +63,9 @@ def define_args():
         help="Path to text file with tests list",
     )
     parser.add_argument(
-        "--no_integration_tests",
+        "--integration_tests",
         required=False,
-        type=str2bool,
-        default=True,
+        default=None,
         help="Condition to run integration tests only",
     )
     return parser
@@ -118,10 +111,10 @@ if __name__ == "__main__":
         elif args.target and "app/robot" in args.target:
             cmd_test = "pabot"
         # Only integration tests for specific platfom(s)
-        elif args.no_integration_tests and args.no_integration_tests is False and args.platform and args.platform != "":
+        elif args.integration_tests and args.integration_tests == "yes" and args.platform and args.platform != "":
             cmd_test = f"west twister -vv --platform {args.platform} --device-testing --device-serial --tag integration --west-flash --flash-before"
         # Only integration tests for all platforms
-        elif args.no_integration_tests and args.no_integration_tests is False and args.platform and args.platform == "":
+        elif args.integration_tests and args.integration_tests == "yes" and args.platform and args.platform == "":
             cmd_test = "west twister -vv --device-testing --device-serial --tag integration --west-flash --flash-before"
         # All other tests (device HW needed)
         else:
