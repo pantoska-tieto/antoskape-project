@@ -170,7 +170,7 @@ jobs:
       - name: Debug INPUT_TESTS_TARGET
         run: |
             echo "INPUT_TESTS_TARGET is: $INPUT_TESTS_TARGET"
-            echo "INTEGRATION_TESTS is:${{ steps.set-env-vars.outputs.integration }}
+            echo "INTEGRATION_TESTS is:${{ steps.set-env-vars.outputs.integration }}"
         env:
           INPUT_TESTS_TARGET: ${{ github.event.inputs.tests_target }}
   
