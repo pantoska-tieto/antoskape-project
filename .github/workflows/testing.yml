@@ -134,7 +134,8 @@ jobs:
       - name: Run Twister tests
         shell: bash
         run: |
-            python .github/scripts/run_tests.py --platform ${{ inputs.board_target }} \
+            python .github/scripts/run_tests.py 
+            --platform ${{ inputs.board_target }} \
             --device_serial ${{ inputs.device_serial }} \
             --tag ${{ inputs.test_tag }} \
             --pytest_args ${{ inputs.pytest_args }} \
