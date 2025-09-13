@@ -191,4 +191,4 @@ jobs:
           echo "pytest_args: ${{ needs.build.outputs.pytest_args }}"
           echo "test_scenario: ${{ needs.build.outputs.test_scenario }}"
           echo "tests_target: ${{ needs.build.outputs.tests_target }}"
-          echo "integration_tests: ${{ needs.build.outputs.integration_tests }}
+          echo "integration_tests: ${{ needs.build.outputs.integration_tests }}"
