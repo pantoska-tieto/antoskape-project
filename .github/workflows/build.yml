@@ -70,7 +70,7 @@ env:
   PYTEST_ARGS: N/A
   TEST_SCENARIO: N/A
   RUN_TESTS: "Build with testing"
-  NO_INTEGRATION_TESTS: "true"
+  NO_INTEGRATION_TESTS: true
   # Pass all secrets as json to jobs
   SECRETS_JSON: ${{ toJSON(secrets) }}
 
@@ -164,7 +164,7 @@ jobs:
           INPUT_PYTEST_ARGS: ${{ github.event.inputs.pytest_args }}
           INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
           INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
-          INPUT_NO_INTEGRATIONN_TESTS: ${{ github.event.inputs.tests_target != 'integration_tests' && env.NO_INTEGRATION_TESTS || 'false' }}
+          INPUT_NO_INTEGRATIONN_TESTS: ${{ (github.event.inputs.tests_target != 'integration tests' && env.NO_INTEGRATION_TESTS == 'true') && 'true' || 'false' }}
 
       # Initiate Zephyr environment
       - name: Initialize
