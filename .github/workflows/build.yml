@@ -145,6 +145,7 @@ jobs:
 
       - name: Set build env variables
         id: set-env-vars
+        shell: bash
         run: |
             echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
             echo "BOARD_TARGET=${INPUT_BOARD_TARGET:-$BOARD_TARGET}" >> $GITHUB_ENV
@@ -154,7 +155,7 @@ jobs:
             echo "PYTEST_ARGS=${INPUT_PYTEST_ARGS:-$PYTEST_ARGS}" >> $GITHUB_ENV
             echo "TEST_SCENARIO=${INPUT_TEST_SCENARIO:-$TEST_SCENARIO}" >> $GITHUB_ENV
             echo "RUN_TESTS=${INPUT_RUN_TESTS:-$RUN_TESTS}" >> $GITHUB_ENV
-            if [[ $INPUT_TESTS_TARGET == 'integration_tests' ]]; then
+            if [[ ${INPUT_TESTS_TARGET} == 'integration_tests' ]]; then
             echo "integration=yes" >> $GITHUB_OUTPUT
             fi
         env:
