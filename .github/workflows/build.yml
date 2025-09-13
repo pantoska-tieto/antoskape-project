@@ -58,8 +58,8 @@ on:
           - "app/unit/dut"
           - "app/unit/host"
           - "app/robot"
-          - "integration tests"
-          - "zephyr fw tests"
+          - "integration_tests"
+          - "zephyr_framework_tests"
     
 env:
   RUNNER_LABEL: raspberrypi5-production
@@ -164,7 +164,7 @@ jobs:
           INPUT_PYTEST_ARGS: ${{ github.event.inputs.pytest_args }}
           INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
           INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
-          INPUT_NO_INTEGRATIONN_TESTS: ${{ github.event.inputs.tests_target != 'integration tests' && env.NO_INTEGRATION_TESTS || 'false' }}
+          INPUT_NO_INTEGRATIONN_TESTS: ${{ github.event.inputs.tests_target != 'integration_tests' && env.NO_INTEGRATION_TESTS || 'false' }}
 
       # Initiate Zephyr environment
       - name: Initialize

@@ -42,7 +42,7 @@ def get_test_paths(scope):
         case "app/repo":
             scope = "repo"
             target = "tests/repo_tests"
-        case "integration tests":
+        case "integration_tests":
             scope = "integration"
             target = "tests"
         case "app/unit/dut":
@@ -54,7 +54,7 @@ def get_test_paths(scope):
         case "app/robot":
             scope = "robot"
             target = "tests/robot_tests"
-        case "zephyr fw tests":
+        case "zephyr_framework_tests":
             scope = "zephyr"
             target = "../zephyr/tests"
     return scope, target
