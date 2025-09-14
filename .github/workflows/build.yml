@@ -144,6 +144,7 @@ jobs:
           path: customer-application
 
       - name: Set build env variables
+        shell: bash
         run: |
             echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
             echo "BOARD_TARGET=${INPUT_BOARD_TARGET:-$BOARD_TARGET}" >> $GITHUB_ENV
@@ -194,15 +195,6 @@ jobs:
         shell: bash
         run: |
             pip install -r requirements-extras.txt
-
-      # Example for custom application build
-      - name: Build app for ${{ env.BOARD_TARGET }}
-        shell: bash
-        run: west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky
-        
-      - name: Flash
-        shell: bash
-        run: west flash
 
   start_testing:
     name: Trigger test framework
