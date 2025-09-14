@@ -1,0 +1,11 @@
+tests:
+  unit_tests.dut.gpio_pins_ztest:
+    tags:
+    - drivers
+    - gpio
+    depends_on: gpio
+    harness: ztest
+    platform_allow:
+      - esp32s3_devkitc/esp32s3/procpu
+      - esp32c3_devkitm
+    

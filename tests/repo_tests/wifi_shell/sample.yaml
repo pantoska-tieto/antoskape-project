@@ -7,7 +7,7 @@ sample:
   description: Test wifi driver and APIs functionality
   name: WiFi sample app
 tests:
-  sample.net.wifi.esp32:
+  repo_tests.wifi_shell:
     harness: pytest
     harness_config:
       pytest_dut_scope: session

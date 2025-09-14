@@ -9,7 +9,7 @@ sample:
   description: Network performance measurement tool for Zephyr
   name: zperf
 tests:
-  sample.net.zperf:
+  repo_tests.zperf:
     harness: pytest
     harness_config:
       pytest_dut_scope: module
