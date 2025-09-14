@@ -113,7 +113,9 @@ Integration tests can be split over any of tests/ subfolders. The only criterias
 <br/>
 See example:<br/>
 <br/>
+
 ![Test case assigned to Integration tests](images/integration_test.png)
+
 <br/>
 <br/>
 
