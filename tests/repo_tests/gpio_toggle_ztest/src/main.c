@@ -48,7 +48,7 @@ bool contains_false(bool *list, int size) {
 }
 
 
-ZTEST(gpio_test, test_gpio_toggle_and_verify)
+ZTEST(gpio, test_gpio_toggle_and_verify)
 {
     zassert_true(gpio_is_ready_dt(&led), "GPIO device not ready");
     printk("GPIO system is ready\n");
@@ -101,4 +101,4 @@ ZTEST(gpio_test, test_gpio_toggle_and_verify)
     zassert_true(contains_false(list, size), "GPIO (LED) state mismatch, test failed");
 }
 
-ZTEST_SUITE(gpio_test, NULL, NULL, NULL, NULL, NULL);
+ZTEST_SUITE(gpio, NULL, NULL, NULL, NULL, NULL);
