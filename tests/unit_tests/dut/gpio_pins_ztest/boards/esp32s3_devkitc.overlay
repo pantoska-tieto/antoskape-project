@@ -1,14 +1,10 @@
 / {
      aliases {
-             led0 = &myled0;
              led9 = &myled9;
      };
 
      leds {
              compatible = "gpio-leds";
-             myled0: led_0 {
-                     gpios = <&gpio0 13 GPIO_ACTIVE_LOW>;
-             };
              myled9: led_9 {
                      gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
              };

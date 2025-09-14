@@ -1,5 +1,5 @@
 tests:
-  sample.bluetooth.peripheral:
+  repo_tests.bt_peripheral:
     platform_allow:
       - qemu_x86
       - nucleo_wb55rg
