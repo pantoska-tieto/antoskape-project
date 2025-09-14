@@ -15,7 +15,7 @@ on:
         type: string
       board_target:
         description: Target board for the build
-        required: false
+        required: true
         default: esp32s3_devkitc/esp32s3/procpu
         type: string
       device_serial:

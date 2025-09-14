@@ -114,11 +114,11 @@ if __name__ == "__main__":
         elif args.target and "app/robot" in args.target:
             cmd_test = "pabot"
         # Only integration tests for specific platfom(s)
-        elif args.integration_tests and args.integration_tests == "yes" and args.platform and args.platform != "":
-            cmd_test = f"west twister -vv --platform {args.platform} --device-testing --device-serial --tag integration --west-flash --flash-before"
+        elif args.integration_tests and args.integration_tests == "yes" and args.device_serial and args.device_serial != "":
+            cmd_test = f"west twister -vv --platform {args.platform} --device-testing --device-serial {args.device_serial} --tag integration --west-flash --flash-before"
         # Only integration tests for all platforms
-        elif args.integration_tests and args.integration_tests == "yes" and args.platform and args.platform == "":
-            cmd_test = "west twister -vv --device-testing --device-serial --tag integration --west-flash --flash-before"
+        elif args.integration_tests and args.integration_tests == "yes" and args.device_serial and args.device_serial == "":
+            cmd_test = f"west twister -vv --platform {args.platform} --tag integration"
         # All other tests (device HW needed)
         else:
             cmd_test = f"west twister -vv --platform {args.platform} --device-testing --device-serial {args.device_serial} --west-flash --flash-before"
