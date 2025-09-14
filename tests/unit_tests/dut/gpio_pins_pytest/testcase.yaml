@@ -1,0 +1,7 @@
+tests:
+  unit_tests.gpio_pins_pytest:
+    tags: gpio
+    platform_allow:
+      - esp32s3_devkitc/esp32s3/procpu
+      - esp32c3_devkitm
+    harness: pytest
