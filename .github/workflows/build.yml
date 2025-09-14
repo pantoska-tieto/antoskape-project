@@ -196,6 +196,15 @@ jobs:
         run: |
             pip install -r requirements-extras.txt
 
+      # Example for custom application build
+      - name: Build app for ${{ env.BOARD_TARGET }}
+        shell: bash
+        run: west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky
+        
+      - name: Flash
+        shell: bash
+        run: west flash
+
   start_testing:
     name: Trigger test framework
     if: ${{ needs.build.outputs.testing == 'Build with testing' }}
