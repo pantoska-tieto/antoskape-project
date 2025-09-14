@@ -8,9 +8,9 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/ztest.h>
 
-#if DT_NODE_HAS_PROP(DT_ALIAS(led9), gpios)
-#define TEST_NODE DT_GPIO_CTLR(DT_ALIAS(led9), gpios)
-#define TEST_PIN DT_GPIO_PIN(DT_ALIAS(led9), gpios)
+#if DT_NODE_HAS_PROP(DT_ALIAS(led0), gpios)
+#define TEST_NODE DT_GPIO_CTLR(DT_ALIAS(led0), gpios)
+#define TEST_PIN DT_GPIO_PIN(DT_ALIAS(led0), gpios)
 #else
 #error Unsupported board
 #endif
