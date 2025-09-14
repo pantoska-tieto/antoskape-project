@@ -3,6 +3,7 @@ import subprocess
 import os
 from pathlib import Path
 
+
 # Setup workspace environment
 _p = Path(os.path.abspath(__file__)).parents[2]
 os.chdir(os.path.join(_p))
@@ -23,7 +24,7 @@ def define_args():
         "--test_list",
         required=False,
         default=None,
-        help="List with tests to be run",
+        help="List in text file with tests to be run",
     )
     parser.add_argument(
         "--platform",
@@ -61,6 +62,12 @@ def define_args():
         default=None,
         help="Path to text file with tests list",
     )
+    parser.add_argument(
+        "--integration_tests",
+        required=False,
+        default=None,
+        help="Condition to run integration tests only",
+    )
     return parser
 
 def run_cmd(cmd):
@@ -97,12 +104,21 @@ if __name__ == "__main__":
             print(f"Selected tests to run:\n")
             [print(t.replace("\n", "")) for t in tests]
 
+        print(f"pantoska: args.integration_tests: {args.integration_tests}")
+        print(f"pantoska: args.platform: {args.platform}")
+
         # Unit tests for local libs (no device needed)
         if args.target and "app/unit/host" in args.target:
             cmd_test = "west twister -vv"
         # Robot tests
-        if args.target and "app/robot" in args.target:
+        elif args.target and "app/robot" in args.target:
             cmd_test = "pabot"
+        # Only integration tests for specific platfom(s)
+        elif args.integration_tests and args.integration_tests == "yes" and args.device_serial and args.device_serial != "":
+            cmd_test = f"west twister -vv --platform {args.platform} --device-testing --device-serial {args.device_serial} --tag integration --west-flash --flash-before"
+        # Only integration tests for all platforms
+        elif args.integration_tests and args.integration_tests == "yes" and args.device_serial and args.device_serial == "":
+            cmd_test = f"west twister -vv --platform {args.platform} --tag integration"
         # All other tests (device HW needed)
         else:
             cmd_test = f"west twister -vv --platform {args.platform} --device-testing --device-serial {args.device_serial} --west-flash --flash-before"

@@ -1,9 +1,12 @@
 tests:
-  sample.ztest.gpio:
-    platform_allow: esp32s3_devkitc/esp32s3/procpu
+  repo_tests.gpio_toggle_ztest.gpio:
+    platform_allow:
+      - esp32s3_devkitc/esp32s3/procpu
+      - esp32c3_devkitm
     tags:
       - gpio
       - integration
+      - ztest
     harness: ztest
     integration_platforms:
       - esp32s3_devkitc/esp32s3/procpu

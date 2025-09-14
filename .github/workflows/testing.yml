@@ -36,6 +36,14 @@ on:
         required: true
         default: app/repo
         type: string
+      integration_tests:
+        description: Condition to run integration tests only
+        required: false
+        type: string
+
+env:
+  # Pass all secrets as json to jobs
+  SECRETS_JSON: ${{ toJSON(secrets) }}
 
 jobs:
   testing:
@@ -93,6 +101,21 @@ jobs:
         run: |
             pip install -r requirements-extras.txt
 
+      #  Review of variables from Build workflow
+      - name: Show variables from caller workflow
+        shell: bash
+        run: |
+            echo "Variables from caller workflow:"
+            echo "docker_image: ${{ inputs.docker_image }}"
+            echo "runner_label: ${{ inputs.runner_label }}"
+            echo "integration_tests: ${{ inputs.integration_tests }}"
+            echo "board_target: ${{ inputs.board_target }}"
+            echo "device_serial: ${{ inputs.device_serial }}"
+            echo "tests_target: ${{ inputs.tests_target }}"
+            echo "test_scenario: ${{ inputs.test_scenario }}"
+            echo "test_tag: ${{ inputs.test_tag }}"
+            echo "pytest_args: ${{ inputs.pytest_args }}"      
+
       # Generate tests paths to run with twister command
       - name: Create test list with tests scope
         shell: bash
@@ -125,6 +148,13 @@ jobs:
                   with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
                     f.write(f'test_list={os.path.join(dir)}\n')
 
+      # Pass secrets for tests into json file
+      - name: Create json file with secrets variables
+        shell: bash
+        run: |
+            echo $SECRETS_JSON > vars.json
+            cat vars.json
+
       # Run Twister tests
       - name: Run Twister tests
         shell: bash
@@ -135,7 +165,8 @@ jobs:
             --pytest_args ${{ inputs.pytest_args }} \
             --scenario ${{ inputs.test_scenario }} \
             --test_list ${{steps.py-script.outputs.test_list}} \
-            --target ${{ inputs.tests_target }}
+            --target ${{ inputs.tests_target }} \
+            --integration_tests ${{ inputs.integration_tests }}
 
       # Archive all test artifacts except Robot tests
       - name: Single test artifacts for non-Robot tests
@@ -184,9 +215,13 @@ jobs:
             for dir in os.listdir('.'):
               if regex.match(dir):
                 print(f"Found: {dir}")
-                shutil.copyfile(os.path.join(dir, "twister_suite_report.xml"), \
-                os.path.join("test-summary", \
-                f"twister_suite_report{dir.split('-out')[1]}.xml"))
+                if os.path.exists(os.path.join(dir, "twister_suite_report.xml")):
+                  shutil.copyfile(os.path.join(dir, "twister_suite_report.xml"), \
+                  os.path.join("test-summary", \
+                  f"twister_suite_report{dir.split('-out')[1]}.xml"))
+                else:
+                  print(f"File twister_suite_report.xml not found in {dir}")
+
 
       # Archive test summary report
       - name: Archive test summary artifacts for non-Robot tests
