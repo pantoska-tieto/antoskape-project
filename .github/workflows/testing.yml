@@ -194,7 +194,7 @@ jobs:
         shell: bash
         run: |
           cd ..
-          echo "files=$(find customer-application -type f -path "*/twister-out*/twister_suite_report.xml" | paste -sd "," -)" >> $GITHUB_OUTPUT
+          echo "files=$(find customer-application -type f -path '*/twister-out*/twister_suite_report.xml' | paste -sd ',' -)" >> $GITHUB_OUTPUT
 
       # Upload xml files for test statistics to artifacts
       - name: Upload all twister_suite_report.xml to artifacts
@@ -204,6 +204,7 @@ jobs:
           name: xml_statistics_artifacts
           path: |
               ${{ steps.find_files.outputs.files }}
+          retention-days: 5
 
       # Archive robot tests artifacts
       - name: Archive test summary artifacts for Robot-tests
