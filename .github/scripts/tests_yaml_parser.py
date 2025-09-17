@@ -26,7 +26,7 @@ def get_tests_list(target):
     :param: string target: path to target folder
     :return: list summary: all tests paths in list-format
     """
-    test_list = [f"{root}\\{file}" for root, dirs, files in os.walk(target, topdown=True) for file in files if file == "testcase.yaml"]
+    test_list = [f"{root}/{file}" for root, dirs, files in os.walk(target, topdown=True) for file in files if file == "testcase.yaml"]
     print(test_list)
     return test_list
 
