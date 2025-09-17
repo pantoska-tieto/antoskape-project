@@ -120,7 +120,7 @@ jobs:
       - name: Create list of all application tests
         shell: bash
         # No test scenario is filtered
-        run: python .github/scripts/tests_ymal_parser.py
+        run: python .github/scripts/tests_yaml_parser.py
 
       # Generate tests paths to run with twister command
       - name: Create test list with tests scope
