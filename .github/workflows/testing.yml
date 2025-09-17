@@ -192,7 +192,7 @@ jobs:
       - name: Find twister_suite_report.xml for all tests
         id: find_files
         run: |
-          echo "files=$(find customer-application/tests -type f -path "*/twister-out*/twister_suite_report.xml" | paste -sd "," -)" >> $GITHUB_OUTPUT
+          echo "files=$(find . -type f -path "*/twister-out*/twister_suite_report.xml" | paste -sd "," -)" >> $GITHUB_OUTPUT
 
       # Upload xml files for test statistics to artifacts
       - name: Upload all twister_suite_report.xml to artifacts
