@@ -203,7 +203,7 @@ jobs:
         with:
           name: xml_statistics_artifacts
           path: |
-              ${{ steps.find_files.outputs.files }}
+              customer-application/twister-out/twister_suite_report.xml,customer-application/twister-out.1/twister_suite_report.xml
           retention-days: 5
 
       # Archive robot tests artifacts
