@@ -114,7 +114,13 @@ jobs:
             echo "tests_target: ${{ inputs.tests_target }}"
             echo "test_scenario: ${{ inputs.test_scenario }}"
             echo "test_tag: ${{ inputs.test_tag }}"
-            echo "pytest_args: ${{ inputs.pytest_args }}"      
+            echo "pytest_args: ${{ inputs.pytest_args }}"
+            
+      # Generate list of all tests in application in json-format
+      - name: Create list of all application tests
+        shell: bash
+        # No test scenario is filtered
+        run: python .github/scripts/tests_ymal_parser.py
 
       # Generate tests paths to run with twister command
       - name: Create test list with tests scope
@@ -181,6 +187,20 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
           retention-days: 5
+
+      # Find xml files from twister-out folders for test statistics
+      - name: Find twister_suite_report.xml for all tests
+        id: find_files
+        run: |
+          echo "files=$(find customer-application/tests -type f -path "*/twister-out*/twister_suite_report.xml" | paste -sd "," -)" >> $GITHUB_OUTPUT
+
+      # Upload xml files for test statistics to artifacts
+      - name: Upload all twister_suite_report.xml to artifacts
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: xml_statistics_artifacts
+          path: ${{ steps.find_files.outputs.files }}
 
       # Archive robot tests artifacts
       - name: Archive test summary artifacts for Robot-tests
