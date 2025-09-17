@@ -192,12 +192,9 @@ jobs:
       - name: Find twister_suite_report.xml for all tests
         id: find_files
         shell: bash
-        run: |          
-           cd ..
-           FILES=$(find customer-application -type f -path "*/twister-out*/twister_suite_report.xml")
-           echo "files<<EOF" >> $GITHUB_OUTPUT
-           echo "$FILES" >> $GITHUB_OUTPUT
-           echo "EOF" >> $GITHUB_OUTPUT
+        run: |
+          cd ..
+          echo "files=$(find customer-application -type f -path "*/twister-out*/twister_suite_report.xml" | paste -sd "," -)" >> $GITHUB_OUTPUT
 
       # Upload xml files for test statistics to artifacts
       - name: Upload all twister_suite_report.xml to artifacts
@@ -205,7 +202,8 @@ jobs:
         continue-on-error: true
         with:
           name: xml_statistics_artifacts
-          path: ${{ steps.find_files.outputs.files }}
+          path: |
+              ${{ steps.find_files.outputs.files }}
 
       # Archive robot tests artifacts
       - name: Archive test summary artifacts for Robot-tests
