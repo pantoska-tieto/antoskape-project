@@ -8,6 +8,7 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/ztest.h>
 
+
 #if DT_NODE_HAS_PROP(DT_ALIAS(led0), gpios)
 #define TEST_NODE DT_GPIO_CTLR(DT_ALIAS(led0), gpios)
 #define TEST_PIN DT_GPIO_PIN(DT_ALIAS(led0), gpios)
@@ -15,8 +16,16 @@
 #error Unsupported board
 #endif
 
+/* Time delay for Ztest testcase to grab test START correctly*/
+static bool ts_setup(const void *data)
+{
+    k_busy_wait(500000); // 500ms delay to stabilize serial
+    return true;
+}
 
-ZTEST(gpio_pins_ztest, test_gpio_manipulation)
+ZTEST_SUITE(pins, ts_setup, NULL, NULL, NULL, NULL);
+
+Z_ZTEST(pins, test_gpio_manipulation, 0)
 {
 	int response;
 	const struct device *port;
@@ -42,5 +51,3 @@ ZTEST(gpio_pins_ztest, test_gpio_manipulation)
 	response = gpio_pin_get(port, TEST_PIN);
 	zassert_equal(response, 0, "Invalid pin state: %d", response);
 }
-
-ZTEST_SUITE(gpio_pins_ztest, NULL, NULL, NULL, NULL, NULL);

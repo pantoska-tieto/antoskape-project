@@ -47,8 +47,16 @@ bool contains_false(bool *list, int size) {
     return false;  // All values are true
 }
 
+/* Time delay for Ztest testcase to grab test START correctly*/
+static bool ts_setup(const void *data)
+{
+    k_busy_wait(500000); // 500ms delay to stabilize serial
+    return true;
+}
 
-ZTEST(gpio, test_gpio_toggle_and_verify)
+ZTEST_SUITE(gpio, ts_setup, NULL, NULL, NULL, NULL);
+
+Z_ZTEST(gpio, test_gpio_toggle_and_verify, 0)
 {
     zassert_true(gpio_is_ready_dt(&led), "GPIO device not ready");
     printk("GPIO system is ready\n");
@@ -100,5 +108,3 @@ ZTEST(gpio, test_gpio_toggle_and_verify)
 
     zassert_true(contains_false(list, size), "GPIO (LED) state mismatch, test failed");
 }
-
-ZTEST_SUITE(gpio, NULL, NULL, NULL, NULL, NULL);
