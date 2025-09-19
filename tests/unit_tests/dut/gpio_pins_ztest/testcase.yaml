@@ -1,5 +1,5 @@
 tests:
-  unit_tests.dut.gpio_pins:
+  unit_tests.dut.gpio_pins_ztest:
     tags:
     - drivers
     - gpio

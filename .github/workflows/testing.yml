@@ -114,7 +114,13 @@ jobs:
             echo "tests_target: ${{ inputs.tests_target }}"
             echo "test_scenario: ${{ inputs.test_scenario }}"
             echo "test_tag: ${{ inputs.test_tag }}"
-            echo "pytest_args: ${{ inputs.pytest_args }}"      
+            echo "pytest_args: ${{ inputs.pytest_args }}"
+            
+      # Generate list of all tests in application in txt-format
+      - name: Create list of all application tests
+        shell: bash
+        # No test scenario is filtered
+        run: python .github/scripts/tests_yaml_parser.py
 
       # Generate tests paths to run with twister command
       - name: Create test list with tests scope
@@ -168,6 +174,12 @@ jobs:
             --target ${{ inputs.tests_target }} \
             --integration_tests ${{ inputs.integration_tests }}
 
+      # Generate test run metadata json file
+      - name: Create metadata json file
+        shell: bash
+        # No test scenario is filtered
+        run: python .github/scripts/tests_metadata_parser.py
+
       # Archive all test artifacts except Robot tests
       - name: Single test artifacts for non-Robot tests
         uses: actions/upload-artifact@v4
@@ -180,6 +192,41 @@ jobs:
             customer-application/twister-out*/*
           include-hidden-files: true
           if-no-files-found: error
+          retention-days: 5
+
+      # Upload json files for test statistics to artifacts
+      - name: Upload all twister.json to artifacts
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: json_statistics_artifacts
+          # Relative path to project root. 
+          path: |
+            customer-application/twister-out*/twister.json
+          retention-days: 5
+
+      # Upload metadata json file to artifacts
+      - name: Upload metadata json file to artifacts
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: metadata_file_artifacts
+          # Relative path to project root. 
+          path: |
+            customer-application/metadata.json
+            customer-application/metadata.json.bckp
+          retention-days: 5
+
+      # Upload list of available application tests to artifacts
+      - name: Upload list of all application tests to artifacts
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: application_tests_lists_artifacts
+          # Relative path to project root. 
+          path: |
+            customer-application/zephyr_tests_list.txt
+            customer-application/tests_list.json
           retention-days: 5
 
       # Archive robot tests artifacts
