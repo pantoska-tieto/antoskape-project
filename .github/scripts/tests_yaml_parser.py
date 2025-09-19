@@ -26,8 +26,11 @@ def get_tests_list(target):
     :param: string target: path to target folder
     :return: list summary: all tests paths in list-format
     """
-    test_list = [f"{root}/{file}" for root, dirs, files in os.walk(target, topdown=True) for file in files if file == "testcase.yaml"]
-    print(test_list)
+    # List of samples and tests
+    test_list = [f"{root}/{file}" for root, dirs, files in os.walk(target, topdown=True) for file in files if file == "prj.conf"]
+    with open("zephyr_tests_list.txt", "w") as f:
+        for test in test_list:
+            f.write(test + "\n")
     return test_list
 
 

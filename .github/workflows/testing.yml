@@ -116,7 +116,7 @@ jobs:
             echo "test_tag: ${{ inputs.test_tag }}"
             echo "pytest_args: ${{ inputs.pytest_args }}"
             
-      # Generate list of all tests in application in json-format
+      # Generate list of all tests in application in txt-format
       - name: Create list of all application tests
         shell: bash
         # No test scenario is filtered
@@ -188,16 +188,28 @@ jobs:
           if-no-files-found: error
           retention-days: 5
 
-      # Upload xml files for test statistics to artifacts
-      - name: Upload all twister_suite_report.xml to artifacts
+      # Upload json files for test statistics to artifacts
+      - name: Upload all twister.json to artifacts
         uses: actions/upload-artifact@v4
         continue-on-error: true
         with:
-          name: xml_statistics_artifacts
+          name: json_statistics_artifacts
           # Relative path to project root. 
           path: |
-            customer-application/twister-out*/twister_suite_report.xml
+            customer-application/twister-out*/twister.json
           retention-days: 5
+
+      # Upload list of available application tests to artifacts
+      - name: Upload list of all application tests to artifacts
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: application_tests_list_artifacts
+          # Relative path to project root. 
+          path: |
+            customer-application/zephyr_tests_list.txt
+          retention-days: 5
+
 
       # Archive robot tests artifacts
       - name: Archive test summary artifacts for Robot-tests
