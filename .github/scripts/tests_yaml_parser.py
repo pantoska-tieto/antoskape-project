@@ -5,7 +5,7 @@ from pathlib import Path
 
 
 def parse_yaml(tests):
-    """Parse YAML files and store them to json
+    """Parse YAML testcase files and create list of all tests
 
     :param: list tests: list of paths to tests yaml configs
     :return: dict summary: tests config data in dict-format
@@ -27,7 +27,7 @@ def get_tests_list(target):
     :return: list summary: all tests paths in list-format
     """
     # List of samples and tests
-    test_list = [f"{root}/{file}" for root, dirs, files in os.walk(target, topdown=True) for file in files if file == "prj.conf"]
+    test_list = [f"{root}/{file}" for root, dirs, files in os.walk(target, topdown=True) for file in files if file == "testcase.yaml" or file == "sample.yaml"]
     with open("zephyr_tests_list.txt", "w") as f:
         for test in test_list:
             f.write(test + "\n")

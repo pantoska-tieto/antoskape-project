@@ -204,10 +204,11 @@ jobs:
         uses: actions/upload-artifact@v4
         continue-on-error: true
         with:
-          name: application_tests_list_artifacts
+          name: application_tests_lists_artifacts
           # Relative path to project root. 
           path: |
             customer-application/zephyr_tests_list.txt
+            customer-application/tests_list.json
           retention-days: 5
 
 
