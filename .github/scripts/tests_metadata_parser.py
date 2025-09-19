@@ -62,7 +62,7 @@ def parse_tests_results(test_list):
                         tsuite = ""
                         for k, v in items.items():
                             if k == "path":
-                                tsuite = v
+                                tsuite = v.replace("../customer-application/", "")
                             if k == "testcases":
                                 for x in v:
                                     tcase = x["identifier"]
