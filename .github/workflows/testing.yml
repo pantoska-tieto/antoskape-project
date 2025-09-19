@@ -174,6 +174,12 @@ jobs:
             --target ${{ inputs.tests_target }} \
             --integration_tests ${{ inputs.integration_tests }}
 
+      # Generate test run metadata json file
+      - name: Create metadata json file
+        shell: bash
+        # No test scenario is filtered
+        run: python .github/scripts/tests_metadata_parser.py
+
       # Archive all test artifacts except Robot tests
       - name: Single test artifacts for non-Robot tests
         uses: actions/upload-artifact@v4
@@ -199,6 +205,18 @@ jobs:
             customer-application/twister-out*/twister.json
           retention-days: 5
 
+      # Upload metadata json file to artifacts
+      - name: Upload metadata json file to artifacts
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: metadata_file_artifacts
+          # Relative path to project root. 
+          path: |
+            customer-application/metadata.json
+            customer-application/metadata.json.bckp
+          retention-days: 5
+
       # Upload list of available application tests to artifacts
       - name: Upload list of all application tests to artifacts
         uses: actions/upload-artifact@v4
@@ -210,7 +228,6 @@ jobs:
             customer-application/zephyr_tests_list.txt
             customer-application/tests_list.json
           retention-days: 5
-
 
       # Archive robot tests artifacts
       - name: Archive test summary artifacts for Robot-tests
