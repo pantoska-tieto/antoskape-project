@@ -119,7 +119,6 @@ jobs:
       # Generate list of all tests in application in txt-format
       - name: Create list of all application tests
         shell: bash
-        # No test scenario is filtered
         run: python .github/scripts/tests_yaml_parser.py
 
       # Generate tests paths to run with twister command
@@ -177,8 +176,12 @@ jobs:
       # Generate test run metadata json file
       - name: Create metadata json file
         shell: bash
-        # No test scenario is filtered
         run: python .github/scripts/tests_metadata_parser.py
+
+      # Generate test report in html-format
+      - name: Create HTML test report
+        shell: bash
+        run: python .github/scripts/meta_report.py --run_id ${{ github.run_id }}
 
       # Archive all test artifacts except Robot tests
       - name: Single test artifacts for non-Robot tests
@@ -227,6 +230,17 @@ jobs:
           path: |
             customer-application/zephyr_tests_list.txt
             customer-application/tests_list.json
+          retention-days: 5
+
+      # Upload HTML test report
+      - name: Upload HTML test report to artifacts
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: application_html_test_report_artifacts
+          # Relative path to project root. 
+          path: |
+            customer-application/twister_test_report.html
           retention-days: 5
 
       # Archive robot tests artifacts
