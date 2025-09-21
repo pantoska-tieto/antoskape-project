@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     # Set up Jinja2 environment
     env = Environment(loader=FileSystemLoader('.'))
-    template = env.get_template('report_template.html')
+    template = env.get_template('.github/scripts/report_template.html')
 
     # Extract summary stats from the test run
     summary = metadata["runs"][0]["tests"]
