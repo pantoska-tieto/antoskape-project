@@ -186,7 +186,7 @@ jobs:
       # Send test report by email
       - name: Send test report email
         shell: bash
-        run: python .github/scripts/test_report_email.py --server_pwd ${{ secrets.EMAIL_SERVER_PASSWD }}
+        run: python .github/scripts/test_report_email.py --server_pwd "${{ secrets.EMAIL_SERVER_PASSWD }}"
 
       # Archive all test artifacts except Robot tests
       - name: Single test artifacts for non-Robot tests
