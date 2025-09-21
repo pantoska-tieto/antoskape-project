@@ -26,16 +26,32 @@ a {
 a:hover {
     color: #3581d3;
 }
-table {
+table#statistics {
         border-collapse: collapse;
         width: 100%;
 }
-th, td {
+table#statistics th, table#statistics td {
     border: 1px solid #aaa;
     padding: 8px;
     text-align: left;
 }
-th {
+table#statistics th {
+    background-color: #eee;
+}
+table#info {
+        border-collapse: collapse;
+        width: 100%;
+}
+table#info th, table#info td {
+    border: 2px solid #fff;
+    padding: 8px;
+    text-align: left;
+}
+table#info th {
+    background-color: #ddd;
+    width: 30%;
+}
+table#info td {
     background-color: #eee;
 }
 .passed { background-color: #c8e6c9; }
@@ -56,29 +72,24 @@ h3.clear {
     clear: both;
     padding-top: 15px;
 }
-.statistics, .links, .artifacts {
-    flex: 1;
-    width: 30%;
-    float: left;
-    padding: 10px;
-    border: #fff 2px solid;
-}
+
 .info {
     background-color: #e6e6e6;
-    display: flex;
 }
 .footer {
-    display: flex;
     clear: both;
     font-size: 11px;
     padding-top: 30px;
 }
 .footer > div {
-        flex: 1;
-        width: 50%;
+    width: 50%;
 }
-.footer > div:nth-child(2) {
+.footer .left {
+        float: left;
+}
+.footer .right {
         text-align: right;
+        float: right;
 }
 </style>
 </head>
@@ -87,28 +98,38 @@ h3.clear {
         <h1>Zephyr Tests Summary Report</h1>
         <div class="head-info">Trigger time: {{ run_time }}</div>
         <div class="info">
-            <div class="statistics">
-                <div class="title">TESTS:</div>
-                <ul id="statistics">
-                    <li><strong>Total Tests:</strong> {{ summary.count }}</li>
-                    <li><strong>Passed:</strong> {{ summary.passed }}</li>
-                    <li><strong>Failed:</strong> {{ summary.failed }}</li>
-                    <li><strong>Blocked:</strong> {{ summary.blocked }}</li>
-                </ul>
-            </div>
-            <div class="links">
-                <div class="title">LINKS:</div>
-                <ul id="info">
-                    <li><strong>Application GitHub:</strong> <a href="https://github.com/pantoska-tieto/antoskape-project/">GitHub repository</a></li>
-                    <li><strong>Application Actions:</strong> <a href="https://github.com/pantoska-tieto/antoskape-project/actions/">GitHub dispatch panel</a></li>
-                </ul>
-            </div>
-            <div class="artifacts">
-                <div class="title">ARTIFACTS:</div>
-                <ul id="info">
-                    <li><strong>Artifacts:</strong> <a target="_blank" title="Download GitHub test run artifacts" href="https://github.com/pantoska-tieto/antoskape-project/actions/runs/{{ run_id }}#artifacts">GitHub tests log-files</a></li>
-                </ul>
-            </div>
+            <table id="info">
+                <thead>
+                    <tr>
+                        <th>TESTS RESULT:</th>
+                        <th>LINKS:</th>
+                        <th>ARTIFACTS:</th>
+                    </tr>
+                </thead>
+                <tbody>                    
+                    <tr>
+                        <td>
+                            <ul id="statistics">
+                                <li><strong>Total Tests:</strong> {{ summary.count }}</li>
+                                <li><strong>Passed:</strong> {{ summary.passed }}</li>
+                                <li><strong>Failed:</strong> {{ summary.failed }}</li>
+                                <li><strong>Blocked:</strong> {{ summary.blocked }}</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul id="info">
+                                <li><strong>Application GitHub:</strong> <a href="https://github.com/pantoska-tieto/antoskape-project/">GitHub repository</a></li>
+                                <li><strong>Application Actions:</strong> <a href="https://github.com/pantoska-tieto/antoskape-project/actions/">GitHub dispatch panel</a></li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul id="info">
+                                <li><strong>Artifacts:</strong> <a target="_blank" title="Download GitHub test run artifacts" href="https://github.com/pantoska-tieto/antoskape-project/actions/runs/{{ run_id }}#artifacts">GitHub tests log-files</a></li>
+                            </ul>
+                        </td>
+                    </tr>                    
+                </tbody>
+            </table>
         </div>
         <h3 class="clear">Test results</h3>
         <div class="tests">
@@ -134,10 +155,10 @@ h3.clear {
             </table>
         </div>
         <div class="footer">
-            <div>
+            <div class="left">
                 Zephyr RTOS: <a target="_blank" title="Zephyr Project Documentation" href="https://docs.zephyrproject.org/latest/index.html">Documentation</a>
             </div>
-            <div>
+            <div class="right">
                 Copyright @<a target="_blank" title="Tietoevry Home page" href="https://www.tietoevry.com/en/">Tietoevry</a> 2025</a>
             </div>
         </div>
