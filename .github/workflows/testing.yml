@@ -183,6 +183,11 @@ jobs:
         shell: bash
         run: python .github/scripts/meta_report.py --run_id ${{ github.run_id }}
 
+      # Send test report by email
+      - name: Send test report email
+        shell: bash
+        run: python .github/scripts/test_report_email.py --server_pwd ${{ secrets.EMAIL_SERVER_PASSWD }}
+
       # Archive all test artifacts except Robot tests
       - name: Single test artifacts for non-Robot tests
         uses: actions/upload-artifact@v4
