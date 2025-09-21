@@ -2,6 +2,7 @@ from jinja2 import Environment, FileSystemLoader
 import json
 from datetime import datetime
 from pathlib import Path
+import os
 
 
 # Setup workspace folder
