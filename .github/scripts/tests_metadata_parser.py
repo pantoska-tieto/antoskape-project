@@ -4,8 +4,9 @@ from datetime import datetime
 import os
 from pathlib import Path
 from copy import deepcopy
-import pprint
+import subprocess
 import shutil
+import argparse
 
 
 # Initialization
@@ -22,26 +23,50 @@ record["tag"] = datetime.now().strftime("%Y%m%d%H%M%S")
 record["tests"] = deepcopy(empty)
 
 metadata_file = "metadata.json"
+artifactory_url = "http://tieto-artifactory.com:8082/artifactory/generic-local/"
+artifactory_username = "admin"
+artifactory_password = "Ocean369"
 
-def download(filename):
-    """Download file from external repository
+def define_args():
+    """Define CLI arguments set
 
-    :param: string filename: file name to download
-    :return: None
+    :return: obj parser: parser object with arguments
     """
-    # TODO!
-    #  Implement when a repository is applied
-    pass
+    parser = argparse.ArgumentParser(
+        description=(
+            "Script to get cli arguments"
+        )
+    )
 
-def upload(filename):
-    """Upload file to external repository
+    parser.add_argument(
+        "--artifactory_user",
+        required=True,
+        default=None,
+        help="Artifactory username",
+    )
+    parser.add_argument(
+        "--artifactory_pwd",
+        required=True,
+        default=None,
+        help="Artifactory passwd",
+    )
+    return parser
 
-    :param: string filename: file name to upload
-    :return: None
+
+def run_cmd(cmd):
+    """Execute CLI command
+
+    :param: str cmd: CLI commands to execute
+    :return: str out: stdout output from Popen method
+    :return: str err: stderr output from Popen method
+    :return: str returncode: return code from Popen method
     """
-    # TODO!
-    #  Implement when a repository is applied
-    pass
+    try:
+        res = subprocess.run(cmd, capture_output=True, text=True, shell=True)
+        # Return output from command (byte string to string format)
+        return res.stdout, res.stderr, res.returncode
+    except Exception as e:
+        print(f"[ERROR] Failure during CLI command execution: {str(e)}.")
 
 def parse_tests_results(test_list):
     """Parse twister-out/ folders to get test results
@@ -73,15 +98,20 @@ def parse_tests_results(test_list):
     return suite_summ
 
 def download_metadata():
-    """Download existing metadata file from repository
+    """Download existing metadata file from artifactory repository
 
-    :return: None
+    :return: dict metadata: metadata file in JSON format
     """
     metadata = {}
-    # TODO: download metadata.json from repository
-    # def download()
-    # debugger - remove!
+    global artifactory_url
     global metadata_file
+    parser = define_args()
+    args = parser.parse_args()
+
+    try:
+        out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} -O '{artifactory_url}{metadata_file}' -o {metadata_file}")
+    except Exception as e:
+        print(f"[ERROR] Download metadata file from artifactory failed: {e}")
 
     if Path(metadata_file).is_file():
         # Make backup for debugging if needed
@@ -94,21 +124,24 @@ def download_metadata():
         return metadata
 
 def upload_metadata(data):
-    """Upload new metadata file torepository
+    """Upload new metadata file to artifactory repository
 
     :return: None
     """
-    # TODO: upload metadata.json to repository
-    # def uplload()
-    # debugger - remove!
+    global artifactory_url
     global metadata_file
+    parser = define_args()
+    args = parser.parse_args()
+
     if "invalid" in data.keys():
         print("[ERROR] Metadata file is invalid. Skip uploading to prevent loss of data!")
     else:
         with open(metadata_file, 'w') as fp:
             fp.write(json.dumps(data, sort_keys=False, indent=4, separators=(',', ': ')))
-        # TODO!
-        #  upload(metadata_file)
+        try:
+            out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} -X PUT '{artifactory_url}{metadata_file}' -T {metadata_file}")
+        except Exception as e:
+            print(f"[ERROR] Upload metadata file to artifactory failed: {e}")
 
 if __name__ == "__main__":
     # Setup workspace folder

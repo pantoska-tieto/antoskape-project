@@ -176,7 +176,7 @@ jobs:
       # Generate test run metadata json file
       - name: Create metadata json file
         shell: bash
-        run: python .github/scripts/tests_metadata_parser.py
+        run: python .github/scripts/tests_metadata_parser.py --artifactory_user ${{ secrets.ARTIFACTORY_USER }} --artifactory_pwd ${{ secrets.ARTIFACTORY_PWD }}
 
       # Generate test report in html-format
       - name: Create HTML test report

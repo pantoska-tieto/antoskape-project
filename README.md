@@ -8,11 +8,12 @@ It is representing a typical T2 topology model in conjunction with GitHub workfl
 
 ## General description
 
-* .github/workflows/build.yml   - basic CI/CD workflow file,
+* .github/workflows/build.yml   - entry CI/CD workflow file to trigger build process,
+* .github/workflows/testing.yml   - reusable CI/CD workflow file to trigger tests,
 * .github/workflows/reports-summary-publish.yml   - workflow file for tests summary report,
 * app/    -   dir for boards applications,
 * app-esp32/  -   dir for ESP32 boards applications,
-* test/ - dir for test suites/cases.
+* tests/ - dir for test suites/cases.
 
 <br/>
 Before starting, make sure you have a proper Zephyr development
@@ -94,9 +95,12 @@ Run a desired test case from tests/ with "west twister" from workspace root dire
 west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --device-serial /dev/ttyUSB0  --west-flash --flash-before -T customer-application/tests/shell
 ```
 <br/>
-Tests can be triggered from GitHub Actions workflows automatically by workflow .yaml file. This file contains also workflow_dispatch configuration which is used to trigger the workflow manually.  For more details see <a href="documentation/Github_workflow_dispatch_panel.md">Github_workflow_dispatch_panel</a> guide.
+Tests can be triggered from GitHub Actions workflows automatically by workflow `build.yaml` file. This file contains also workflow_dispatch configuration which is used to trigger the workflow manually.  For more details see <a href="documentation/Github_workflow_dispatch_panel.md">Github_workflow_dispatch_panel</a> guide. <br/>
+<br/>
+For basic guideline how to add and update application tests see <a href="documentation/Tests_user_guide.md">Tests User Guide</a>.<br/>
+<br/>
+Tests results in metadata-json format (metadata.json DB file) are stored in self-hosted Artifactory storage server. You can find more details in <a href="documentation/Artifactory_storage_server.md">Artifactory storage server</a> guide.
 
-For more detailed information how to add and update application tests see <a href="documentation/Tests_user_guide.md">Tests User Guide</a>.
 
 <br/>
 
