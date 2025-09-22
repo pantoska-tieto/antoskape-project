@@ -106,7 +106,7 @@ Workflow dispatch panel allows to use 4 types of inputs: `string`, `choice`, `bo
 
 ## Integration tests
 
-Integration tests can be split over any of tests/ subfolders. The only criterias to <a href="documentation/Tests_user_guide.md">include arbitraty test</a> into the Integration tests set are:<br/>
+Integration tests can be split over any of tests/ subfolders. The only criterias to <a href="Tests_user_guide.md">include arbitraty test</a> into the Integration tests set are:<br/>
 
 * the testcase.yaml/sample.yaml file consists of "- integration" tag under "tags" section.
 * target board platform is added under "integration_platforms" section in testcase.yaml/sample.yaml file.<br/>
