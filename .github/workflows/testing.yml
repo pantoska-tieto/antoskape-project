@@ -194,7 +194,7 @@ jobs:
         continue-on-error: true
         if: ${{ inputs.tests_target != 'app/robot' }} 
         with:
-          name: single_test_artifacts
+          name: summary_test_results_artifacts
           # Relative path to project root. 
           path: |
             customer-application/twister-out*/*
@@ -203,11 +203,11 @@ jobs:
           retention-days: 5
 
       # Upload json files for test statistics to artifacts
-      - name: Upload all twister.json to artifacts
+      - name: Archive test results twister.json files for non-Robot tests
         uses: actions/upload-artifact@v4
         continue-on-error: true
         with:
-          name: json_statistics_artifacts
+          name: twister_out_json_files_artifacts
           # Relative path to project root. 
           path: |
             customer-application/twister-out*/twister.json
@@ -254,14 +254,14 @@ jobs:
         continue-on-error: true
         if: ${{ inputs.tests_target == 'app/robot' }} 
         with:
-          name: single_test_artifacts
+          name: summary_test_results_artifacts
           # Relative path to project root. 
           path: |
             customer-application/pabot_results/*
           if-no-files-found: error
           retention-days: 5
       
-      # Prepare test summary report folder
+      # Prepare test xml report folder
       - name: Prepare CI report summary for non-Robot tests
         shell: bash
         if : ${{ inputs.tests_target != 'app/robot' }} 
@@ -269,7 +269,7 @@ jobs:
             rm -rf test-summary
             sudo mkdir -p test-summary
 
-      # Collect all test summary reports into one folder
+      # Collect all test output xml reports into one folder
       - name: Copy files to CI report summary
         shell: python
         if : ${{ inputs.tests_target != 'app/robot' }} 
@@ -289,13 +289,13 @@ jobs:
                   print(f"File twister_suite_report.xml not found in {dir}")
 
 
-      # Archive test summary report
-      - name: Archive test summary artifacts for non-Robot tests
+      # Archive test output xml reports
+      - name: Archive test results twister_suite_report.xml files for non-Robot tests
         uses: actions/upload-artifact@v4
         continue-on-error: true
         if: ${{ inputs.tests_target != 'app/robot' }} 
         with:
-          name: summary_test_artifacts
+          name: twister_out_xml_files_artifacts
           # Relative path to project root. 
           path: |
             customer-application/test-summary

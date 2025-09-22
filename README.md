@@ -96,6 +96,8 @@ west twister -vv --platform esp32s3_devkitc/esp32s3/procpu --device-testing --de
 <br/>
 Tests can be triggered from GitHub Actions workflows automatically by workflow .yaml file. This file contains also workflow_dispatch configuration which is used to trigger the workflow manually.  For more details see <a href="documentation/Github_workflow_dispatch_panel.md">Github_workflow_dispatch_panel</a> guide.
 
+For more detailed information how to add and update application tests see <a href="documentation/Tests_user_guide.md">Tests User Guide</a>.
+
 <br/>
 
 ## NOTES
@@ -103,7 +105,7 @@ Tests can be triggered from GitHub Actions workflows automatically by workflow .
 1. To enable the building/testing for other target boards than ESP32 S3 Devkitc, update the respective testcase.yml/sample.yaml files in sections
    platform_allow
    integration_platforms (if required in integration tests)
-   with demanded target board string - see example:
+   with demanded target board string - see example, or read <a href="documentation/Tests_user_guide.md">Tests User Guide</a>:
 
 ```copy
 common:
