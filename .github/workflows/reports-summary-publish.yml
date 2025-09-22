@@ -17,7 +17,7 @@ jobs:
         uses: phoenix-actions/test-reporting@v15
         if: success() || failure()
         with:
-          artifact: summary_test_results_artifacts
+          artifact: twister_out_xml_files_artifacts
           name: Zephyr test summary
           path: '*.xml'
           reporter: java-junit
