@@ -59,7 +59,8 @@ jobs:
       image: ${{ inputs.docker_image }}
       options: >
         --device=/dev/ttyUSB0 
-        --privileged  
+        --privileged
+        --add-host tieto-artifactory.com:192.168.1.132
         -v /var/run/dbus:/var/run/dbus 
         -v /run/dbus:/run/dbus 
         -v /dev:/dev 
@@ -100,11 +101,6 @@ jobs:
         shell: bash
         run: |
             pip install -r requirements-extras.txt
-
-      # Artifactory hostname to IP translation
-      - name: Add Artifactory hostname to /etc/hosts
-        shell: bash
-        run: echo "127.0.0.1 tieto-artifactory.com" | sudo tee -a /etc/hosts
 
       #  Review of variables from Build workflow
       - name: Show variables from caller workflow
