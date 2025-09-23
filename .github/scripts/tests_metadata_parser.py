@@ -23,9 +23,8 @@ record["tag"] = datetime.now().strftime("%Y%m%d%H%M%S")
 record["tests"] = deepcopy(empty)
 
 metadata_file = "metadata.json"
-artifactory_url = "http://tieto-artifactory.com:8082/artifactory/generic-local/"
-artifactory_username = "admin"
-artifactory_password = "Ocean369"
+artifactory_host = "tieto-artifactoryxx.com"
+artifactory_url = f"http://{artifactory_host}:8082/artifactory/generic-local/"
 
 def define_args():
     """Define CLI arguments set
@@ -52,6 +51,16 @@ def define_args():
     )
     return parser
 
+def check_host():
+    global artifactory_host
+
+    try:
+        # For Windows, use 'ping -n 1', for Unix/Linux/Mac use 'ping -c 1'
+        command = ['ping', '-c', '1', artifactory_host]
+        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        return result.returncode
+    except Exception as e:
+        print(f"Error in checking Artifactory host occurred: {e}")
 
 def run_cmd(cmd):
     """Execute CLI command
@@ -109,6 +118,9 @@ def download_metadata():
     args = parser.parse_args()
 
     try:
+        if (check_host() != 0):
+            print(f"Artifactory {artifactory_url} is not reachable. Skip downloading metadata.json file!")
+            return metadata
         out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} -O '{artifactory_url}{metadata_file}' -o {metadata_file}")
     except Exception as e:
         print(f"[ERROR] Download metadata file from artifactory failed: {e}")
@@ -139,6 +151,9 @@ def upload_metadata(data):
         with open(metadata_file, 'w') as fp:
             fp.write(json.dumps(data, sort_keys=False, indent=4, separators=(',', ': ')))
         try:
+            if (check_host() != 0):
+                print(f"Artifactory {artifactory_url} is not reachable. Skip uploading metadata.json file!")
+                return
             out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} -X PUT '{artifactory_url}{metadata_file}' -T {metadata_file}")
         except Exception as e:
             print(f"[ERROR] Upload metadata file to artifactory failed: {e}")
