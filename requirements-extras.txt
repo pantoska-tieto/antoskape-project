@@ -12,3 +12,5 @@ robotframework
 robotframework-csvlibrary
 robotframework-seriallibrary
 robotframework-pabot
+# Use correct time in metadata.json timestamp
+pytz

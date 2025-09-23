@@ -19,9 +19,10 @@ empty["failed"] = 0
 empty["blocked"] = 0
 empty["details"] = {}
 # Prepare metadata record skeleton
+bratislava_tz = pytz.timezone("Europe/Bratislava")
 record = {}
-record["timestamp"] = int(datetime.now().timestamp())
-record["tag"] = datetime.now().strftime("%Y%m%d%H%M%S")
+record["timestamp"] = int(datetime.now(bratislava_tz).timestamp())
+record["tag"] = datetime.now(bratislava_tz).strftime("%Y%m%d%H%M%S")
 record["tests"] = deepcopy(empty)
 
 metadata_file = "metadata.json"

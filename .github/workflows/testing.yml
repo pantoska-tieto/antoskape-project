@@ -60,7 +60,7 @@ jobs:
       options: >
         --device=/dev/ttyUSB0 
         --privileged
-        --add-host tieto-artifactory.com:192.168.1.132
+        --network host
         -v /var/run/dbus:/var/run/dbus 
         -v /run/dbus:/run/dbus 
         -v /dev:/dev 
