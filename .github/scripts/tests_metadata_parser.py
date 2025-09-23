@@ -23,7 +23,7 @@ record["tag"] = datetime.now().strftime("%Y%m%d%H%M%S")
 record["tests"] = deepcopy(empty)
 
 metadata_file = "metadata.json"
-artifactory_host = "tieto-artifactoryxx.com"
+artifactory_host = "tieto-artifactory.com"
 artifactory_url = f"http://{artifactory_host}:8082/artifactory/generic-local/"
 
 def define_args():
