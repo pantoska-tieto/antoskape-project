@@ -101,6 +101,11 @@ jobs:
         run: |
             pip install -r requirements-extras.txt
 
+      # Artifactory hostname to IP translation
+      - name: Add Artifactory hostname to /etc/hosts
+        shell: bash
+        run: echo "127.0.0.1 tieto-artifactory.com" | sudo tee -a /etc/hosts
+
       #  Review of variables from Build workflow
       - name: Show variables from caller workflow
         shell: bash
@@ -182,11 +187,6 @@ jobs:
       - name: Create HTML test report
         shell: bash
         run: python .github/scripts/meta_report.py --run_id ${{ github.run_id }}
-
-      # Send test report by email
-      - name: Send test report email
-        shell: bash
-        run: python .github/scripts/test_report_email.py --server_pwd "${{ secrets.EMAIL_SERVER_PASSWD }}"
 
       # Archive all test artifacts except Robot tests
       - name: Single test artifacts for non-Robot tests
@@ -301,6 +301,11 @@ jobs:
             customer-application/test-summary
           if-no-files-found: error
           retention-days: 5
+
+      # Send test report by email
+      - name: Send test report email
+        shell: bash
+        run: python .github/scripts/test_report_email.py --server_pwd "${{ secrets.EMAIL_SERVER_PASSWD }}"
 
 
   publish_test_summaries:

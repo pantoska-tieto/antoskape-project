@@ -182,3 +182,31 @@ sudo nano /etc/hosts
 # Then add the following line to hosts file
 127.0.0.1   mytest-artifactory.com
 ```
+<br/>
+
+## Troubleshooting 
+
+In case of issues with Artifactory installation, you can check the logs in the `$JFROG_HOME/artifactory/var/log/artifactory-service.log`. The logs provide detailed information about the installation process and any errors that occurred during the installation.
+
+
+### Error for missing PostgreSQL username in installation step 6.
+
+If you encounter an error related to missing PostgreSQL username in the installation step 6, you can follow these steps to resolve the issue:
+
+```
+# Open PostgreSQL terminal in command line
+sudo -u postgres psql
+
+# Show all users in PostgreSQL
+\du
+
+# Add 'artifactory' user and password into DB if missing
+CREATE USER artifactory WITH PASSWORD 'mypasswd';
+CREATE DATABASE artifactory OWNER artifactory;
+
+# Close PostgreSQL session
+\q
+
+# Restart Artifactory service
+sudo systemctl start artifactory.service
+```
