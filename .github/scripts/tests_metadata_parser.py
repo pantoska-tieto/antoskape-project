@@ -96,13 +96,13 @@ def parse_tests_results(test_list):
     for f in test_list:
         with open(f) as f:
             f_content =  json.load(f)
+            # Parse 'testsuites'
             for key, val in f_content.items():
                 if key == "testsuites":
-                    tc = val
-                    for items in tc:
-                        # Parse 'testsuites' dict part
-                        tcases = []
-                        tsuite = ""
+                    tcases = []
+                    tsuite = ""
+                    for items in val:
+                        # Parse 'testsuites' dict items for 'testcases'
                         for k, v in items.items():
                             if k == "path":
                                 tsuite = v.replace("../customer-application/", "")
@@ -112,7 +112,6 @@ def parse_tests_results(test_list):
                                     status = x["status"]
                                     tcases.append({"case": tcase, "status": status})
                                     suite_summ[tsuite] = tcases
-                                    #print(suite_summ[tsuite])
     return suite_summ
 
 def download_metadata():
