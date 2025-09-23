@@ -54,6 +54,10 @@ def define_args():
     return parser
 
 def check_host():
+    """Check that hostname is reachable
+
+    :return: str status_code: return code from get command
+    """
     global artifactory_url
     parser = define_args()
     args = parser.parse_args()   
@@ -62,6 +66,7 @@ def check_host():
     
     try:
         r = requests.get(artifactory_url, auth=HTTPBasicAuth(username, password), timeout=15)
+        print(f"Return code from HOST: {r.status_code}")
         return r.status_code        
     except Exception as e:
         print(f"Error in checking Artifactory host occurred: {e}")
