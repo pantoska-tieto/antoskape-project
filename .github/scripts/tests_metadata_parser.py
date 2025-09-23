@@ -128,9 +128,12 @@ def download_metadata():
 
     try:
         if (check_host() != 200):
-            print(f"Artifactory {artifactory_url} is not reachable. Skip downloading metadata.json file!")
+            print(f"Artifactory {artifactory_url} is not reachable. Skip downloading metadata.json!")
             return metadata
-        out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} -O '{artifactory_url}{metadata_file}' -o {metadata_file}")
+        out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} \
+             -O '{artifactory_url}{metadata_file}' -o {metadata_file}")
+        print(f"metadata.json was downloaded successfully from artifactory URL: {artifactory_url}.") \
+             if code == 0 else print(f"Error for wownload metadata.json with CURL: {out}")
     except Exception as e:
         print(f"[ERROR] Download metadata file from artifactory failed: {e}")
 
@@ -161,9 +164,12 @@ def upload_metadata(data):
             fp.write(json.dumps(data, sort_keys=False, indent=4, separators=(',', ': ')))
         try:
             if (check_host() != 200):
-                print(f"Artifactory {artifactory_url} is not reachable. Skip uploading metadata.json file!")
+                print(f"Artifactory {artifactory_url} is not reachable. Skip uploading metadata.json!")
                 return
-            out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} -X PUT '{artifactory_url}{metadata_file}' -T {metadata_file}")
+            out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} \
+                 -X PUT '{artifactory_url}{metadata_file}' -T {metadata_file}")
+            print(f"metadata.json was uploaded successfully to artifactory URL: {artifactory_url}.") \
+             if code == 0 else print(f"Error for upload metadata.json with CURL: {out}")
         except Exception as e:
             print(f"[ERROR] Upload metadata file to artifactory failed: {e}")
 
