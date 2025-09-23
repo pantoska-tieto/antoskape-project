@@ -67,7 +67,6 @@ def check_host():
     
     try:
         r = requests.get(artifactory_url, auth=HTTPBasicAuth(username, password), timeout=15)
-        print(f"Return code from HOST: {r.status_code}")
         return r.status_code        
     except Exception as e:
         print(f"Error in checking Artifactory host occurred: {e}")
@@ -132,9 +131,6 @@ def download_metadata():
             print(f"Artifactory {artifactory_url} is not reachable. Skip downloading metadata.json file!")
             return metadata
         out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} -O '{artifactory_url}{metadata_file}' -o {metadata_file}")
-        print(f"Download CURL out: {out}")
-        print(f"Download CURL err: {err}")
-        print(f"Download CURL code: {code}")
     except Exception as e:
         print(f"[ERROR] Download metadata file from artifactory failed: {e}")
 
@@ -168,9 +164,6 @@ def upload_metadata(data):
                 print(f"Artifactory {artifactory_url} is not reachable. Skip uploading metadata.json file!")
                 return
             out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} -X PUT '{artifactory_url}{metadata_file}' -T {metadata_file}")
-            print(f"Upload CURL out: {out}")
-            print(f"Upload CURL err: {err}")
-            print(f"Upload CURL code: {code}")
         except Exception as e:
             print(f"[ERROR] Upload metadata file to artifactory failed: {e}")
 
