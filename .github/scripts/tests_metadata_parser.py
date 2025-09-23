@@ -9,6 +9,7 @@ import shutil
 import argparse
 import requests
 from requests.auth import HTTPBasicAuth
+import pytz
 
 
 # Initialization
@@ -19,9 +20,10 @@ empty["failed"] = 0
 empty["blocked"] = 0
 empty["details"] = {}
 # Prepare metadata record skeleton
+bratislava_tz = pytz.timezone("Europe/Bratislava")
 record = {}
-record["timestamp"] = int(datetime.now().timestamp())
-record["tag"] = datetime.now().strftime("%Y%m%d%H%M%S")
+record["timestamp"] = int(datetime.now(bratislava_tz).timestamp())
+record["tag"] = datetime.now(bratislava_tz).strftime("%Y%m%d%H%M%S")
 record["tests"] = deepcopy(empty)
 
 metadata_file = "metadata.json"
@@ -53,6 +55,10 @@ def define_args():
     return parser
 
 def check_host():
+    """Check that hostname is reachable
+
+    :return: str status_code: return code from get command
+    """
     global artifactory_url
     parser = define_args()
     args = parser.parse_args()   
@@ -122,9 +128,12 @@ def download_metadata():
 
     try:
         if (check_host() != 200):
-            print(f"Artifactory {artifactory_url} is not reachable. Skip downloading metadata.json file!")
+            print(f"Artifactory {artifactory_url} is not reachable. Skip downloading metadata.json!")
             return metadata
-        out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} -O '{artifactory_url}{metadata_file}' -o {metadata_file}")
+        out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} \
+             -O '{artifactory_url}{metadata_file}' -o {metadata_file}")
+        print(f"metadata.json was downloaded successfully from artifactory URL: {artifactory_url}.") \
+             if code == 0 else print(f"Error for wownload metadata.json with CURL: {out}")
     except Exception as e:
         print(f"[ERROR] Download metadata file from artifactory failed: {e}")
 
@@ -155,9 +164,12 @@ def upload_metadata(data):
             fp.write(json.dumps(data, sort_keys=False, indent=4, separators=(',', ': ')))
         try:
             if (check_host() != 200):
-                print(f"Artifactory {artifactory_url} is not reachable. Skip uploading metadata.json file!")
+                print(f"Artifactory {artifactory_url} is not reachable. Skip uploading metadata.json!")
                 return
-            out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} -X PUT '{artifactory_url}{metadata_file}' -T {metadata_file}")
+            out, err, code = run_cmd(f"curl -u {args.artifactory_user}:{args.artifactory_pwd} \
+                 -X PUT '{artifactory_url}{metadata_file}' -T {metadata_file}")
+            print(f"metadata.json was uploaded successfully to artifactory URL: {artifactory_url}.") \
+             if code == 0 else print(f"Error for upload metadata.json with CURL: {out}")
         except Exception as e:
             print(f"[ERROR] Upload metadata file to artifactory failed: {e}")
 

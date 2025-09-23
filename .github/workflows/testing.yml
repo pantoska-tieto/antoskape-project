@@ -59,7 +59,7 @@ jobs:
       image: ${{ inputs.docker_image }}
       options: >
         --device=/dev/ttyUSB0 
-        --privileged  
+        --privileged
         -v /var/run/dbus:/var/run/dbus 
         -v /run/dbus:/run/dbus 
         -v /dev:/dev 
@@ -94,17 +94,13 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y iperf
             sudo apt-get install -y sysbench fio
+            sudo apt-get install -y curl
 
       # Install Python extras for testing
       - name: Install Python extra packages
         shell: bash
         run: |
             pip install -r requirements-extras.txt
-
-      # Artifactory hostname to IP translation
-      - name: Add Artifactory hostname to /etc/hosts
-        shell: bash
-        run: echo "127.0.0.1 tieto-artifactory.com" | sudo tee -a /etc/hosts
 
       #  Review of variables from Build workflow
       - name: Show variables from caller workflow
