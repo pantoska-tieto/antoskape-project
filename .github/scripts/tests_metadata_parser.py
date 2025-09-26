@@ -59,7 +59,6 @@ def check_host():
 
     :return: str status_code: return code from get command
     """
-    global artifactory_url
     parser = define_args()
     args = parser.parse_args()   
     username = args.artifactory_user
@@ -121,8 +120,6 @@ def download_metadata():
     :return: dict metadata: metadata file in JSON format
     """
     metadata = {}
-    global artifactory_url
-    global metadata_file
     parser = define_args()
     args = parser.parse_args()
 
@@ -152,8 +149,6 @@ def upload_metadata(data):
 
     :return: None
     """
-    global artifactory_url
-    global metadata_file
     parser = define_args()
     args = parser.parse_args()
 
