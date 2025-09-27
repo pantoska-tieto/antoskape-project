@@ -1,0 +1,7 @@
+tests:
+  repo_tests.power_cycle.booting:
+    tags: booting
+    platform_allow:
+      - esp32s3_devkitc/esp32s3/procpu
+    harness: pytest
+    timeout: 100
