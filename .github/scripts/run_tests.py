@@ -36,7 +36,7 @@ def define_args():
         "--device_serial",
         required=False,
         default=None,
-        help="Serial port for connecting DUT",
+        help="Serial port for connecting DUT- read from udev-rules file",
     )
     parser.add_argument(
         "--tag",
@@ -86,11 +86,23 @@ def run_cmd(cmd):
     except Exception as e:
         print(f"[ERROR] Failure during CLI command execution: {str(e)}.")
 
+def parse_serial_ports(file):
+    """Parse udev symlinks file to get serial port(s)
+
+    :param: str file: path to the file
+    :return: list ports: list with symlinks for serial ports 
+    """
+    with open(file, "r") as f:
+        lines = f.readlines()
+        ports = ["/dev/" + p.split(",")[4].split("\"")[1] for p in lines]
+        return ports
+
 if __name__ == "__main__":
     parser = define_args()
     args = parser.parse_args()
     # Extra arguments to be passed to west twister command
     arguments = ""
+
     if args.tag and (args.tag != "N/A" and args.tag != ""):
         arguments += f" --tag {args.tag} --force-tags"
     if args.pytest_args and (args.pytest_args != "N/A" and args.pytest_args != ""):
@@ -107,27 +119,30 @@ if __name__ == "__main__":
         print(f"pantoska: args.integration_tests: {args.integration_tests}")
         print(f"pantoska: args.platform: {args.platform}")
 
-        # Unit tests for local libs (no device needed)
-        if args.target and "app/unit/host" in args.target:
-            cmd_test = "west twister -vv --detailed-test-id"
-        # Robot tests
-        elif args.target and "app/robot" in args.target:
-            cmd_test = "pabot"
-        # Only integration tests for specific platfom(s)
-        elif args.integration_tests and args.integration_tests == "yes" and args.device_serial and args.device_serial != "":
-            cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id --device-testing --device-serial {args.device_serial} --tag integration --flash-before"
-        # Only integration tests for all platforms
-        elif args.integration_tests and args.integration_tests == "yes" and args.device_serial and args.device_serial == "":
-            cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id --tag integration"
-        # All other tests (device HW needed)
-        else:
-            cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id --device-testing --device-serial {args.device_serial} --flash-before"
+        # Run tests for all devices connected to test bench
+        for port in parse_serial_ports(args.device_serial):
+            # Unit tests for local libs (no device needed)
+            if args.target and "app/unit/host" in args.target:
+                cmd_test = "west twister -vv --detailed-test-id"
+            # Robot tests
+            elif args.target and "app/robot" in args.target:
+                cmd_test = "pabot"
+            # Only integration tests for specific platfom(s)
+            elif args.integration_tests and args.integration_tests == "yes" and port and port != "":
+                cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id --device-testing --device-serial {port} --tag integration --flash-before"
+            # Only integration tests for all platforms
+            elif args.integration_tests and args.integration_tests == "yes" and port and port == "":
+                cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id --tag integration"            
+            # All other tests (device HW needed)
+            else:
+                cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id --device-testing --device-serial {port} --flash-before"
 
-        for line in tests:
-            out, err, code = run_cmd(f'{cmd_test} {line.replace("\n", "")}{arguments}')
-            print(out)
-            # Show test summary reports review
-            print(err)
-            print(f"Return code for test command from subprocess.run: {code}")
+            # Run all tests from the tests list file
+            for line in tests:
+                out, err, code = run_cmd(f'{cmd_test} {line.replace("\n", "")}{arguments}')
+                print(out)
+                # Show test summary reports review
+                print(err)
+                print(f"Return code for test command from subprocess.run: {code}")
     else:
          raise Exception("No test list provided!")

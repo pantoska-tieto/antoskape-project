@@ -62,7 +62,8 @@ jobs:
         --privileged
         -v /var/run/dbus:/var/run/dbus 
         -v /run/dbus:/run/dbus 
-        -v /dev:/dev 
+        -v /dev:/dev
+        -v /etc/udev/rules.d:/etc/udev/rules.d
         -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
@@ -95,6 +96,7 @@ jobs:
             sudo apt-get install -y iperf
             sudo apt-get install -y sysbench fio
             sudo apt-get install -y curl
+            sudo apt-get install -y udev
 
       # Install Python extras for testing
       - name: Install Python extra packages
@@ -161,12 +163,19 @@ jobs:
             echo $SECRETS_JSON > vars.json
             cat vars.json
 
-      # Run Twister tests
+      # Auto mapping of USB ports to udev rules
+      - name: Auto mapping of USB ports to udev rules
+        shell: bash
+        run: |
+            sudo chmod +x .github/scripts/udev_mapping_serial_ports.sh
+            .github/scripts/udev_mapping_serial_ports.sh ${{ inputs.board_target }}
+
+      # Run Twister tests (read serial ports from udev_mapping.txt file created in previous step)
       - name: Run Twister tests
         shell: bash
         run: |
             python .github/scripts/run_tests.py --platform ${{ inputs.board_target }} \
-            --device_serial ${{ inputs.device_serial }} \
+            --device_serial udev_mapping.txt \
             --tag ${{ inputs.test_tag }} \
             --pytest_args ${{ inputs.pytest_args }} \
             --scenario ${{ inputs.test_scenario }} \
@@ -295,6 +304,18 @@ jobs:
           # Relative path to project root. 
           path: |
             customer-application/test-summary
+          if-no-files-found: error
+          retention-days: 5
+
+      # Archive udev rules file with serial port symlinks
+      - name: Archive udev rules file
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: udev_rules_file_artifacts
+          # Relative path to project root. 
+          path: |
+            customer-application/udev_mapping.txt
           if-no-files-found: error
           retention-days: 5
 
