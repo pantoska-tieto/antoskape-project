@@ -165,6 +165,7 @@ jobs:
       - name: Auto mapping of USB ports to udev rules
         shell: bash
         run: |
+            sudo chmod +x udev_mapping_serial_ports.sh
             ./.github/scripts/udev_mapping_serial_ports.sh ${{ inputs.board_target }}
 
       # Run Twister tests (read serial ports from udev_mapping.txt file created in previous step)
