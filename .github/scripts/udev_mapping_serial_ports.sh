@@ -2,6 +2,7 @@
 
 # Target board variable from GitHub dispatch event
 TARGET="$1"
+echo "Target board: $TARGET"
 
 # Content of udev-rules file
 OUTPUT_FILE="../../udev_mapping.txt"
@@ -10,6 +11,7 @@ OUTPUT_FILE="../../udev_mapping.txt"
 if [ "$TARGET" == "esp32"* ]; then
     VENDOR="esp32"
     PORT="/dev/ttyUSB"
+    echo "esp32 found!"
 elif [ "$TARGET" == "nrf"* ]; then
     VENDOR="nrf"
     PORT="/dev/ttyACM"
@@ -29,6 +31,7 @@ for DEV in ${PORT}*; do
 
     # Get udev info
     INFO=$(udevadm info -a -n "$DEV")
+    echo "INFO: $INFO"
 
     # Extract first occurrence of idVendor, idProduct (and serial)
     ID_VENDOR=$(echo "$INFO" | grep -m 1 'ATTRS{idVendor}' | awk -F '=="' '{print $2}' | tr -d '"')
