@@ -150,7 +150,7 @@ jobs:
             import timeit
             start_time = timeit.default_timer()
             with open("workflow-build-timer.txt", "w") as f:
-              f.write(f"Workflow start time:{start_time}\n")
+              f.write(f"BUILD Workflow start time:{start_time}\n")
               f.close()
 
       - name: Set build env variables
@@ -281,7 +281,7 @@ jobs:
         continue-on-error: true
         if: ${{ always() }}
         with:
-          name: workflow_timer
+          name: workflow_build_timer
           path: |
             customer-application/workflow-build-timer.txt
           retention-days: 5
