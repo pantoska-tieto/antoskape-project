@@ -10,11 +10,9 @@ OUTPUT_FILE="../../udev_mapping.txt"
 if [[ "$TARGET" == esp32* ]]; then
     VENDOR="esp32"
     PORT="/dev/ttyUSB"
-    echo "ESP32 serial ports found..."
 elif [[ "$TARGET" == nrf* ]]; then
     VENDOR="nrf"
     PORT="/dev/ttyACM"
-    echo "NRF serial ports found..."
 else
     echo "No vendor found for: $TARGET"
     exit 1
@@ -39,7 +37,7 @@ for DEV in ${PORT}*; do
     SERIAL=$(echo "$INFO" | grep -m 1 'ATTRS{serial}' | awk -F '=="' '{print $2}' | tr -d '"')
 
     # echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"$ID_VENDOR\", ATTRS{idProduct}==\"$ID_PRODUCT\", SYMLINK+=\"$VENDOR\"" | sudo tee -a "$OUTPUT_FILE" > /dev/null
-    echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"$ID_VENDOR\", ATTRS{idProduct}==\"$ID_PRODUCT\", ATTRS{serial}==\"$SERIAL\", SYMLINK+=\"${VENDOR}_${$serial_counter}\"" | sudo tee "$RULE_FILE" > /dev/null
+    echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"$ID_VENDOR\", ATTRS{idProduct}==\"$ID_PRODUCT\", ATTRS{serial}==\"$SERIAL\", SYMLINK+=\"${VENDOR}_${$serial_counter}\"" | sudo tee "$OUTPUT_FILE" > /dev/null
 
     # Copy local file to new udev rule
     sudo cp $OUTPUT_FILE /etc/udev/rules.d/99-$VENDOR.rules
