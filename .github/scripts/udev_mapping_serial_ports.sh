@@ -25,7 +25,7 @@ serial_counter=0
 for DEV in ${PORT}*; do
     # Filter existing ports
     [ -e "$DEV" ] || continue
-    echo "Processing serial port $DEV..."
+    echo "Processing serial port $DEV"
 
     # Get udev info
     INFO=$(udevadm info -a -n "$DEV")
@@ -36,8 +36,8 @@ for DEV in ${PORT}*; do
     ID_PRODUCT=$(echo "$INFO" | grep -m 1 'ATTRS{idProduct}' | awk -F '=="' '{print $2}' | tr -d '"')
     SERIAL=$(echo "$INFO" | grep -m 1 'ATTRS{serial}' | awk -F '=="' '{print $2}' | tr -d '"')
 
-    # echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"$ID_VENDOR\", ATTRS{idProduct}==\"$ID_PRODUCT\", SYMLINK+=\"$VENDOR\"" | sudo tee -a "$OUTPUT_FILE" > /dev/null
-    echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"$ID_VENDOR\", ATTRS{idProduct}==\"$ID_PRODUCT\", ATTRS{serial}==\"$SERIAL\", SYMLINK+=\"${VENDOR}_${$serial_counter}\"" | sudo tee "$OUTPUT_FILE" > /dev/null
+    # echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"$ID_VENDOR\", ATTRS{idProduct}==\"$ID_PRODUCT\", SYMLINK+=\"${VENDOR}_${serial_counter}\"" | sudo tee -a "$OUTPUT_FILE" > /dev/null
+    echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"$ID_VENDOR\", ATTRS{idProduct}==\"$ID_PRODUCT\", ATTRS{serial}==\"$SERIAL\", SYMLINK+=\"${VENDOR}_${serial_counter}\"" | sudo tee "$OUTPUT_FILE" > /dev/null
 
     # Copy local file to new udev rule
     sudo cp $OUTPUT_FILE /etc/udev/rules.d/99-$VENDOR.rules
