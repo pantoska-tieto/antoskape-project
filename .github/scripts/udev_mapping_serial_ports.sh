@@ -29,7 +29,6 @@ for DEV in ${PORT}*; do
 
     # Get udev info
     INFO=$(udevadm info -a -n "$DEV")
-    echo "INFO: $INFO"
 
     # Extract first occurrence of idVendor, idProduct (and serial)
     ID_VENDOR=$(echo "$INFO" | grep -m 1 'ATTRS{idVendor}' | awk -F '=="' '{print $2}' | tr -d '"')
@@ -37,7 +36,7 @@ for DEV in ${PORT}*; do
     SERIAL=$(echo "$INFO" | grep -m 1 'ATTRS{serial}' | awk -F '=="' '{print $2}' | tr -d '"')
 
     # echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"$ID_VENDOR\", ATTRS{idProduct}==\"$ID_PRODUCT\", SYMLINK+=\"${VENDOR}_${serial_counter}\"" | sudo tee -a "$OUTPUT_FILE" > /dev/null
-    echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"$ID_VENDOR\", ATTRS{idProduct}==\"$ID_PRODUCT\", ATTRS{serial}==\"$SERIAL\", SYMLINK+=\"${VENDOR}_${serial_counter}\"" | sudo tee "$OUTPUT_FILE" > /dev/null
+    echo "SUBSYSTEM==\"tty\", ATTRS{idVendor}==\"$ID_VENDOR\", ATTRS{idProduct}==\"$ID_PRODUCT\", ATTRS{serial}==\"$SERIAL\", SYMLINK+=\"${VENDOR}_${serial_counter}\"" | sudo tee -a "$OUTPUT_FILE" > /dev/null
 
     # Copy local file to new udev rule
     sudo cp $OUTPUT_FILE /etc/udev/rules.d/99-$VENDOR.rules

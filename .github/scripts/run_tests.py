@@ -94,7 +94,7 @@ def parse_serial_ports(file):
     """
     with open(file, "r") as f:
         lines = f.readlines()
-        ports = ["/dev/" + p.split(",")[3].split("\"")[1] for p in lines]
+        ports = ["/dev/" + p.split(",")[4].split("\"")[1] for p in lines]
         return ports
 
 if __name__ == "__main__":
