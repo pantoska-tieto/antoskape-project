@@ -143,6 +143,16 @@ jobs:
         with:
           path: customer-application
 
+      # Benchmarking
+      - name: Workflow timer - start
+        shell: python
+        run: |
+            import timeit
+            start_time = timeit.default_timer()
+            with open("workflow-build-timer.txt", "w") as f:
+              f.write(f"Workflow start time:{start_time}\n")
+              f.close()
+
       - name: Set build env variables
         shell: bash
         run: |
@@ -196,6 +206,54 @@ jobs:
         run: |
             pip install -r requirements-extras.txt
 
+      # Benchmarking
+      - name: CPU Benchmark
+        run: |
+          echo "### CPU Benchmark ###" | tee -a workflow_benchmark.txt
+          sysbench cpu --threads=$(nproc) run | tee -a workflow_benchmark.txt
+
+      # Benchmarking
+      - name: Memory Benchmark
+        run: |
+          echo "### Memory Benchmark ###" | tee -a workflow_benchmark.txt
+          sysbench memory --threads=$(nproc) run | tee -a workflow_benchmark.txt
+
+      # Benchmarking
+      - name: Disk I/O Benchmark
+        run: |
+          echo "### Disk I/O Benchmark ###" | tee -a workflow_benchmark.txt
+          fio --name=seqwrite --filename=testfile --size=1G --bs=1M --iodepth=1 --rw=write | tee -a workflow_benchmark.txt
+          fio --name=seqread --filename=testfile --size=1G --bs=1M --iodepth=1 --rw=read | tee -a workflow_benchmark.txt
+          rm testfile
+
+      # Benchmarking
+      - name: Benchmark - gather System Information
+        run: |
+          echo "### CPU Information ###" | tee -a workflow_benchmark.txt
+          lscpu | tee -a workflow_benchmark.txt
+          echo "\n### Memory Information ###" | tee -a workflow_benchmark.txt
+          free -h | tee -a workflow_benchmark.txt
+          echo "\n### Disk Space Usage ###" | tee -a workflow_benchmark.txt
+          df -h | tee -a workflow_benchmark.txt
+          echo "\n### Operating System Details ###" | tee -a workflow_benchmark.txt
+          uname -a | tee -a workflow_benchmark.txt
+          echo "\n### CPU Details from /proc/cpuinfo ###" | tee -a workflow_benchmark.txt
+          grep 'model name' /proc/cpuinfo | uniq | tee -a workflow_benchmark.txt
+          echo "\n### Total Number of CPU Cores ###" | tee -a workflow_benchmark.txt
+          nproc | tee -a workflow_benchmark.txt
+          echo "\n### Total Number of CPU Threads ###" | tee -a workflow_benchmark.txt
+          lscpu | grep "Thread(s) per core" | tee -a workflow_benchmark.txt
+          echo "\n### Disk Details ###" | tee -a workflow_benchmark.txt
+          lsblk | tee -a workflow_benchmark.txt
+
+      # Benchmarking
+      - name: Upload Benchmark results
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark_statistics
+          path: customer-application/workflow_benchmark.txt
+          retention-days: 5
+
       # Example for custom application build
       - name: Build app for ${{ env.BOARD_TARGET }}
         shell: bash
@@ -204,6 +262,29 @@ jobs:
       - name: Flash
         shell: bash
         run: west flash
+
+      # Benchmarking
+      - name: Workflow timer - stop
+        shell: python
+        run: |
+            import timeit
+            stop_time = timeit.default_timer()
+            with open("workflow-build-timer.txt", "r+") as f:
+              start = f.readline()
+              timer = float(stop_time) - float(start.split(":")[1])
+              f.write(f"BUILD Workflow stop time: {stop_time}\nBUILD Workflow was running: {timer}sec")
+              f.close()
+
+      # Benchmarking
+      - name: Archive workflow timer results
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        if: ${{ always() }}
+        with:
+          name: workflow_timer
+          path: |
+            customer-application/workflow-build-timer.txt
+          retention-days: 5
 
   start_testing:
     name: Trigger test framework

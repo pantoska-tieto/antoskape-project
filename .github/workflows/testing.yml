@@ -71,6 +71,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: customer-application
+
+      # Benchmarking
+      - name: Workflow timer - start
+        shell: python
+        run: |
+            import timeit
+            start_time = timeit.default_timer()
+            with open("workflow-tests-timer.txt", "w") as f:
+              f.write(f"Workflow start time:{start_time}\n")
+              f.close()
       
       # Initiate Zephyr environment
       - name: Initialize
@@ -93,7 +103,6 @@ jobs:
         run: |
             sudo apt-get update
             sudo apt-get install -y iperf
-            sudo apt-get install -y sysbench fio
             sudo apt-get install -y curl
 
       # Install Python extras for testing
@@ -284,7 +293,6 @@ jobs:
                 else:
                   print(f"File twister_suite_report.xml not found in {dir}")
 
-
       # Archive test output xml reports
       - name: Archive test results twister_suite_report.xml files for non-Robot tests
         uses: actions/upload-artifact@v4
@@ -303,6 +311,28 @@ jobs:
         shell: bash
         run: python .github/scripts/test_report_email.py --server_pwd "${{ secrets.EMAIL_SERVER_PASSWD }}"
 
+      # Benchmarking
+      - name: Workflow timer - stop
+        shell: python
+        run: |
+            import timeit
+            stop_time = timeit.default_timer()
+            with open("workflow-tests-timer.txt", "r+") as f:
+              start = f.readline()
+              timer = float(stop_time) - float(start.split(":")[1])
+              f.write(f"TESTS Workflow stop time: {stop_time}\nTESTS Workflow was running: {timer}sec")
+              f.close()
+
+      # Benchmarking
+      - name: Archive workflow timer results
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        if: ${{ always() }}
+        with:
+          name: workflow_timer
+          path: |
+            customer-application/workflow-tests-timer.txt
+          retention-days: 5
 
   publish_test_summaries:
     name: Publish Test Summaries
