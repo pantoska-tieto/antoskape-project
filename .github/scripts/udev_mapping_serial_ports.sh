@@ -2,19 +2,19 @@
 
 # Target board variable from GitHub dispatch event
 TARGET="$1"
-echo "Target board: $TARGET"
 
 # Content of udev-rules file
 OUTPUT_FILE="../../udev_mapping.txt"
 > "$OUTPUT_FILE"
 
-if [ "$TARGET" == "esp32"* ]; then
+if [[ "$TARGET" == esp32* ]]; then
     VENDOR="esp32"
     PORT="/dev/ttyUSB"
-    echo "esp32 found!"
-elif [ "$TARGET" == "nrf"* ]; then
+    echo "ESP32 serial ports found..."
+elif [[ "$TARGET" == nrf* ]]; then
     VENDOR="nrf"
     PORT="/dev/ttyACM"
+    echo "NRF serial ports found..."
 else
     echo "No vendor found for: $TARGET"
     exit 1
