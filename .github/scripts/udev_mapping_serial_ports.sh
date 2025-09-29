@@ -4,7 +4,7 @@
 TARGET="$1"
 
 # Content of udev-rules file
-OUTPUT_FILE="../../udev_mapping.txt"
+OUTPUT_FILE="udev_mapping.txt"
 > "$OUTPUT_FILE"
 
 if [[ "$TARGET" == esp32* ]]; then
