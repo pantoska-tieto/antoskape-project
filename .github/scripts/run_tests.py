@@ -119,15 +119,14 @@ if __name__ == "__main__":
         print(f"pantoska: args.integration_tests: {args.integration_tests}")
         print(f"pantoska: args.platform: {args.platform}")
 
-        # Unit tests for local libs (no device needed)
-        if args.target and "app/unit/host" in args.target:
-            cmd_test = "west twister -vv --detailed-test-id"
-        # Robot tests
-        elif args.target and "app/robot" in args.target:
-            cmd_test = "pabot"
-
         # Run tests for all devices connected to test bench
         for port in parse_serial_ports(args.device_serial):
+            # Unit tests for local libs (no device needed)
+            if args.target and "app/unit/host" in args.target:
+                cmd_test = "west twister -vv --detailed-test-id"
+            # Robot tests
+            elif args.target and "app/robot" in args.target:
+                cmd_test = "pabot"
             # Only integration tests for specific platfom(s)
             elif args.integration_tests and args.integration_tests == "yes" and port and port != "":
                 cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id --device-testing --device-serial {port} --tag integration --flash-before"
