@@ -94,7 +94,9 @@ def parse_serial_ports(file):
     """
     with open(file, "r") as f:
         lines = f.readlines()
-        ports = ["/dev/" + p.split(",")[4].split("\"")[1] for p in lines]
+        # Return empty list for simulated/emulated targes
+        ports = ["/dev/" + p.split(",")[4].split("\"")[1] for p in lines] if \
+            len(lines) > 0 else []
         return ports
 
 if __name__ == "__main__":
@@ -116,36 +118,47 @@ if __name__ == "__main__":
             print(f"Selected tests to run:\n")
             [print(t.replace("\n", "")) for t in tests]
 
-        print(f"pantoska: args.integration_tests: {args.integration_tests}")
-        print(f"pantoska: args.platform: {args.platform}")
-
-        # Run tests for all devices connected to test bench
-        for port in parse_serial_ports(args.device_serial):
-            # Tests on simulated/emulated targes:
-            if "native_" in args.platform or "qemu" in args.platform:
+        if len(parse_serial_ports(args.device_serial)) == 0:
+            # Only integration tests for all platforms - without a port
+            if args.integration_tests and args.integration_tests == "yes" and port and port == "":
+                cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
+                            --tag integration"
+            # Tests on simulated/emulated targes - no port!
+            elif "native_" in args.platform or "qemu" in args.platform:
                 cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id"
-            # Unit tests for local libs (no device needed)
-            if args.target and "app/unit/host" in args.target:
-                cmd_test = "west twister -vv --detailed-test-id"
-            # Robot tests
-            elif args.target and "app/robot" in args.target:
-                cmd_test = "pabot"
-            # Only integration tests for specific platfom(s)
-            elif args.integration_tests and args.integration_tests == "yes" and port and port != "":
-                cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id --device-testing --device-serial {port} --tag integration --flash-before"
-            # Only integration tests for all platforms
-            elif args.integration_tests and args.integration_tests == "yes" and port and port == "":
-                cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id --tag integration"            
-            # All other tests (device HW needed)
-            else:
-                cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id --device-testing --device-serial {port} --flash-before"
-
-            # Run all tests from the tests list file
+                # Run all tests from the tests list file
             for line in tests:
                 out, err, code = run_cmd(f'{cmd_test} {line.replace("\n", "")}{arguments}')
                 print(out)
                 # Show test summary reports review
                 print(err)
                 print(f"Return code for test command from subprocess.run: {code}")
+        else:
+            # Run tests for all devices connected to test bench
+            for port in parse_serial_ports(args.device_serial):
+                # Unit tests for local libs (no device needed)
+                elif args.target and "app/unit/host" in args.target:
+                    cmd_test = "west twister -vv --detailed-test-id"
+                # Robot tests
+                # TODO! Add looping over ports for all devices
+                elif args.target and "app/robot" in args.target:
+                    cmd_test = "pabot"
+                # Only integration tests on platfom(s) hardware
+                elif args.integration_tests and args.integration_tests == "yes" and port and port != "":
+                    cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
+                                --device-testing --device-serial {port} --tag integration \
+                                --flash-before"            
+                # All other tests (device HW needed)
+                else:
+                    cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
+                                --device-testing --device-serial {port} --flash-before"
+
+                # Run all tests from the tests list file
+                for line in tests:
+                    out, err, code = run_cmd(f'{cmd_test} {line.replace("\n", "")}{arguments}')
+                    print(out)
+                    # Show test summary reports review
+                    print(err)
+                    print(f"Return code for test command from subprocess.run: {code}")
     else:
          raise Exception("No test list provided!")
