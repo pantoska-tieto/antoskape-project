@@ -36,7 +36,7 @@ def define_args():
         "--test_hardware",
         required=False,
         default=None,
-        help="Test target - hardware or simulation",
+        help="Test target is hardware or simulation",
     )
     parser.add_argument(
         "--device_serial",
@@ -124,7 +124,7 @@ if __name__ == "__main__":
             print(f"Selected tests to run:\n")
             [print(t.replace("\n", "")) for t in tests]
 
-        if args.test_hardware and args.test_hardware == "Simulation":
+        if args.test_hardware and args.test_hardware == "Simulation_Emulation":
             # Only integration tests for all platforms - without a port
             if args.integration_tests and args.integration_tests == "yes":
                 cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \

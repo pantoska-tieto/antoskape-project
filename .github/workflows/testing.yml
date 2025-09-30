@@ -166,7 +166,7 @@ jobs:
       # Auto mapping of USB ports to udev rules
       - name: Auto mapping of USB ports to udev rules
         shell: bash
-        if : ${{ inputs.test_hardware == 'Real hardware' }} 
+        if : ${{ inputs.test_hardware == 'Real_hardware' }} 
         run: |
             sudo chmod +x .github/scripts/udev_mapping_serial_ports.sh
             .github/scripts/udev_mapping_serial_ports.sh ${{ inputs.board_target }}
@@ -312,7 +312,7 @@ jobs:
       - name: Archive udev rules file
         uses: actions/upload-artifact@v4
         continue-on-error: true
-        if : ${{ inputs.test_hardware == 'Real hardware' }} 
+        if : ${{ inputs.test_hardware == 'Real_hardware' }} 
         with:
           name: udev_rules_file_artifacts
           # Relative path to project root. 
@@ -329,7 +329,7 @@ jobs:
       # Teardown: remove udev file from host machine with serial ports mapping
       - name: Remove udev file with serial ports mapping
         shell: bash
-        if : ${{ inputs.test_hardware == 'Real hardware' }} 
+        if : ${{ inputs.test_hardware == 'Real_hardware' }} 
         run: |
             sudo chmod +x .github/scripts/remove_udev_mapping_serial_ports.sh
             .github/scripts/remove_udev_mapping_serial_ports.sh

@@ -23,9 +23,10 @@ on:
         required: false
         default: "Real hardware"
         type: choice
+        # No space in choice string
         options:
-          - "Real hardware"
-          - "Simulation"
+          - "Real_hardware"
+          - "Simulation_Emulation"
       test_tag:
         description: Test TAGs to filter tests
         required: false
@@ -54,6 +55,7 @@ on:
         required: false
         default: app/repo
         type: choice
+        # No space in choice string
         options:
           - "app/repo"
           - "app/unit/dut"
@@ -71,7 +73,7 @@ env:
   TEST_SCENARIO: N/A
   RUN_TESTS: "Build with testing"
   INTEGRATION_TESTS: "no"
-  TEST_HARDWARE: "Real hardware"
+  TEST_HARDWARE: "Real_hardware"
   # Pass all secrets as json to jobs
   SECRETS_JSON: ${{ toJSON(secrets) }}
 
