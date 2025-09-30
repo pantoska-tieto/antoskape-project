@@ -33,10 +33,10 @@ def define_args():
         help="Platform to identify DUT",
     )
     parser.add_argument(
-        "--device_serial",
+        "--test_hardware",
         required=False,
         default=None,
-        help="Serial port for connecting DUT- read from udev-rules file",
+        help="Test target - hardware or simulation",
     )
     parser.add_argument(
         "--tag",
@@ -118,9 +118,9 @@ if __name__ == "__main__":
             print(f"Selected tests to run:\n")
             [print(t.replace("\n", "")) for t in tests]
 
-        if len(parse_serial_ports(args.device_serial)) == 0:
+        if args.test_hardware and args.test_hardware == "Simulation":
             # Only integration tests for all platforms - without a port
-            if args.integration_tests and args.integration_tests == "yes" and port and port == "":
+            if args.integration_tests and args.integration_tests == "yes":
                 cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
                             --tag integration"
             # Tests on simulated/emulated targes - no port!

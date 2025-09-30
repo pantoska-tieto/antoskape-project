@@ -18,11 +18,14 @@ on:
         required: true
         default: esp32s3_devkitc/esp32s3/procpu
         type: string
-      device_serial:
-        description: Serial device for connecting target board
+      test_hardware:
+        description: Tests target
         required: false
-        default: /dev/ttyUSB0
-        type: string
+        default: "Real hardware"
+        type: choice
+        options:
+          - "Real hardware"
+          - "Simulation"
       test_tag:
         description: Test TAGs to filter tests
         required: false
@@ -43,7 +46,6 @@ on:
         required: true
         default: "Build with testing"
         type: choice
-        # Options with a space, parentheses don't work!
         options:
           - "Build only"
           - "Build with testing"
@@ -52,7 +54,6 @@ on:
         required: false
         default: app/repo
         type: choice
-        # Options with a space, parentheses don't work!
         options:
           - "app/repo"
           - "app/unit/dut"
@@ -71,6 +72,7 @@ env:
   TEST_SCENARIO: N/A
   RUN_TESTS: "Build with testing"
   INTEGRATION_TESTS: "no"
+  TEST_HARDWARE: "Real hardware"
   # Pass all secrets as json to jobs
   SECRETS_JSON: ${{ toJSON(secrets) }}
 
@@ -123,6 +125,7 @@ jobs:
       test_scenario: ${{ env.TEST_SCENARIO }}
       tests_target: ${{ env.TESTS_TARGET }}
       integration_tests: ${{ env.INTEGRATION_TESTS }}
+      test_hardware: ${{ env.TEST_HARDWARE }}
     defaults:
       run:
         working-directory: customer-application
@@ -156,6 +159,7 @@ jobs:
             echo "RUN_TESTS=${INPUT_RUN_TESTS:-$RUN_TESTS}" >> $GITHUB_ENV
             if [[ ${INPUT_TESTS_TARGET} == 'integration_tests' ]]; then
             echo "INTEGRATION_TESTS=yes" >> $GITHUB_ENV
+            echo "TEST_HARDWARE=${INPUT_TEST_HARDWARE:-$TEST_HARDWARE}" >> $GITHUB_ENV
             fi
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
@@ -166,6 +170,7 @@ jobs:
           INPUT_PYTEST_ARGS: ${{ github.event.inputs.pytest_args }}
           INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
           INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
+          INPUT_TEST_HARDWARE: ${{ github.event.inputs.test_hardware }}
 
       # Initiate Zephyr environment
       - name: Initialize
@@ -226,4 +231,5 @@ jobs:
       test_scenario: ${{ needs.build.outputs.test_scenario }}
       tests_target: ${{ needs.build.outputs.tests_target }}
       integration_tests: ${{ needs.build.outputs.integration_tests }}
+      test_hardware: ${{ needs.build.outputs.test_hardware }}
     secrets: inherit
