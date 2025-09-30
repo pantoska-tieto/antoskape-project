@@ -126,7 +126,8 @@ if __name__ == "__main__":
             # Tests on simulated/emulated targes - no port!
             elif "native_" in args.platform or "qemu" in args.platform:
                 cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id"
-                # Run all tests from the tests list file
+                
+            # Run all tests from the tests list file
             for line in tests:
                 out, err, code = run_cmd(f'{cmd_test} {line.replace("\n", "")}{arguments}')
                 print(out)
@@ -137,7 +138,7 @@ if __name__ == "__main__":
             # Run tests for all devices connected to test bench
             for port in parse_serial_ports(args.device_serial):
                 # Unit tests for local libs (no device needed)
-                elif args.target and "app/unit/host" in args.target:
+                if args.target and "app/unit/host" in args.target:
                     cmd_test = "west twister -vv --detailed-test-id"
                 # Robot tests
                 # TODO! Add looping over ports for all devices
