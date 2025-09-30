@@ -293,7 +293,6 @@ jobs:
                 else:
                   print(f"File twister_suite_report.xml not found in {dir}")
 
-
       # Archive test output xml reports
       - name: Archive test results twister_suite_report.xml files for non-Robot tests
         uses: actions/upload-artifact@v4
@@ -323,6 +322,13 @@ jobs:
       - name: Send test report email
         shell: bash
         run: python .github/scripts/test_report_email.py --server_pwd "${{ secrets.EMAIL_SERVER_PASSWD }}"
+
+      # Teardown: remove udev file from host machine with serial ports mapping
+      - name: Remove udev file with serial ports mapping
+        shell: bash
+        run: |
+            sudo chmod +x .github/scripts/remove_udev_mapping_serial_ports.sh
+            .github/scripts/remove_udev_mapping_serial_ports.sh
 
 
   publish_test_summaries:
