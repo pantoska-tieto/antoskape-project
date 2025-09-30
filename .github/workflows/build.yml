@@ -65,7 +65,6 @@ on:
 env:
   RUNNER_LABEL: raspberrypi5-production
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
-  DEVICE_SERIAL: /dev/ttyUSB0
   TESTS_TARGET: app/repo
   TEST_TAG: N/A
   PYTEST_ARGS: N/A
@@ -119,7 +118,6 @@ jobs:
     outputs:
       testing: ${{ env.RUN_TESTS }}
       board_target: ${{ env.BOARD_TARGET }}
-      device_serial: ${{ env.DEVICE_SERIAL }}
       test_tag: ${{ env.TEST_TAG }}
       pytest_args: ${{ env.PYTEST_ARGS }}
       test_scenario: ${{ env.TEST_SCENARIO }}
@@ -151,7 +149,6 @@ jobs:
         run: |
             echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
             echo "BOARD_TARGET=${INPUT_BOARD_TARGET:-$BOARD_TARGET}" >> $GITHUB_ENV
-            echo "DEVICE_SERIAL=${INPUT_DEVICE_SERIAL:-$DEVICE_SERIAL}" >> $GITHUB_ENV
             echo "TESTS_TARGET=${INPUT_TESTS_TARGET:-$TESTS_TARGET}" >> $GITHUB_ENV
             echo "TEST_TAG=${INPUT_TEST_TAG:-$TEST_TAG}" >> $GITHUB_ENV
             echo "PYTEST_ARGS=${INPUT_PYTEST_ARGS:-$PYTEST_ARGS}" >> $GITHUB_ENV
@@ -164,7 +161,6 @@ jobs:
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
           INPUT_BOARD_TARGET: ${{ github.event.inputs.board_target }}
-          INPUT_DEVICE_SERIAL: ${{ github.event.inputs.device_serial }}
           INPUT_TESTS_TARGET: ${{ github.event.inputs.tests_target }}
           INPUT_TEST_TAG: ${{ github.event.inputs.test_tag }}
           INPUT_PYTEST_ARGS: ${{ github.event.inputs.pytest_args }}
@@ -225,7 +221,6 @@ jobs:
       docker_image: ${{ needs.process-image.outputs.image }}
       runner_label: ${{ needs.process-runner.outputs.label }}
       board_target: ${{ needs.build.outputs.board_target }}
-      device_serial: ${{ needs.build.outputs.device_serial }}
       test_tag: ${{ needs.build.outputs.test_tag }}
       pytest_args: ${{ needs.build.outputs.pytest_args }}
       test_scenario: ${{ needs.build.outputs.test_scenario }}
