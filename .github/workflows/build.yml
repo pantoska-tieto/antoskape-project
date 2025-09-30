@@ -18,11 +18,15 @@ on:
         required: true
         default: esp32s3_devkitc/esp32s3/procpu
         type: string
-      device_serial:
-        description: Serial device for connecting target board
+      test_hardware:
+        description: Tests target
         required: false
-        default: /dev/ttyUSB0
-        type: string
+        default: "Real_hardware"
+        type: choice
+        # No space in choice string
+        options:
+          - "Real_hardware"
+          - "Simulation_Emulation"
       test_tag:
         description: Test TAGs to filter tests
         required: false
@@ -43,7 +47,6 @@ on:
         required: true
         default: "Build with testing"
         type: choice
-        # Options with a space, parentheses don't work!
         options:
           - "Build only"
           - "Build with testing"
@@ -52,7 +55,7 @@ on:
         required: false
         default: app/repo
         type: choice
-        # Options with a space, parentheses don't work!
+        # No space in choice string
         options:
           - "app/repo"
           - "app/unit/dut"
@@ -64,13 +67,13 @@ on:
 env:
   RUNNER_LABEL: raspberrypi5-production
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
-  DEVICE_SERIAL: /dev/ttyUSB0
   TESTS_TARGET: app/repo
   TEST_TAG: N/A
   PYTEST_ARGS: N/A
   TEST_SCENARIO: N/A
   RUN_TESTS: "Build with testing"
   INTEGRATION_TESTS: "no"
+  TEST_HARDWARE: "Real_hardware"
   # Pass all secrets as json to jobs
   SECRETS_JSON: ${{ toJSON(secrets) }}
 
@@ -117,12 +120,12 @@ jobs:
     outputs:
       testing: ${{ env.RUN_TESTS }}
       board_target: ${{ env.BOARD_TARGET }}
-      device_serial: ${{ env.DEVICE_SERIAL }}
       test_tag: ${{ env.TEST_TAG }}
       pytest_args: ${{ env.PYTEST_ARGS }}
       test_scenario: ${{ env.TEST_SCENARIO }}
       tests_target: ${{ env.TESTS_TARGET }}
       integration_tests: ${{ env.INTEGRATION_TESTS }}
+      test_hardware: ${{ env.TEST_HARDWARE }}
     defaults:
       run:
         working-directory: customer-application
@@ -148,7 +151,6 @@ jobs:
         run: |
             echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
             echo "BOARD_TARGET=${INPUT_BOARD_TARGET:-$BOARD_TARGET}" >> $GITHUB_ENV
-            echo "DEVICE_SERIAL=${INPUT_DEVICE_SERIAL:-$DEVICE_SERIAL}" >> $GITHUB_ENV
             echo "TESTS_TARGET=${INPUT_TESTS_TARGET:-$TESTS_TARGET}" >> $GITHUB_ENV
             echo "TEST_TAG=${INPUT_TEST_TAG:-$TEST_TAG}" >> $GITHUB_ENV
             echo "PYTEST_ARGS=${INPUT_PYTEST_ARGS:-$PYTEST_ARGS}" >> $GITHUB_ENV
@@ -156,16 +158,17 @@ jobs:
             echo "RUN_TESTS=${INPUT_RUN_TESTS:-$RUN_TESTS}" >> $GITHUB_ENV
             if [[ ${INPUT_TESTS_TARGET} == 'integration_tests' ]]; then
             echo "INTEGRATION_TESTS=yes" >> $GITHUB_ENV
+            echo "TEST_HARDWARE=${INPUT_TEST_HARDWARE:-$TEST_HARDWARE}" >> $GITHUB_ENV
             fi
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
           INPUT_BOARD_TARGET: ${{ github.event.inputs.board_target }}
-          INPUT_DEVICE_SERIAL: ${{ github.event.inputs.device_serial }}
           INPUT_TESTS_TARGET: ${{ github.event.inputs.tests_target }}
           INPUT_TEST_TAG: ${{ github.event.inputs.test_tag }}
           INPUT_PYTEST_ARGS: ${{ github.event.inputs.pytest_args }}
           INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
           INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
+          INPUT_TEST_HARDWARE: ${{ github.event.inputs.test_hardware }}
 
       # Initiate Zephyr environment
       - name: Initialize
@@ -220,10 +223,10 @@ jobs:
       docker_image: ${{ needs.process-image.outputs.image }}
       runner_label: ${{ needs.process-runner.outputs.label }}
       board_target: ${{ needs.build.outputs.board_target }}
-      device_serial: ${{ needs.build.outputs.device_serial }}
       test_tag: ${{ needs.build.outputs.test_tag }}
       pytest_args: ${{ needs.build.outputs.pytest_args }}
       test_scenario: ${{ needs.build.outputs.test_scenario }}
       tests_target: ${{ needs.build.outputs.tests_target }}
       integration_tests: ${{ needs.build.outputs.integration_tests }}
+      test_hardware: ${{ needs.build.outputs.test_hardware }}
     secrets: inherit

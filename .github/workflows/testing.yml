@@ -15,8 +15,8 @@ on:
         description: Target board for the build
         required: true
         type: string
-      device_serial:
-        description: Serial device for connecting target board
+      test_hardware:
+        description: Tests target
         required: true
         type: string
       test_tag:
@@ -113,11 +113,11 @@ jobs:
             echo "runner_label: ${{ inputs.runner_label }}"
             echo "integration_tests: ${{ inputs.integration_tests }}"
             echo "board_target: ${{ inputs.board_target }}"
-            echo "device_serial: ${{ inputs.device_serial }}"
             echo "tests_target: ${{ inputs.tests_target }}"
             echo "test_scenario: ${{ inputs.test_scenario }}"
             echo "test_tag: ${{ inputs.test_tag }}"
             echo "pytest_args: ${{ inputs.pytest_args }}"
+            echo "test_hardware: ${{ inputs.test_hardware }}"
             
       # Generate list of all tests in application in txt-format
       - name: Create list of all application tests
@@ -166,6 +166,7 @@ jobs:
       # Auto mapping of USB ports to udev rules
       - name: Auto mapping of USB ports to udev rules
         shell: bash
+        if : ${{ inputs.test_hardware == 'Real_hardware' }} 
         run: |
             sudo chmod +x .github/scripts/udev_mapping_serial_ports.sh
             .github/scripts/udev_mapping_serial_ports.sh ${{ inputs.board_target }}
@@ -181,7 +182,8 @@ jobs:
             --scenario ${{ inputs.test_scenario }} \
             --test_list ${{steps.py-script.outputs.test_list}} \
             --target ${{ inputs.tests_target }} \
-            --integration_tests ${{ inputs.integration_tests }}
+            --integration_tests ${{ inputs.integration_tests }} \
+            --test_hardware ${{ inputs.test_hardware }}
 
       # Generate test run metadata json file
       - name: Create metadata json file
@@ -310,6 +312,7 @@ jobs:
       - name: Archive udev rules file
         uses: actions/upload-artifact@v4
         continue-on-error: true
+        if : ${{ inputs.test_hardware == 'Real_hardware' }} 
         with:
           name: udev_rules_file_artifacts
           # Relative path to project root. 
@@ -326,6 +329,7 @@ jobs:
       # Teardown: remove udev file from host machine with serial ports mapping
       - name: Remove udev file with serial ports mapping
         shell: bash
+        if : ${{ inputs.test_hardware == 'Real_hardware' }} 
         run: |
             sudo chmod +x .github/scripts/remove_udev_mapping_serial_ports.sh
             .github/scripts/remove_udev_mapping_serial_ports.sh
