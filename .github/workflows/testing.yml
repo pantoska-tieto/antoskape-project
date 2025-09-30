@@ -113,7 +113,6 @@ jobs:
             echo "runner_label: ${{ inputs.runner_label }}"
             echo "integration_tests: ${{ inputs.integration_tests }}"
             echo "board_target: ${{ inputs.board_target }}"
-            echo "device_serial: ${{ inputs.device_serial }}"
             echo "tests_target: ${{ inputs.tests_target }}"
             echo "test_scenario: ${{ inputs.test_scenario }}"
             echo "test_tag: ${{ inputs.test_tag }}"
