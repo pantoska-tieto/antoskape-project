@@ -200,10 +200,16 @@ jobs:
       - name: Build app for ${{ env.BOARD_TARGET }}
         shell: bash
         run: west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky
-        
-      - name: Flash
+       
+      # Conditional flash - for 'native_siFlm' board case
+      - name: Flash app if build file is valid
         shell: bash
-        run: west flash
+        run: |
+            if [ -f build/zephyr/zephyr.bin ]; then
+              west flash
+            else
+              echo "Skipping flash: No valid build output found."
+            fi
 
   start_testing:
     name: Trigger test framework
