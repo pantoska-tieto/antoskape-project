@@ -21,7 +21,7 @@ on:
       test_hardware:
         description: Tests target
         required: false
-        default: "Real hardware"
+        default: "Real_hardware"
         type: choice
         # No space in choice string
         options:
