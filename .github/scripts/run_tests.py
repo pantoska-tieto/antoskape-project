@@ -39,6 +39,12 @@ def define_args():
         help="Test target - hardware or simulation",
     )
     parser.add_argument(
+        "--device_serial",
+        required=False,
+        default=None,
+        help="Text file path with udev port rules",
+    )
+    parser.add_argument(
         "--tag",
         required=False,
         default=None,
