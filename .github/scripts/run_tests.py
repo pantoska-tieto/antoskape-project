@@ -121,6 +121,9 @@ if __name__ == "__main__":
 
         # Run tests for all devices connected to test bench
         for port in parse_serial_ports(args.device_serial):
+            # Tests on simulated/emulated targes:
+            if "native_" in args.platform or "qemu" in args.platform:
+                cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id"
             # Unit tests for local libs (no device needed)
             if args.target and "app/unit/host" in args.target:
                 cmd_test = "west twister -vv --detailed-test-id"
