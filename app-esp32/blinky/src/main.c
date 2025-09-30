@@ -34,7 +34,7 @@ int main(void)
 		return 0;
 	}
 
-	while (1) {
+	for (int i = 0; i < 11; i++) {
 		ret = gpio_pin_toggle_dt(&led);
 		if (ret < 0) {
 			return 0;
