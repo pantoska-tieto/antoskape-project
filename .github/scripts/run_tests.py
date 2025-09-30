@@ -128,7 +128,7 @@ if __name__ == "__main__":
             # Only integration tests for all platforms - without a port
             if args.integration_tests and args.integration_tests == "yes":
                 cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
-                            --tag integration"
+                    --tag integration"
             # Tests on simulated/emulated targes - no port!
             elif "native_" in args.platform or "qemu" in args.platform:
                 cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id"
@@ -153,12 +153,12 @@ if __name__ == "__main__":
                 # Only integration tests on platfom(s) hardware
                 elif args.integration_tests and args.integration_tests == "yes" and port and port != "":
                     cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
-                                --device-testing --device-serial {port} --tag integration \
-                                --flash-before"            
+                        --device-testing --device-serial {port} --tag integration \
+                        --flash-before"            
                 # All other tests (device HW needed)
                 else:
                     cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
-                                --device-testing --device-serial {port} --flash-before"
+                        --device-testing --device-serial {port} --flash-before"
 
                 # Run all tests from the tests list file
                 for line in tests:
