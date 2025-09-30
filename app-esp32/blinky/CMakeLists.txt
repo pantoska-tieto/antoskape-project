@@ -4,7 +4,8 @@ cmake_minimum_required(VERSION 3.20.0)
 
 # Check if the board is native_sim (reject then because infinite loop is used in sample)
 if((${BOARD} STREQUAL "native_sim/native/64"))
-    message(FATAL_ERROR "This sample does not support native_sim boards. Build is skipped...")
+    message(WARNING "Skipping build: This sample does not support ${BOARD}")
+	return()
 endif()
 
 # Path to custom overlay file 
