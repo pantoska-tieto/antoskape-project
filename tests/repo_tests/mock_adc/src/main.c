@@ -2,6 +2,7 @@
 #include <zephyr/device.h>
 #include <zephyr/drivers/adc.h>
 #include <zephyr/sys/printk.h>
+#include <stdlib.h>
 
 
 #define ADC_RESOLUTION 12
@@ -36,6 +37,7 @@ int main(void) {
     if (adc_read(adc_dev, &sequence) == 0) {
         printk("ADC read value: %d\n", sample_buffer);
         k_sleep(K_SECONDS(5));
+        exit(0);
 
     } else {
         printk("ADC read failed\n");
