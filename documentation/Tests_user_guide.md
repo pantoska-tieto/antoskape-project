@@ -13,8 +13,13 @@ To run test case manually on custom branch code use the GitHub Actions tab  `wor
 ## How to add a new test
 
 For basic guideline how to setup Zephyr tests in the application, see the official Zephyr documentation:  
-[https://docs.zephyrproject.org/latest/develop/test/ztest.htmls](https://docs.zephyrproject.org/latest/develop/test/ztest.html)<br/>
+[https://docs.zephyrproject.org/latest/develop/test/ztest.htmls](https://docs.zephyrproject.org/latest/develop/test/ztest.html)
+<p>
+Basic overview of sample/test folder structure including workflow for target board attributes verification can be found in <a href="documentation/Add_new_board_to_project.md">How to add a new board into Zephyr project</a> guide. 
+</p>
+
 <br/>
+
 
 1\. Create new test suite folder under tests/ root sub-folder depending on test-type, for example `tests/repo_tests` for generic application test. Use a meaningfull folder  name. For example, `tests/repo_tests/ble_device_recognition` for BLE device recognition test case.
 

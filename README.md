@@ -141,6 +141,7 @@ common:
 ```
 
 <br/>
+To mainain a new board in Zephyr project, follow the steps in <a href="documentation/Add_new_board_to_project.md">How to add a new board into Zephyr project</a> guide. 
 
 2. All above test/build commands can be triggered from within customer-application directory as well. Update then the target test/application paths accordingly!
 
