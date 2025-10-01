@@ -1,0 +1,8 @@
+/ {
+    mock_adc0: mock_adc@0 {
+        compatible = "zephyr,mock-adc";
+        status = "okay";
+        label = "MOCK_ADC";
+        reg = <0x0 0x1000>;  // address = 0x0, size = 0x1000
+    };
+};
