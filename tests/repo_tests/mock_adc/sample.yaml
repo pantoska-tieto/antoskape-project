@@ -1,0 +1,10 @@
+tests:
+  repo_tests.adc.mocking:
+    tags: adc
+    platform_allow:
+      - native_sim/native/64
+    harness: console    
+    harness_config:
+      type: one_line
+      regex: 
+        - "ADC read value: .*"
