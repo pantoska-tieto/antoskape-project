@@ -64,6 +64,7 @@ jobs:
         -v /run/dbus:/run/dbus 
         -v /dev:/dev
         -v /etc/udev/rules.d:/etc/udev/rules.d
+        -v /usr/lib/python3:/usr/lib/python3
         -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
