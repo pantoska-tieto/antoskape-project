@@ -80,12 +80,12 @@ files, where there are automatically recognized by Zephyr applications.<br/>
 3\. Add a tag(s) to `tags:` section to be applied in GitHub workflow dispatch panel when running the tests with demanded tag-specification.
 
 4\. Update the `prj.conf` file with generic configuration parameters. This file:<br/>
-- defines build-time configuration options for your Zephyr application, sample, or test.
+- defines build configuration options for your Zephyr application, sample, or test.
 - uses the same syntax as Kconfig files (simple KEY=VALUE pairs).
 - customizes which Zephyr features, drivers, and kernel options are enabled or disabled for that specific build/test run.
 
 <br/>
-Example - build-time configuration to get Bluetooth support:<br/>
+Example - build configuration to get Bluetooth support:<br/>
 <br/>
 
 ```
@@ -117,7 +117,21 @@ CONFIG_SETTINGS=y
 
 ```
 <br/>
-5\. Update the `CMakeLists.txt` file with build-time configuration options. This file:<br/>
+
+5\. Update the `CMakeLists.txt` file with build configuration options. Example:<br/>
+
+```
+cmake_minimum_required(VERSION 3.20.0)
+find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
+project(peripheral)
+
+target_sources(app PRIVATE
+  src/main.c
+)
+```
+<br/>
+
+6\. If test is executed on real hardare board and an additional hardware resources are utilized, update the guide [HW resources for tests](HW_resources_for_tests.md) to document the test prerequisites.<br/>
 
 <br/>
 

@@ -99,7 +99,9 @@ Tests can be triggered from GitHub Actions workflows automatically by workflow `
 <br/>
 For basic guideline how to add and update application tests see <a href="documentation/Tests_user_guide.md">Tests User Guide</a>.<br/>
 <br/>
-Tests results in metadata-json format (metadata.json DB file) are stored in self-hosted Artifactory storage server. You can find more details in <a href="documentation/Artifactory_storage_server.md">Artifactory storage server</a> guide.
+Tests results in metadata-json format (metadata.json DB file) are stored in self-hosted Artifactory storage server. You can find more details in <a href="documentation/Artifactory_storage_server.md">Artifactory storage server</a> guide.<br/>
+<br/>
+Multiple test cases are dependent on external hardware resources to verify the physical signals returned from the tested boards. You can find all such tests listed in document <a href="documentation/HW_resources_for_tests.md">HW resources for tests</a>. These hardware resources are mandatory pre requirements for the test case to pass.<br/>
 
 
 <br/>

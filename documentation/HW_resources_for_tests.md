@@ -1,6 +1,6 @@
 # HW resources for tests
 
-Several test case executed on real board hardware are using an external HW resources for verification the physical signals returned from tested boards. The following table lists the mandatory HW resources for tests. In case these resources are not provided and connected to test bench, the respective test case will fail.<br/>
+Multiple test case executed on real board hardware are utilizing an external HW resources for verification the physical signals returned from the tested boards. The following table lists the mandatory HW resources for tests. In case these resources are not provided and correctly connected to test bench, the respective test case will fail.<br/>
 <br/>
 
 <br/>
