@@ -25,7 +25,6 @@ gpio_claim_output(chip, RELAY_PIN)
 # Initial setup to power=on
 gpio_write(chip, RELAY_PIN, 1)
 # Initial serial port (until power=off step)
-SERIAL_PORT = "/dev/ttyUSB0"
 BAUDRATE = 115200
 
 def find_new_port():
