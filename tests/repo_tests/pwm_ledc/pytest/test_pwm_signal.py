@@ -1,7 +1,16 @@
+'''
+Hardware PWM measurement test with libgpiod ver.2.3.0
+installed by pip:
+https://pypi.org/project/gpiod/
+
+'''
+
 import gpiod
 import time
+from datetime import timedelta
 import logging
 import pytest
+from gpiod.line import Edge, Direction, Bias
 
 logger = logging.getLogger(__name__)
 
@@ -21,37 +30,45 @@ def test_pwm_signal():
     res = []
 
     chip = gpiod.Chip(CHIP_NAME)
-    line = chip.get_line(GPIO_PIN)
+    # Create LineSettings object and configure direction and edge detection
+    settings = gpiod.LineSettings()
+    settings.direction = Direction.INPUT
+    #settings.bias = Bias.DISABLED
+    settings.edge_detection = Edge.BOTH
+    settings.bias =  Bias.PULL_UP
 
-    # Request line for both edge events
-    line.request(consumer="pwm-measure",
-                 type=gpiod.LINE_REQ_EV_BOTH_EDGES)
+    request = chip.request_lines(
+        consumer="pwm-measure",
+        config={GPIO_PIN: settings}
+    )
 
     logger.info(f"Monitoring PWM signal on GPIO{GPIO_PIN} for {INTERVAL} seconds...")
     start_time = time.time()
 
-    while time.time() - start_time < INTERVAL:
-        if line.event_wait(1):
-            event = line.event_read()
-            tick = event.sec * 1_000_000_000 + event.nsec
-            level = event.type
+    while time.time() - start_time < INTERVAL:        
+        if request.wait_edge_events(timedelta(seconds=1)):
+            events = request.read_edge_events()
 
-            if level == gpiod.LineEvent.RISING_EDGE:
-                if period_start is not None:
-                    period = tick - period_start
-                    if period > 0:
-                        frequency = 1_000_000_000 / period
-                        duty_cycle = (high_time / period) * 100
-                        #logger.info(f"Frequency: {frequency:.2f} Hz, Duty Cycle: {duty_cycle:.2f}%")
-                        signal_detected = True
-                        res.append(["{:.2f}".format(frequency), "{:.2f}".format(duty_cycle)])
-                period_start = tick
+            for event in events:
+                level = event.event_type
+                if event.event_type.name == "RISING_EDGE":
+                    tick = event.timestamp_ns
+                    if period_start is not None:
+                        period = tick - period_start
 
-            elif level == gpiod.LineEvent.FALLING_EDGE:
-                if period_start is not None:
-                    high_time = tick - period_start
+                        if period > 0:
+                            frequency = 1_000_000_000 / period
+                            duty_cycle = (high_time / period) * 100
+                            #logger.info(f"Frequency: {frequency:.2f} Hz, Duty Cycle: {duty_cycle:.2f}%")
+                            signal_detected = True
+                            res.append(["{:.2f}".format(frequency), "{:.2f}".format(duty_cycle)])
+                    period_start = tick
+                elif event.event_type.name == "FALLING_EDGE":
+                    tick = event.timestamp_ns
+                    if period_start is not None:
+                        high_time = tick - period_start
 
-    line.release()
+    request.release()
     chip.close()
     return res
 

@@ -16,3 +16,5 @@ robotframework-pabot
 pytz
 # Raspi GPIO control for power cycle tests
 rpi-lgpio
+# PWM hardware measurements
+gpiod
