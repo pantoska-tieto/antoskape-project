@@ -71,18 +71,26 @@ tests:
 
 ```
 
+​<br/>
+
 2\. Add board overlay with external DTC file into the `boards/` folder if applicable - needed for the DUT board consists of a differences in HW/configuration which are not implemented in Zephyr yet. Overlay files are typically stored in<br/>
 
 `tests/<test_suite>/board/<board name>.overlay (.conf)`​<br/>
 
 files, where there are automatically recognized by Zephyr applications.<br/>
 
+​<br/>
+
 3\. Add a tag(s) to `tags:` section to be applied in GitHub workflow dispatch panel when running the tests with demanded tag-specification.
+
+​<br/>
 
 4\. Update the `prj.conf` file with generic configuration parameters. This file:<br/>
 - defines build configuration options for your Zephyr application, sample, or test.
 - uses the same syntax as Kconfig files (simple KEY=VALUE pairs).
-- customizes which Zephyr features, drivers, and kernel options are enabled or disabled for that specific build/test run.
+- customizes which Zephyr features, drivers, and kernel options are enabled or disabled for that specific build/test run.​<br/>
+
+For more detailed explanation how thw prj.conf file is used in build process and how to customize its content, see the document [Kconfig user guide for testers](Kconfig_tester_guide.md).
 
 <br/>
 Example - build configuration to get Bluetooth support:<br/>
