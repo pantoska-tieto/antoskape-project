@@ -143,3 +143,19 @@ Output file from Save minimal config is in
 
 It is recommended to use this file content to export a minimal configuration file for your application and store it in 
 `application/prj.conf` file. This way, you can easily share your configuration with others or use it as a starting point for your own application.
+
+<br/>
+
+## Kconfig hierarchy to use in Zephyr application test
+Kconfig files are organized in a hierarchy structure.<br/>
+- The top-level Kconfig file is `Kconfig` and it is located in the root directory of the Zephyr project.
+- The Kconfig files in the `boards` directory are used to define the board-specific configuration options.
+- The Kconfig files in the `tests` directory are used to define the test configuration options. 
+- The Kconfig files in the `lib` directory are used to define the library configuration options.
+- The Kconfig files in the `include/custom_lib` directory are used to define the custom library configuration options etc.
+
+To simplify the configuration process for application's test case purpose the below mentioned approach can be used in most cases. For more advanced or specific configuration setup see another tutorials/guides available on internet. 
+
+<br/> 
+
+![The initial configuratio](images/application-configuration.png)
