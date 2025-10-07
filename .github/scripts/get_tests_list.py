@@ -42,6 +42,12 @@ def get_test_paths(scope):
         case "app/repo":
             scope = "repo"
             target = "tests/repo_tests"
+        case "app/repo/general":
+            scope = "repo"
+            target = "tests/repo_tests/general_tests"
+        case "app/repo/shell":
+            scope = "repo"
+            target = "tests/repo_tests/shell_tests"
         case "integration_tests":
             scope = "integration"
             target = "tests"
