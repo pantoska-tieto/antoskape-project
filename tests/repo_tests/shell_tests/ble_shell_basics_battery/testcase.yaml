@@ -1,13 +1,13 @@
 tests:
   bluetooth.shell.battery_level:
     platform_allow:
-      - qemu_x86
-      - native_sim
-      - nrf52840dk/nrf52840
+      - native_sim/native/64
       - esp32s3_devkitc/esp32s3/procpu
+      - esp32c3_devkitm
     integration_platforms:
-      - qemu_x86
+      - native_sim/native/64
       - esp32s3_devkitc/esp32s3/procpu
+      - esp32c3_devkitm
     tags:
       - bluetooth
       - shell

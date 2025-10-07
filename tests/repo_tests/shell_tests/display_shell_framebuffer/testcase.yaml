@@ -1,5 +1,5 @@
 tests:
-  bluetooth.shell.hrs.bas:
+  display.shell.framebuffer:
     platform_allow:
       - native_sim/native/64
       - esp32s3_devkitc/esp32s3/procpu
@@ -9,8 +9,6 @@ tests:
       - esp32s3_devkitc/esp32s3/procpu
       - esp32c3_devkitm
     tags:
-      - bluetooth
+      - display
       - shell
-      - battery
-      - hrs
     harness: pytest
