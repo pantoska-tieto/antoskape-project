@@ -2,13 +2,31 @@
 #include <zephyr/bluetooth/bluetooth.h>
 #include <zephyr/bluetooth/hci.h>
 #include <zephyr/bluetooth/gatt.h>
-#include <zephyr/bluetooth/services/bas.h>
-#include <zephyr/settings/settings.h>
 #include <zephyr/shell/shell.h>
-#include <zephyr/device.h>
 #include <zephyr/sys/util.h>
+#include <zephyr/sys/printk.h>
+#include <zephyr/settings/settings.h>
+#include <zephyr/bluetooth/services/bas.h> // Include Battery Service
+#include <zephyr/bluetooth/services/hrs.h> // Include Heart Rate Service for reference
 
 #define DEVICE_NAME CONFIG_BT_DEVICE_NAME
+uint8_t battery_level = 60;
+uint8_t heart_rate = 90;
+
+static int cmd_get_battery(const struct shell *shell, size_t argc, char **argv)
+{
+    shell_print(shell, "Battery level: %d%%", battery_level);
+    return 0;
+}
+
+static int cmd_get_hr(const struct shell *shell, size_t argc, char **argv)
+{
+    shell_print(shell, "Heart rate: %d bpm", heart_rate);
+    return 0;
+}
+
+SHELL_CMD_REGISTER(get_battery, NULL, "Get current battery level", cmd_get_battery);
+SHELL_CMD_REGISTER(get_hr, NULL, "Get current heart rate", cmd_get_hr);
 
 // Advertise your device as connectable
 // Include the complete device name ("Tieto BLE" or whatever is set via bt_set_name)
@@ -42,8 +60,9 @@ int main(void)
 
 	printk("Bluetooth Settings loaded\n");
 
-    // Initialize Battery Service - shown as Device Type: Battery in nRF Connect
-    bt_bas_set_battery_level(85);
+    // Set Service hardcoded values
+    bt_bas_set_battery_level(battery_level);  // Set initial battery level to 85%
+    bt_hrs_notify(heart_rate);                // Simulate 90 bpm
 
     // Start advertising with connectable and discoverable flags
     err = bt_le_adv_start(BT_LE_ADV_CONN_FAST_1, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));

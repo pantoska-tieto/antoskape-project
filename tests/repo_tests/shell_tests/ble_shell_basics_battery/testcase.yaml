@@ -1,5 +1,5 @@
 tests:
-  bluetooth.shell.battery-level:
+  bluetooth.shell.battery_level:
     platform_allow:
       - qemu_x86
       - native_sim
