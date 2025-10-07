@@ -53,11 +53,13 @@ on:
       tests_target:
         description: Tests scope to run
         required: false
-        default: app/repo
+        default: app/repo/shell
         type: choice
         # No space in choice string
         options:
           - "app/repo"
+          - "app/repo/general"
+          - "app/repo/shell"
           - "app/unit/dut"
           - "app/unit/host"
           - "app/robot"
@@ -67,7 +69,7 @@ on:
 env:
   RUNNER_LABEL: raspberrypi5-production
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
-  TESTS_TARGET: app/repo
+  TESTS_TARGET: app/repo/shell
   TEST_TAG: N/A
   PYTEST_ARGS: N/A
   TEST_SCENARIO: N/A

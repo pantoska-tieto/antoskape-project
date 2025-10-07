@@ -34,7 +34,7 @@ on:
       tests_target:
         description: Tests scope to run
         required: true
-        default: app/repo
+        default: app/repo/shell
         type: string
       integration_tests:
         description: Condition to run integration tests only
