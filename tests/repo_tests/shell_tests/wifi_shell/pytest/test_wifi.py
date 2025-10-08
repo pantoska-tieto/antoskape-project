@@ -27,7 +27,7 @@ def test_wifi_connect(get_secrets, shell: Shell):
     ssid = get_secrets['PANT_SSID']
     lines = shell.exec_command(f'wifi connect -s {ssid} -p {get_secrets['PANT_SSID_PW']} -k 1')
 
-    # Check for wifi connection status in asynchronous returns from uart
+    # Check for wifi connection status in returns from uart
     def wait_for_wifi_status(timeout=20, step=1) -> bool:
         timeout_time = time.time() + timeout
         while time.time() < timeout_time:
