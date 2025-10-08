@@ -1,0 +1,15 @@
+tests:
+  bluetooth.shell.hrs.mocked:
+    platform_allow:
+      - qemu_x86
+      - native_sim
+      - nrf52840dk/nrf52840
+      - esp32s3_devkitc/esp32s3/procpu
+    integration_platforms:
+      - qemu_x86
+      - esp32s3_devkitc/esp32s3/procpu
+    tags:
+      - bluetooth
+      - shell
+      - hrs
+    harness: pytest
