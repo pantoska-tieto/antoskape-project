@@ -10,7 +10,7 @@ import re
 
 logger = logging.getLogger(__name__)
 
-def test_shell_battery_level(shell: Shell):
+def test_shell_hrs_mocked(shell: Shell):
     logger.info("Testcase: check Heart Rate in uart prompt")
     hr_vals = []
     # Reference HRS values

@@ -1,0 +1,9 @@
+&i2c0 {
+    status = "okay";
+
+    mock_sensor: mock_sensor@50 {
+        compatible = "zephyr,i2c-emul";
+        reg = <0x50>;
+        label = "mock_sensor";
+    };
+};
