@@ -1,81 +1,152 @@
-#include <zephyr/kernel.h>
-#include <zephyr/device.h>
-#include <zephyr/drivers/i2c.h>
+/*
+ * Copyright 2023 Google LLC
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 #include <zephyr/drivers/emul.h>
-#include <zephyr/logging/log.h>
-#include <string.h>
+#include <zephyr/drivers/emul_sensor.h>
+#include <zephyr/drivers/i2c_emul.h>
+#include <zephyr/drivers/sensor.h>
+#include <zephyr/drivers/i2c_emul.h>
+#include <zephyr/drivers/emul.h>
+#include <zephyr/sys/printk.h>
+#include "checks.h"
+#include "fixture.h"
 
-LOG_MODULE_REGISTER(i2c_mock_sample, LOG_LEVEL_DBG);
+// External declarations - custom shell commands
+extern int custom_i2c_write(const struct emul *target, int reg_addr, int value);
+extern int custom_i2c_read(const struct emul *target, int reg_addr);
+// Simulate a proper I2C device by using an array to represent the register space
+static uint8_t bmi160_regs[256];
 
-// Mock I2C emulator data
-struct i2c_mock_data {
-    uint8_t value;
-};
-
-// Emulator transfer function
-static int i2c_mock_transfer(const struct emul *emul,
-                             struct i2c_msg *msgs,
-                             int num_msgs,
-                             int addr)
+// Universal I2C transfer mock with 8-bit register space
+static int mock_i2c_transfer(const struct emul *target, struct i2c_msg *msgs, int num_msgs, int addr)
 {
-    struct i2c_mock_data *data = (struct i2c_mock_data *)emul->data;
-
-    for (int i = 0; i < num_msgs; i++) {
-        if (msgs[i].flags & I2C_MSG_READ) {
-            memset(msgs[i].buf, data->value, msgs[i].len);
-            LOG_INF("Mock I2C read: returning 0x%02x", data->value);
-        } else if (msgs[i].flags & I2C_MSG_WRITE) {
-            LOG_INF("Mock I2C write: received 0x%02x", msgs[i].buf[0]);
-            data->value = msgs[i].buf[0];
-        }
-    }
-
-    return 0;
-}
-
-// Emulator API
-static const struct i2c_emul_api i2c_mock_api = {
-    .transfer = i2c_mock_transfer,
-};
-
-// Emulator instance
-static struct i2c_mock_data i2c_mock_data = {
-    .value = 0x42,
-};
-
-// Register emulator with DT node label `mock_sensor`
-
-EMUL_DEFINE(i2c_mock_emul, DT_NODELABEL(mock_sensor),
-            &i2c_mock_api,
-            &i2c_mock_data);
-
-
-int main(void)
-{
-    const struct device *i2c_dev = DEVICE_DT_GET(DT_NODELABEL(i2c0));
-    uint8_t tx_buf[1] = { 0x55 };
-    uint8_t rx_buf[1] = { 0 };
-    struct i2c_msg msgs[2];
-
-    if (!device_is_ready(i2c_dev)) {
-        LOG_ERR("I2C device not ready");
+    ARG_UNUSED(target);
+    ARG_UNUSED(addr);
+    
+    // Handle address probe (zero-length write for 'i2c scan' command)
+    if (num_msgs == 1 && msgs[0].len == 0 && !(msgs[0].flags & I2C_MSG_READ)) {
+        // Acknowledge the probe
+        printk("I2C probe at address 0x%02X\n", addr);
         return 0;
     }
 
-    // Write
-    msgs[0].buf = tx_buf;
-    msgs[0].len = 1;
-    msgs[0].flags = I2C_MSG_WRITE | I2C_MSG_STOP;
-
-    // Read
-    msgs[1].buf = rx_buf;
-    msgs[1].len = 1;
-    msgs[1].flags = I2C_MSG_READ | I2C_MSG_STOP;
-
-    int ret = i2c_transfer(i2c_dev, msgs, 2, 0x50);
-    if (ret == 0) {
-        LOG_INF("I2C transfer successful, read: 0x%02x", rx_buf[0]);
-    } else {
-        LOG_ERR("I2C transfer failed: %d", ret);
+    if (num_msgs != 2) {
+        return -ENOSYS;
     }
+
+    uint8_t reg_addr = msgs[0].buf[0];
+
+    // Write operation
+    if (!(msgs[1].flags & I2C_MSG_READ)) {
+        bmi160_regs[reg_addr] = msgs[1].buf[0];
+        printk("mock_i2c_transfer: wrote 0x%02X to reg 0x%02X\n", msgs[1].buf[0], reg_addr);
+        return 0;
+    }
+
+    // Read operation
+    if (msgs[1].flags & I2C_MSG_READ) {
+        msgs[1].buf[0] = bmi160_regs[reg_addr];
+        printk("mock_i2c_transfer: read 0x%02X from reg 0x%02X\n", msgs[1].buf[0], reg_addr);
+        return 0;
+    }
+
+    return -ENOSYS;
+}
+
+// User-configurable variables for universal I2C testing
+static int user_mem_address = 0x68;         // I2C register address to write/read
+static int user_mem_value = 0x55;           // Value to write
+static int user_mem_cell_to_read = 0x68;    // I2C register address to read
+
+// Universal I2C write operation
+int custom_i2c_write(const struct emul *target, int reg_addr, int value) {
+    struct i2c_msg msgs[2];
+    uint8_t reg = reg_addr;
+    uint8_t val = value;
+    msgs[0].buf = &reg;
+    msgs[0].len = 1;
+    msgs[0].flags = 0; // Read register address
+    msgs[1].buf = &val;
+    msgs[1].len = 1;
+    msgs[1].flags = 0; // Write operation
+
+    printk("I2C emulator write to address: 0x%02X with value: 0x%02X\n", reg_addr, value); 
+
+    // You can change the last argument to be the I2C device address if needed
+    return mock_i2c_transfer(target, msgs, 2, reg_addr);
+}
+
+// Universal I2C read operation
+int custom_i2c_read(const struct emul *target, int reg_addr) {
+    struct i2c_msg msgs[2];
+    uint8_t reg = reg_addr;
+    uint8_t read_buf = 0;
+    msgs[0].buf = &reg;
+    msgs[0].len = 1;
+    msgs[0].flags = 0; // Read register address
+    msgs[1].buf = &read_buf;  // READ value from I2C
+    msgs[1].len = 1;
+    msgs[1].flags = I2C_MSG_READ;
+
+    int ret = mock_i2c_transfer(target, msgs, 2, reg_addr);
+    if (ret == 0) {
+        printk("I2C emulator read from address: 0x%02X with value: 0x%02X\n", reg_addr, read_buf); 
+        return read_buf;
+    }
+    return ret;
+}
+
+int main(void)
+{
+	// Get the emulator instance by label
+    const struct emul *emul_i2c = emul_get_binding("bmi@68");
+    if (!emul_i2c) {
+        printk("I2C emulator not found!\n");
+        return 0;
+    }
+    else {
+        printk("I2C emulator found and binded.\n");
+    }
+
+    struct i2c_emul *i2c_emul_inst = (struct i2c_emul *)emul_i2c;
+
+    // Assign your mock API to the emulator
+    struct i2c_emul_api mock_bus_api = {
+        .transfer = mock_i2c_transfer,
+        // TODO! You can add .configure, .init, etc. if needed
+    };
+
+    i2c_emul_inst->api = &mock_bus_api;
+
+    // Perform custom write if address is set
+    if (user_mem_address >= 0) {
+        int ret = custom_i2c_write(emul_i2c, user_mem_address, user_mem_value);
+        //zassert_true(ret == 0 || ret == -EIO || ret == -ENOSYS, "Custom write failed"); 
+        printk("I am back in I2C write operation\n");       
+        if (ret < 0) {
+            printk("I2C write operation failed with error %d\n", ret);
+        }
+
+    }
+
+    // Perform custom read if cell is set
+    if (user_mem_cell_to_read >= 0) {
+        int ret = custom_i2c_read(emul_i2c, user_mem_cell_to_read);
+        //zassert_true(ret == 0 || ret == -EIO || ret == -ENOSYS || ret >= 0, "Custom read failed");
+        printk("I am back in I2C read operation\n");      
+        if (ret < 0) {
+            printk("I2C read operation failed with error %d\n", ret);
+        }
+    }
+    
+    // For maunal testing, keep the shell running
+    //printk("Entering shell...\n");
+    //while (1) {
+    //    k_sleep(K_SECONDS(1));
+    //}
+
+    return 0;
 }

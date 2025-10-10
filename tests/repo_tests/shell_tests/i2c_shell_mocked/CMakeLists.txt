@@ -1,7 +1,15 @@
+# SPDX-License-Identifier: Apache-2.0
+
 cmake_minimum_required(VERSION 3.20.0)
-
-# set(DTC_OVERLAY_FILE "boards/esp32s3_devkitc.overlay")
-
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
-project(ble_shell_min)
-target_sources(app PRIVATE src/main.c)
+project(device)
+
+target_include_directories(app PRIVATE include)
+target_sources(app
+  PRIVATE
+    include/checks.h
+    include/fixture.h
+    #src/fixture.c
+    src/shell_module.c
+    src/main.c
+)

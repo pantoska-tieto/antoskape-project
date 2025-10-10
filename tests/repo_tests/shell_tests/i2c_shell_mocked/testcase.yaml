@@ -1,14 +1,9 @@
 tests:
-  bluetooth.shell.main:
-    extra_configs:
-      - CONFIG_UART_NATIVE_PTY_0_ON_STDINOUT=y
+  sensor.shell.i2c:
+    tags:
+      - sensor
+      - i2c
     platform_allow:
-      - qemu_x86
       - native_sim
-      - nrf52840dk/nrf52840
-      - - esp32s3_devkitc/esp32s3/procpu
-    integration_platforms:
-      - qemu_x86
-    tags: bluetooth
-    harness: keyboard
-    min_flash: 145
+      - native_sim/native/64
+    harness: pytest 
