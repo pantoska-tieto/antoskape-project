@@ -8,6 +8,7 @@ tests/repo_tests/general_tests/power_cycle_boot
 
 ### Type
 - Pytest test
+- Hardware test
 - Shell test
 
 ### Description

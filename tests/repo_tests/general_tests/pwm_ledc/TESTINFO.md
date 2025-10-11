@@ -8,6 +8,7 @@ tests/repo_tests/general_tests/pwm_ledc
 
 ### Type
 - Pytest test
+- Hardware test
 - Shell test
 
 ### Description

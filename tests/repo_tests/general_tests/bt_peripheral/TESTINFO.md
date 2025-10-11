@@ -8,6 +8,7 @@ tests/repo_tests/general_tests/bt_peripheral
 
 ### Type
 - Pytest test
+- Hardware test
 
 ### Description
 This test is designed to verify a basic functionalitiey of the Bluetooth LE - advertising feature in the Zephyr OS.

@@ -8,6 +8,7 @@ tests/repo_tests/general_tests/gpio_toggle_ztest
 
 ### Type
 - Ztest test
+- Hardware test
 
 ### Description
 This test is designed to verify the functionality of GPIO pin - toggling an LED on target board using Zephyr OS modul.
