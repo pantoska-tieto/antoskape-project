@@ -1,7 +1,8 @@
 # HW resources for tests
 
-Multiple test case executed on real board hardware are utilizing an external HW resources for verification the physical signals returned from the tested boards. The following table lists the mandatory HW resources for tests. In case these resources are not provided and correctly connected to test bench, the respective test case will fail.<br/>
-<br/>
+Multiple test case executed on real board hardware are utilizing an external HW resources for verification the physical signals returned from the tested boards. The following table lists the mandatory HW resources for tests. In case these resources are not provided and correctly connected to test bench, the respective test case will fail.
+<p>
+For complete list of all tests in this repository follow this link: <a href="documentation/Tests_list.md">Tests list</a>.</p>
 
 <br/>
 
@@ -14,22 +15,22 @@ Multiple test case executed on real board hardware are utilizing an external HW 
       <tbody>
         <tr>
         <td>tests/repo_tests/power_cycle_boot</td>
-        <td>Raspberry Pi 5, GPIO 25</strong></td>
-        <td>Control power off/on relay.</strong></td>
+        <td>Raspberry Pi 5, GPIO 25</td>
+        <td>Control power off/on relay.</td>
         </tr>
         <tr><td>tests/repo_tests/pwm_ledc</td>
         <td>Raspberry Pi 5, GPIO 24</td>
-        <td>Measure PWM signal - frequency and duty cycle.</strong></td>
+        <td>Measure PWM signal - frequency and duty cycle.</td>
         </tr>
         <tr><td>tests/repo_tests/gpio_toggle_pytest</td>
         <td>ESP32 S3 devkitc, GPIO 9 (Device Under Test)</td>
-        <td>Verify tested GPIO pin status after toggling.</strong></td>
+        <td>Verify tested GPIO pin status after toggling.</td>
         </tr>
       </tbody>
 </table>
 <br/>
 
-## Documents
+## Resources
 
 <br/>
 
