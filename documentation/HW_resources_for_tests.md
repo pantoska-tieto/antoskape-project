@@ -30,7 +30,7 @@ For complete list of all tests in this repository follow this link: <a href="doc
 </table>
 <br/>
 
-## Resources
+## Technical documents
 
 <br/>
 
