@@ -23,6 +23,38 @@ To run test case manually on custom branch code use the GitHub Actions tab  `wor
 
 [https://github.com/pantoska-tieto/antoskape-project/actions/workflows/build.yml](https://github.com/pantoska-tieto/antoskape-project/actions/workflows/build.yml)
 
+<br/>
+
+## Test types used in this application
+1. Ztest - Zephyr's built-in unit testing framework.
+2. Pytest - Python-based testing framework.
+3. Shell harness test - Zephyr's harness component of Twister FW matching shell output utilizing regex + Pytest.
+
+<br/>
+
+<strong>Shell harness test:</strong><br/>
+The shell harness is used to execute shell commands and parse the output and utilizes the <strong>custom pytest framework</strong> and the pytest harness of twister. It is used to automate interaction with the Zephyr shell over a serial interface or similar transport. It sends commands and verifies the output using regex, making it ideal for functional testing of shell commands.
+
+`type` keyword (under harness_config):<br/>
+This keyword defines the parsing mode for the shell output. It can take values like:
+- one_line – for matching single-line responses.
+- multi_line – for matching multiple lines of output.
+
+```
+harness: shell
+    harness_config:
+      type: one_line
+      shell_commands: &kernel_commands
+        - command: "kernel cycles"
+          expected: "cycles: .* hw cycles"
+        - command: "kernel version"
+          expected: "Zephyr version .*"
+```
+
+For more info about Shell harness see the official Zephyr documentation [Custom Shell module](https://docs.zephyrproject.org/latest/develop/test/twister.html)
+
+<br/>
+
 ## How to add a new test
 
 For basic guideline how to setup Zephyr tests in the application, see the official Zephyr documentation:  

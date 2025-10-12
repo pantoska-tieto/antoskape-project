@@ -12,7 +12,7 @@ tests/repo_tests/shell_tests/ble_shell_hrs_bas
 
 ### Description
 This test is designed to verify a basic functionalitiey of the Bluetooth LE - advertising feature in the Zephyr OS and providing Battery service (BAS) and Heart Rate Service (HRS) with hardcoded simulated values.
-<p>For verification in UART Shell the <strong>custom-shell commands</strong> are used to verify the Battery Level and Heart Rate values.</p>
+<p>For verification a values in UART Shell the <strong>custom-shell commands</strong> are used to verify the Battery Level and Heart Rate values.</p>
 <p>
 More info about Custom Shell module and custom-shell commnds can be found in official Zephyr documentation:<br/>
 
