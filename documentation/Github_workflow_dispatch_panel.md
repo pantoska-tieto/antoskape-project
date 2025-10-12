@@ -1,5 +1,18 @@
 # GitHub workflow\_dispatch panel
 
+### Table of Contents
+1. [Zephyr application - home page](../README.md)
+2. [Add new board to project](Add_new_board_to_project.md)
+3. [Artifactory storage server](documentation/Artifactory_storage_server.md)
+4. GitHub workflow_dispatch panel [this page]
+5. [HW resources for tests](HW_resources_for_tests.md)
+6. [Kconfig tester guide](Kconfig_tester_guide.md)
+7. [Raspi runner installation.md](Raspi_runner_installation.md)
+8. [Shell commands with native_sim.md](Shell_commands_with_native_sim.md)
+9. [Tests list](Tests_list.md)
+10. [Tests user guide](Tests_user_guide.md)
+---
+
 A **workflow** is a configurable automated process that will run one or more jobs. Workflows are defined by a YAML file checked in to your repository and will run when triggered by an event in your repository, or they can be triggered manually, or at a defined schedule.
 
 **Workflow Dispatch** is a trigger in GitHub Actions that allows you to manually start a workflow. To run a workflow manually, the workflow must be configured in .yml file to run on the `workflow_dispatch` event. When a workflow is configured to run on the `workflow_dispatch` event, you can run the workflow using the Actions tab on GitHub, GitHub CLI, or the REST API. To trigger the `workflow_dispatch` event, your workflow must be in the default branch (main)!<br/>

@@ -1,5 +1,18 @@
 # Raspberry Pi5: self-hosted GitHub runner
 
+### Table of Contents
+1. [Zephyr application - home page](../README.md)
+2. [Add new board to project](Add_new_board_to_project.md)
+3. [Artifactory storage server](Artifactory_storage_server.md)
+4. [GitHub workflow_dispatch panel](Github_workflow_dispatch_panel.md)
+5. [HW resources for tests](HW_resources_for_tests.md)
+6. [Kconfig tester guide](Kconfig_tester_guide.md)
+7. Raspi runner installation.md [this page]
+8. [Shell commands with native_sim.md](Shell_commands_with_native_sim.md)
+9. [Tests list](Tests_list.md)
+10. [Tests user guide](Tests_user_guide.md)
+---
+
 Runners are the machines that execute jobs in a GitHub Actions workflow. The standalone GitHub self-hosted runner on Raspberry Pi5 (Raspi5) is used as default in this project for CI/CD workflows.
 
 ## Installing self-hosted GitHub runner on Raspi5

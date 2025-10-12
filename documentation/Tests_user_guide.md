@@ -1,5 +1,18 @@
 # Zephyr tests user guide
 
+### Table of Contents
+1. [Zephyr application - home page](../README.md)
+2. [Add new board to project](Add_new_board_to_project.md)
+3. [Artifactory storage server](Artifactory_storage_server.md)
+4. [GitHub workflow_dispatch panel](Github_workflow_dispatch_panel.md)
+5. [HW resources for tests](HW_resources_for_tests.md)
+6. [Kconfig tester guide](Kconfig_tester_guide.md)
+7. [Raspi runner installation.md](Raspi_runner_installation.md)
+8. [Shell commands with native_sim.md](Shell_commands_with_native_sim.md)
+9. [Tests list](Tests_list.md)
+10. Tests user guide [this page]
+---
+
 This document will guide you through the process of adding and setting up Zephyr tests in the application. All application tests are stored under the `tests/` directory. Each test suite is a folder containing test cases. Each test case is a file with a `.py` or `.c` extension (based on test framework used for the test suite - Pytest, Ztest).
 
 All tests cases in automated process are run in the default branch (main) of the repository with the command skeleton:<br/>
@@ -9,6 +22,38 @@ All tests cases in automated process are run in the default branch (main) of the
 To run test case manually on custom branch code use the GitHub Actions tab  `workflow_dispatch` event, where the additional parameters can be added to the command:<br/>
 
 [https://github.com/pantoska-tieto/antoskape-project/actions/workflows/build.yml](https://github.com/pantoska-tieto/antoskape-project/actions/workflows/build.yml)
+
+<br/>
+
+## Test types used in this application
+1. Ztest - Zephyr's built-in unit testing framework.
+2. Pytest - Python-based testing framework.
+3. Shell harness test - Zephyr's harness component of Twister FW matching shell output utilizing regex + Pytest.
+
+<br/>
+
+<strong>Shell harness test:</strong><br/>
+The shell harness is used to execute shell commands and parse the output and utilizes the <strong>custom pytest framework</strong> and the pytest harness of twister. It is used to automate interaction with the Zephyr shell over a serial interface or similar transport. It sends commands and verifies the output using regex, making it ideal for functional testing of shell commands.
+
+`type` keyword (under harness_config):<br/>
+This keyword defines the parsing mode for the shell output. It can take values like:
+- one_line – for matching single-line responses.
+- multi_line – for matching multiple lines of output.
+
+```
+harness: shell
+    harness_config:
+      type: one_line
+      shell_commands: &kernel_commands
+        - command: "kernel cycles"
+          expected: "cycles: .* hw cycles"
+        - command: "kernel version"
+          expected: "Zephyr version .*"
+```
+
+For more info about Shell harness see the official Zephyr documentation [Custom Shell module](https://docs.zephyrproject.org/latest/develop/test/twister.html)
+
+<br/>
 
 ## How to add a new test
 

@@ -9,7 +9,7 @@ from twister_harness import Shell
 
 logger = logging.getLogger(__name__)
 
-def test_shell_battery_level(shell: Shell):
+def test_shell_display_buffer(shell: Shell):
     logger.info("Testcase: check Display framebuffer in uart prompt")
     
     # Show Display simulated buffer

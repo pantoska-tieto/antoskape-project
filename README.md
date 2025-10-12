@@ -1,7 +1,19 @@
 # Zephyr application
 
-This repo is representing **custom Zephyr RTOS application** for building and testing custom testcases with Pytest framework. It is using structure based on basic Zephyr example applicationn
-https://github.com/zephyrproject-rtos/example-application
+### Table of Contents
+1. Zephyr application [this page]
+2. [Add new board to project](documentation/Add_new_board_to_project.md)
+3. [Artifactory storage server](documentation/Artifactory_storage_server.md)
+4. [GitHub workflow_dispatch panel](documentation/Github_workflow_dispatch_panel.md)
+5. [HW resources for tests](documentation/HW_resources_for_tests.md)
+6. [Kconfig tester guide](documentation/Kconfig_tester_guide.md)
+7. [Raspi runner installation.md](documentation/Raspi_runner_installation.md)
+8. [Shell commands with native_sim.md](documentation/Shell_commands_with_native_sim.md)
+9. [Tests list](documentation/Tests_list.md)
+10. [Tests user guide](documentation/Tests_user_guide.md)
+---
+
+This repo is representing **custom Zephyr RTOS application** for building and testing custom testcases with Pytest framework. It is using structure based on basic Zephyr example application [https://github.com/zephyrproject-rtos/example-application](https://github.com/zephyrproject-rtos/example-application).
 
 It is representing a typical T2 topology model in conjunction with GitHub workflows/actions and CI/CD automation process.
 <br/>
@@ -102,6 +114,7 @@ For basic guideline how to add and update application tests see <a href="documen
 Tests results in metadata-json format (metadata.json DB file) are stored in self-hosted Artifactory storage server. You can find more details in <a href="documentation/Artifactory_storage_server.md">Artifactory storage server</a> guide.<br/>
 <br/>
 Multiple test cases are dependent on external hardware resources to verify the physical signals returned from the tested boards. You can find all such tests listed in document <a href="documentation/HW_resources_for_tests.md">HW resources for tests</a>. These hardware resources are mandatory pre requirements for the test case to pass.<br/>
+To see the list with all tests in this repository, follow this link: <a href="documentation/Tests_list.md">Tests list</a>.
 
 
 <br/>
