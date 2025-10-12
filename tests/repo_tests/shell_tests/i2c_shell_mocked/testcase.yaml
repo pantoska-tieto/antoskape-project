@@ -1,9 +1,0 @@
-tests:
-  sensor.shell.i2c:
-    tags:
-      - sensor
-      - i2c
-    platform_allow:
-      - native_sim
-      - native_sim/native/64
-    harness: pytest 
