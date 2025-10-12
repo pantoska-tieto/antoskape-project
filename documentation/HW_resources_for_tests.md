@@ -1,5 +1,18 @@
 # HW resources for tests
 
+### Table of Contents
+1. [Zephyr application - home page](../README.md)
+2. [Add new board to project](Add_new_board_to_project.md)
+3. [Artifactory storage server](Artifactory_storage_server.md)
+4. [GitHub workflow_dispatch panel](Github_workflow_dispatch_panel.md)
+5. HW resources for tests [this page]
+6. [Kconfig tester guide](Kconfig_tester_guide.md)
+7. [Raspi runner installation.md](Raspi_runner_installation.md)
+8. [Shell commands with native_sim.md](Shell_commands_with_native_sim.md)
+9. [Tests list](Tests_list.md)
+10. [Tests user guide](Tests_user_guide.md)
+---
+
 Multiple test case executed on real board hardware are utilizing an external HW resources for verification the physical signals returned from the tested boards. The following table lists the mandatory HW resources for tests. In case these resources are not provided and correctly connected to test bench, the respective test case will fail.
 <p>
 For complete list of all tests in this repository follow this link: <a href="documentation/Tests_list.md">Tests list</a>.</p>

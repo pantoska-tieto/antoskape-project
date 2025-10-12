@@ -1,5 +1,19 @@
 # Tests list
 
+### Table of Contents
+1. [Zephyr application - home page](../README.md)
+2. [Add new board to project](Add_new_board_to_project.md)
+3. [Artifactory storage server](Artifactory_storage_server.md)
+4. [GitHub workflow_dispatch panel](Github_workflow_dispatch_panel.md)
+5. [HW resources for tests](HW_resources_for_tests.md)
+6. [Kconfig tester guide](Kconfig_tester_guide.md)
+7. [Raspi runner installation.md](Raspi_runner_installation.md)
+8. [Shell commands with native_sim.md](Shell_commands_with_native_sim.md)
+9. Tests list [this page]
+10. [Tests user guide](Tests_user_guide.md)
+---
+
+
 Tests are stored in multiple directories based on <br/>
 - test framework used (robot FW, pytest, unittest, ...),
 - test target (simulation/emulation/hardware test),

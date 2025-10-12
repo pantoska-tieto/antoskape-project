@@ -1,5 +1,18 @@
 # Zephyr tests user guide
 
+### Table of Contents
+1. [Zephyr application - home page](../README.md)
+2. [Add new board to project](Add_new_board_to_project.md)
+3. [Artifactory storage server](Artifactory_storage_server.md)
+4. [GitHub workflow_dispatch panel](Github_workflow_dispatch_panel.md)
+5. [HW resources for tests](HW_resources_for_tests.md)
+6. [Kconfig tester guide](Kconfig_tester_guide.md)
+7. [Raspi runner installation.md](Raspi_runner_installation.md)
+8. [Shell commands with native_sim.md](Shell_commands_with_native_sim.md)
+9. [Tests list](Tests_list.md)
+10. Tests user guide [this page]
+---
+
 This document will guide you through the process of adding and setting up Zephyr tests in the application. All application tests are stored under the `tests/` directory. Each test suite is a folder containing test cases. Each test case is a file with a `.py` or `.c` extension (based on test framework used for the test suite - Pytest, Ztest).
 
 All tests cases in automated process are run in the default branch (main) of the repository with the command skeleton:<br/>

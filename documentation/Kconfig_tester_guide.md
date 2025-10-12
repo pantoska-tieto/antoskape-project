@@ -1,5 +1,18 @@
 # Kconfig user guide for testers
 
+### Table of Contents
+1. [Zephyr application - home page](../README.md)
+2. [Add new board to project](Add_new_board_to_project.md)
+3. [Artifactory storage server](Artifactory_storage_server.md)
+4. [GitHub workflow_dispatch panel](Github_workflow_dispatch_panel.md)
+5. [HW resources for tests](HW_resources_for_tests.md)
+6. Kconfig tester guide [this page]
+7. [Raspi runner installation.md](Raspi_runner_installation.md)
+8. [Shell commands with native_sim.md](Shell_commands_with_native_sim.md)
+9. [Tests list](Tests_list.md)
+10. [Tests user guide](Tests_user_guide.md)
+---
+
 The Zephyr kernel and subsystems can be configured at build time to adapt them for specific application and platform needs. Configuration is handled through Kconfig, which is the same configuration system used by the Linux kernel. The goal is to support configuration without having to change any source code. This guide will help you understand how the configuration setup with Kconfig symbols works and how to use it for enhancing a testing workflows.
 
 For basic guideline about Kconfig see the official Zephyr documentation:  

@@ -1,5 +1,18 @@
 # Zephyr application
 
+### Table of Contents
+1. Zephyr application [this page]
+2. [Add new board to project](documentation/Add_new_board_to_project.md)
+3. [Artifactory storage server](documentation/Artifactory_storage_server.md)
+4. [GitHub workflow_dispatch panel](documentation/Github_workflow_dispatch_panel.md)
+5. [HW resources for tests](documentation/HW_resources_for_tests.md)
+6. [Kconfig tester guide](documentation/Kconfig_tester_guide.md)
+7. [Raspi runner installation.md](documentation/Raspi_runner_installation.md)
+8. [Shell commands with native_sim.md](documentation/Shell_commands_with_native_sim.md)
+9. [Tests list](documentation/Tests_list.md)
+10. [Tests user guide](documentation/Tests_user_guide.md)
+---
+
 This repo is representing **custom Zephyr RTOS application** for building and testing custom testcases with Pytest framework. It is using structure based on basic Zephyr example application [https://github.com/zephyrproject-rtos/example-application](https://github.com/zephyrproject-rtos/example-application).
 
 It is representing a typical T2 topology model in conjunction with GitHub workflows/actions and CI/CD automation process.
