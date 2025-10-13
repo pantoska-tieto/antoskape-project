@@ -1,0 +1,15 @@
+tests:
+  sensor.shell.i2c.read:
+    tags:
+      - sensor
+      - i2c
+    platform_allow:
+      - native_sim
+      - native_sim/native/64
+    harness: console
+    harness_config:
+      type: one_line
+      regex:
+        - ".*read from address: 0x68 with value: 0x55.*"
+        - ".*read from address: 0x69 with value: 0x56.*"
+

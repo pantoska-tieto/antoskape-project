@@ -121,7 +121,7 @@ Tests are stored in multiple directories based on <br/>
         </tr>
         <tr>
         <td>5</td>
-        <td><a href="../tests/repo_tests/general_tests/gpio_toggle_pytest/TESTINFO.md">GPIO toggle test with GPUO initiation and toggling through UART shell commands.</a></td>
+        <td><a href="../tests/repo_tests/shell_tests/gpio_toggle_pytest/TESTINFO.md">GPIO toggle test with GPIO initiation and toggling through UART shell commands.</a></td>
         <td>[PYTEST] Test for GPIO initiation & toggle capabilities through UART shell commands. The verification through UART serial port.</td>
         </tr>
         <tr>
@@ -136,7 +136,7 @@ Tests are stored in multiple directories based on <br/>
         </tr>
         <tr>
         <td>8</td>
-        <td><a href="../tests/repo_tests/shell_tests/shell/TESTINFO.md">Test for successful booting of the board.</a></td>
+        <td><a href="../tests/repo_tests/shell_tests/boot_shell/TESTINFO.md">Test for successful booting of the board.</a></td>
         <td>[PYTEST] Test to transmit a data after successfull booting through the UART serial port. The verification through UART serial port.</td>
         </tr>
         <tr>
@@ -167,7 +167,7 @@ Tests are stored in multiple directories based on <br/>
         </tr>
         <tr>
         <td>9</td>
-        <td><a href="../tests/robot_tests/hello/hello.robot">Hello world test for Robot framework.</a></td>
+        <td><a href="../tests/robot_tests/hello/TESTINFO.md">Hello world test for Robot framework.</a></td>
         <td>[ROBOT] Hello world sample for Robot FW test.</td>
         </tr>
       </tbody>
