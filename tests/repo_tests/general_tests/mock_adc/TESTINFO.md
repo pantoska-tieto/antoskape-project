@@ -7,7 +7,7 @@ Test for reading mocked sensor parameter value from ADC converter.
 tests/repo_tests/general_tests/mock_adc
 
 ### Type
-- Zephyr test
+- Shell harness test
 
 ### Description
 This test is designed to verify a capabilities to read sensor value from mocked ADC sensor. ADC sensor is mocked with help of standard ADC Zephyr module by assigning the hardcoded test value "1234" to the ADC output buffer.
@@ -23,4 +23,4 @@ This test is designed to verify a capabilities to read sensor value from mocked 
 Sensor value == "1234".
 
 ### Notes
-N.A.
+Simulation tests without a DUT board needed.

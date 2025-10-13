@@ -7,4 +7,4 @@ tests:
     harness_config:
       type: one_line
       regex: 
-        - "ADC read value: .*"
+        - "ADC read value: 1234"
