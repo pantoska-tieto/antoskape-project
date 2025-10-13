@@ -121,6 +121,7 @@ int main(void)
 
     i2c_emul_inst->api = &mock_bus_api;
 
+    // Test code to demonstrate read/write operations
     // Perform custom write if address is set
     if (user_mem_address >= 0) {
         int ret = custom_i2c_write(emul_i2c, user_mem_address, user_mem_value);      
@@ -154,12 +155,5 @@ int main(void)
             printk("I2C read operation failed with error %d\n", ret);
         }
     }
-    
-    // For maunal testing, keep the shell running
-    //printk("Entering shell...\n");
-    //while (1) {
-    //    k_sleep(K_SECONDS(1));
-    //}
-
     return 0;
 }

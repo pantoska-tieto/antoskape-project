@@ -7,8 +7,8 @@ Test for I2C write & read commands with UART shell prompt on emulated I2C bus.
 tests/repo_tests/shell_tests/i2c_shell_mocked
 
 ### Type
-- Pytest test
 - Shell test
+- Console harness test
 - Simulation test
 
 ### Description
@@ -17,6 +17,7 @@ To store mocked I2C values on fictive I2C register address the 8-bit register sp
 
 ### Preconditions
 - #include <zephyr/drivers/i2c_emul.h> - Zephyr BMS160 emulation driver.
+- `harness: console` in testcase.yaml.
 
 ### Test steps
 1. Run the test with `west twister`command.
