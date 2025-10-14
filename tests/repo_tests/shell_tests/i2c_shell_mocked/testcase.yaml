@@ -1,5 +1,5 @@
 tests:
-  sensor.shell.i2c.read:
+  sensor.shell.i2c.read.console:
     tags:
       - sensor
       - i2c
@@ -10,6 +10,15 @@ tests:
     harness_config:
       type: one_line
       regex:
+        - ".*write to address: 0x68 with value: 0x55.*"
         - ".*read from address: 0x68 with value: 0x55.*"
+        - ".*write to address: 0x69 with value: 0x56.*"
         - ".*read from address: 0x69 with value: 0x56.*"
-
+  sensor.shell.i2c.read:
+    tags:
+      - sensor
+      - i2c
+    platform_allow:
+      - native_sim
+      - native_sim/native/64
+    harness: pytest

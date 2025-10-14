@@ -4,9 +4,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include <zephyr/drivers/emul.h>
 #include <zephyr/drivers/emul_sensor.h>
-#include <zephyr/drivers/i2c_emul.h>
 #include <zephyr/drivers/sensor.h>
 #include <zephyr/drivers/i2c_emul.h>
 #include <zephyr/drivers/emul.h>
@@ -14,9 +12,7 @@
 #include "checks.h"
 #include "fixture.h"
 
-// External declarations - custom shell commands
-extern int custom_i2c_write(const struct emul *target, int reg_addr, int value);
-extern int custom_i2c_read(const struct emul *target, int reg_addr);
+
 // Simulate a proper I2C device by using an array to represent the register space
 static uint8_t bmi160_regs[256];
 
@@ -42,14 +38,14 @@ static int mock_i2c_transfer(const struct emul *target, struct i2c_msg *msgs, in
     // Write operation
     if (!(msgs[1].flags & I2C_MSG_READ)) {
         bmi160_regs[reg_addr] = msgs[1].buf[0];
-        printk("mock_i2c_transfer: wrote 0x%02X to reg 0x%02X\n", msgs[1].buf[0], reg_addr);
+        //printk("mock_i2c_transfer: wrote 0x%02X to reg 0x%02X\n", msgs[1].buf[0], reg_addr);
         return 0;
     }
 
     // Read operation
     if (msgs[1].flags & I2C_MSG_READ) {
         msgs[1].buf[0] = bmi160_regs[reg_addr];
-        printk("mock_i2c_transfer: read 0x%02X from reg 0x%02X\n", msgs[1].buf[0], reg_addr);
+        //printk("mock_i2c_transfer: read 0x%02X from reg 0x%02X\n", msgs[1].buf[0], reg_addr);
         return 0;
     }
 

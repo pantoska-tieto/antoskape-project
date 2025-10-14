@@ -1,14 +1,26 @@
 tests:
   display.shell.framebuffer:
     platform_allow:
-      - native_sim/native/64
       - esp32s3_devkitc/esp32s3/procpu
       - esp32c3_devkitm
     integration_platforms:
-      - native_sim/native/64
       - esp32s3_devkitc/esp32s3/procpu
       - esp32c3_devkitm
     tags:
       - display
       - shell
     harness: pytest
+
+  display.shell.framebuffer.native_sim:
+    tags:
+      - display
+      - shell
+    platform_allow:
+      - native_sim/native/64
+      - native_sim
+    harness: shell
+    harness_config:
+      pytest_dut_scope: session
+      shell_commands:
+        - command: "display_status"
+          expected: ".*Framebuffer CRC32: 0xfdc935d3.*"
