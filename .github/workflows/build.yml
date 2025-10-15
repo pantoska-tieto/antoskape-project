@@ -21,7 +21,7 @@ on:
       test_hardware:
         description: Tests target
         required: false
-        default: "Real_hardware"
+        default: Real_hardware
         type: choice
         # No space in choice string
         options:
@@ -75,7 +75,7 @@ env:
   TEST_SCENARIO: N/A
   RUN_TESTS: "Build with testing"
   INTEGRATION_TESTS: "no"
-  TEST_HARDWARE: "Real_hardware"
+  TEST_HARDWARE: Real_hardware
   # Pass all secrets as json to jobs
   SECRETS_JSON: ${{ toJSON(secrets) }}
 
@@ -160,8 +160,8 @@ jobs:
             echo "RUN_TESTS=${INPUT_RUN_TESTS:-$RUN_TESTS}" >> $GITHUB_ENV
             if [[ ${INPUT_TESTS_TARGET} == 'integration_tests' ]]; then
             echo "INTEGRATION_TESTS=yes" >> $GITHUB_ENV
-            echo "TEST_HARDWARE=${INPUT_TEST_HARDWARE:-$TEST_HARDWARE}" >> $GITHUB_ENV
             fi
+            echo "TEST_HARDWARE=${INPUT_TEST_HARDWARE:-$TEST_HARDWARE}" >> $GITHUB_ENV
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
           INPUT_BOARD_TARGET: ${{ github.event.inputs.board_target }}
