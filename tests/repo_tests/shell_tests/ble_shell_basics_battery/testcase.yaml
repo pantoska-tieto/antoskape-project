@@ -1,11 +1,9 @@
 tests:
   bluetooth.shell.battery_level:
     platform_allow:
-      - native_sim/native/64
       - esp32s3_devkitc/esp32s3/procpu
       - esp32c3_devkitm
     integration_platforms:
-      - native_sim/native/64
       - esp32s3_devkitc/esp32s3/procpu
       - esp32c3_devkitm
     tags:

@@ -38,7 +38,6 @@ def pin_config(shell: Shell, dev, pin, mode, resistor, init_state, init_logic=Fa
     conf_cmd = f"gpio conf {dev} {pin} {mode}{resistor}{init_state}{logic}"
     res = shell.exec_command(conf_cmd)
     logger.info(f"Configured pin {pin}: {conf_cmd}")
-    # assert res == "", f"Failed to configure pin {pin}: {res}"
 
 def test_gpio_toggle(shell: Shell):
     logger.info("Testcase: verify gpio toggle command in shell prompt")

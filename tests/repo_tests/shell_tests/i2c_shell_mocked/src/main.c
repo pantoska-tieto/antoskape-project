@@ -124,7 +124,6 @@ int main(void)
         if (ret < 0) {
             printk("I2C write operation failed with error %d\n", ret);
         }
-
     }
 
     // Perform custom read if cell is set
@@ -141,7 +140,6 @@ int main(void)
         if (ret < 0) {
             printk("I2C write operation failed with error %d\n", ret);
         }
-
     }
 
     // Perform custom read if cell is set

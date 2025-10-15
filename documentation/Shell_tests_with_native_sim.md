@@ -1,4 +1,4 @@
-# How to setup test config for native_sim while needed a shell prompt?
+# How to setup test config for native_sim tests while needed a shell prompt?
 
 ### Table of Contents
 1. [Zephyr application - home page](../README.md)
@@ -7,8 +7,8 @@
 4. [GitHub workflow_dispatch panel](Github_workflow_dispatch_panel.md)
 5. [HW resources for tests](HW_resources_for_tests.md)
 6. [Kconfig tester guide](Kconfig_tester_guide.md)
-7. [Raspi runner installation.md](Raspi_runner_installation.md)
-8. Shell commands with native_sim.md [this page]
+7. [Raspi runner installation](Raspi_runner_installation.md)
+8. Shell tests with native_sim [this page]
 9. [Tests list](Tests_list.md)
 10. [Tests user guide](Tests_user_guide.md)
 ---
@@ -53,7 +53,7 @@ CONFIG_CRC=y
 CONFIG_UART_NATIVE_PTY_0_ON_STDINOUT=y
 ```
 
-Then you can use the the regular `westharness: pytest` in  testcase.yaml/sample.yamlto invoke Pytest to run the test. Pytest plugin will then attach to the simulator process’ stdin/stdout and is able to read from pseudoterminal /dev/pts/N without any additional setup:
+Then you can use the the regular `harness: pytest` in  testcase.yaml/sample.yaml to invoke Pytest to run the test. Pytest plugin will then attach to the simulator process’ stdin/stdout and is able to read from pseudoterminal /dev/pts/N without any additional setup:
 
 ```
 from twister_harness import Shell
@@ -64,7 +64,7 @@ def test_shell_print_help(shell: Shell):
     . . .
 ```
 
-For direct access to pseudoterminal without imvoking Pytest there is a simple way to verify shell-command output (create a test case) inside testcase.yaml/sample.yaml (regex can be used):
+For direct access to pseudoterminal without using Pytest test there is a simple way to verify shell-command output (create a test case) inside testcase.yaml/sample.yaml (regex can be used):
 
 ```
 harness: shell
@@ -82,6 +82,22 @@ For console/session configuration, the regex field does not support standard esc
 
 ### B) Alternative: Use harness: console in testcase.yaml
 If you don’t want to use the native POSIX UART backend (CONFIG_UART_NATIVE_PTY_0_ON_STDINOUT=y is not added to prj.conf), you can use the `harness: console` keyword to run the test. This will attach to the simulator process’ stdin/stdout and is able to read from pseudoterminal /dev/pts/N without any additional setup.
+
+<br/>
+
+1. Extend src/main.c with test-logic writing a test value to UART shell e.g.:
+
+```
+// Perform custom write if address is set
+if (user_mem_address >= 0) {
+    int ret = custom_i2c_write(emul_i2c, 0x69, 0x56);      
+    if (ret < 0) {
+        printk("I2C write operation failed with error %d\n", ret);
+    }
+}
+```
+
+2. Extend testcase.yaml/sample.yaml with `harness: console` section and verify main.c test-logic (prints on pseudoterminal /dev/pts/N) with regex-pattern:
 
 ```
 tests:
@@ -104,6 +120,26 @@ For console/session configuration, the regex field does not support standard esc
 
  <br/>
 
+
+### Split configuration file on tes-case level
+If each test case needs a differnet configuration file, the following logic can be applied in testcase.yaml/sample.yaml:
+
+```
+tests:
+  display.shell.framebuffer:
+    platform_allow:
+      - esp32s3_devkitc/esp32s3/procpu
+    tags:
+      - display
+      - shell
+    harness: pytest
+    extra_args:
+      - EXTRA_CONF_FILE=conf/board_prj.conf   
+```
+
+The prj.conf is empty and conf/board_prj.conf consists of all CONFIG_ symbols needed to configure the test environment.
+
+For "display.shell.framebuffer" test case the default prj.conf will be ignored and replaced by "conf/board_prj.conf" configuration. This approach is useful when you have multiple test cases that need different configurations.
 
 ## Outcome
 For best performance and reliability, it is recommended to use the native POSIX UART backend (CONFIG_UART_NATIVE_PTY_0_ON_STDINOUT=y) in a prj.conf. In this case you have a shell prompt available in regular Pytest. If Pytest tests are not intended to use, you can use the `harness: console` keyword to run the test directly on the simulator process’ stdin/stdout.
