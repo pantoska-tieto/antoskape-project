@@ -2,6 +2,7 @@ tests:
   repo_tests.adc.mocking:
     tags: adc
     platform_allow:
+      - native_sim
       - native_sim/native/64
     harness: console    
     harness_config:

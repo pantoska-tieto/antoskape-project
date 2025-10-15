@@ -7,8 +7,8 @@
 4. [GitHub workflow_dispatch panel](Github_workflow_dispatch_panel.md)
 5. HW resources for tests [this page]
 6. [Kconfig tester guide](Kconfig_tester_guide.md)
-7. [Raspi runner installation.md](Raspi_runner_installation.md)
-8. [Shell commands with native_sim.md](Shell_commands_with_native_sim.md)
+7. [Raspi runner installation](Raspi_runner_installation.md)
+8. [Shell tests with native_sim](Shell_tests_with_native_sim.md)
 9. [Tests list](Tests_list.md)
 10. [Tests user guide](Tests_user_guide.md)
 ---

@@ -10,7 +10,7 @@ common:
   min_ram: 40
   integration_platforms:
     - native_sim
-    - qemu_cortex_m3
+    - native_sim/native/64
     - esp32s3_devkitc/esp32s3/procpu
     - esp32c3_devkitm
 tests:
@@ -18,7 +18,7 @@ tests:
     harness: pytest
     harness_config:
       pytest_dut_scope: session
-    tags: antoska
+    tags: shell
   repo_tests.shell.pytest.shell.vt100_colors_off:
     harness: pytest
     extra_configs:

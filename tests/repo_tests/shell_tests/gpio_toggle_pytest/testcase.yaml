@@ -5,3 +5,23 @@ tests:
       - esp32s3_devkitc/esp32s3/procpu
       - esp32c3_devkitm
     harness: pytest
+
+  repo_tests.gpio_toggle_pytest.native_sim:
+    tags: gpio
+    platform_allow:
+      - native_sim/native/64
+      - native_sim
+    harness: shell
+    harness_config:
+      pytest_dut_scope: session
+      shell_commands:
+        - command: "gpio devices"
+          expected: ".*"
+        - command: "gpio conf gpio0 13 ouh"
+          expected: ".*"
+        - command: "gpio get gpio0 9"
+          expected: ".*1.*"
+        - command: "gpio conf gpio0 13 oul"
+          expected: ".*"
+        - command: "gpio get gpio0 9"
+          expected: ".*0.*"
