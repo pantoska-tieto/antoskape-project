@@ -180,7 +180,7 @@ jobs:
         if : ${{ inputs.test_hardware == 'Real_hardware' }} 
         run: |
             echo "Check the udev daemon is running..."
-            sudo service udev status
+            pgrep -a udevd || echo "udevd not running"
             sudo chmod +x .github/scripts/udev_mapping_serial_ports.sh
             .github/scripts/udev_mapping_serial_ports.sh ${{ inputs.board_target }}
 
