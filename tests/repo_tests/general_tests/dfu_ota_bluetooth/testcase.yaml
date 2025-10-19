@@ -9,7 +9,7 @@ tests:
     timeout: 280
     extra_args: 
       - EXTRA_CONF_FILE="overlay-bt.conf"
-      - -DEXTRA_CONF_FILE="overlay-bt.conf"	
+      - -DEXTRA_CONF_FILE="overlay-bt.conf"
     platform_allow:
       - esp32s3_devkitc/esp32s3/procpu
       - esp32c3_devkitm
