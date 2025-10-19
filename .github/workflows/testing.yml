@@ -100,9 +100,8 @@ jobs:
             sudo apt-get install -y python3-dev
             sudo apt-get install -y golang-go            
             sudo apt-get install -y udev
-            sudo apt-get install -y systemd
-            which udevd
-            sudo /lib/systemd/systemd-udevd --daemon
+            echo "Find udevd path..."
+            sudo find / -name '*udevd' 2>/dev/null
 
 
       # Install Python extras for testing
