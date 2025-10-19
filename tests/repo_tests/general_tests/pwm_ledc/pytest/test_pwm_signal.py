@@ -74,6 +74,8 @@ def measure_pwm():
     return res
 
 def test_pwm_signal(dut: DeviceAdapter):
+    # Delay for new flash to get ready
+    time.sleep(10)
     res = measure_pwm()
     logger.info(f"PWM results from GPIO measurement: {res}")
     # Get frequency values from PWM
