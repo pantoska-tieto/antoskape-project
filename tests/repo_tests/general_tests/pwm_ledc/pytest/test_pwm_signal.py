@@ -11,6 +11,7 @@ from datetime import timedelta
 import logging
 import pytest
 from gpiod.line import Edge, Direction, Bias
+from twister_harness import DeviceAdapter
 
 logger = logging.getLogger(__name__)
 
@@ -72,7 +73,7 @@ def measure_pwm():
     chip.close()
     return res
 
-def test_pwm_signal():
+def test_pwm_signal(dut: DeviceAdapter):
     res = measure_pwm()
     logger.info(f"PWM results from GPIO measurement: {res}")
     # Get frequency values from PWM
