@@ -2,8 +2,11 @@ tests:
   repo_tests.mcumgr.ota.bt:
     harness: pytest
     sysbuild: true
-    sysbuild: true
-    tags: bluetooth
+    tags:
+      - bluetooth
+      - dfu
+      - ota
+    timeout: 280
     extra_args: 
       - EXTRA_CONF_FILE="overlay-bt.conf"
       - -DEXTRA_CONF_FILE="overlay-bt.conf"	
