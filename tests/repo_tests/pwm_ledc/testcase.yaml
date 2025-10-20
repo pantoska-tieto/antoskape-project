@@ -3,13 +3,11 @@ tests:
     platform_allow:
       - esp32s3_devkitc/esp32s3/procpu
       - esp32c3_devkitm
-      - native_sim/native/64
     tags:
       - LED
       - gpio
     depends_on: gpio
     harness: pytest
     integration_platforms:
-      - native_sim/native/64
       - esp32s3_devkitc/esp32s3/procpu
       - esp32c3_devkitm

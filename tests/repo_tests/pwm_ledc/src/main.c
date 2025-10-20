@@ -4,7 +4,6 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/printk.h>
 
-LOG_MODULE_REGISTER(pwm_ledc_sample, LOG_LEVEL_INF);
 
 #define PWM_CTLR_NODE DT_ALIAS(pwm_led0)
 
@@ -21,15 +20,16 @@ int main(void)
     uint32_t pulse_width = 500U; // 500 microseconds => duty cycle = 10%
 
     if (!device_is_ready(pwm_led.dev)) {
-        LOG_ERR("PWM device is not ready");
+        printk("PWM device is not ready");
         return 0;
     }
 
-    // Start transmitting PWM signal 
+    // Start transmitting PWM signal
+    printk("Starting PWM on target device...\n");
     int ret = pwm_set_dt(&pwm_led, PWM_USEC(period), PWM_USEC(pulse_width));
     if (ret) {
-        LOG_ERR("Failed to set PWM: %d", ret);
+        printk("Failed to set PWM: %d", ret);
     } else {
-        LOG_INF("PWM set: period = %u us, pulse = %u us", period, pulse_width);
+        printk("PWM set: period = %u us, pulse = %u us", period, pulse_width);
     }
 }
