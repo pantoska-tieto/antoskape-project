@@ -6,7 +6,9 @@ tests:
     tags:
       - LED
       - gpio
-    depends_on: gpio
+    depends_on: 
+      - gpio
+      - clock
     harness: pytest
     integration_platforms:
       - esp32s3_devkitc/esp32s3/procpu

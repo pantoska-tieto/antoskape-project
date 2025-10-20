@@ -15,6 +15,7 @@ static const struct pwm_dt_spec pwm_led = PWM_DT_SPEC_GET(PWM_CTLR_NODE);
 
 int main(void)
 {
+    k_sleep(K_SECONDS(10)); 
     // Set duty cycle PWM signal
     uint32_t period = 5000U;     // 5000 microseconds = 200Hz
     uint32_t pulse_width = 500U; // 500 microseconds => duty cycle = 10%
