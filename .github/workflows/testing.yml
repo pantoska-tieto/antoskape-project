@@ -95,6 +95,7 @@ jobs:
             sudo apt-get install -y sysbench fio
             sudo apt-get install -y curl       
             sudo apt-get install -y python3-dev
+            sudo apt-get install -y libgpiod-dev gpiod
 
       # Install Python extras for testing
       - name: Install Python extra packages
@@ -160,6 +161,8 @@ jobs:
         run: |
             echo $SECRETS_JSON > vars.json
             cat vars.json
+            gpiodetect
+            gpioinfo /dev/gpiochip4
 
       # Run Twister tests (read serial ports from udev_mapping.txt file created in previous step)
       - name: Run Twister tests
@@ -264,6 +267,8 @@ jobs:
         run: |
             rm -rf test-summary
             sudo mkdir -p test-summary
+            echo "Verify ESP32 board..."
+            cat build/zephyr/.config | grep CONFIG_BOARD
 
       # Collect all test output xml reports into one folder
       - name: Copy files to CI report summary
