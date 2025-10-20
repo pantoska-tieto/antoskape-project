@@ -43,10 +43,12 @@ for DEV in ${PORT}*; do
 
     # Copy local file to new udev rule
     sudo cp $OUTPUT_FILE /etc/udev/rules.d/99-$VENDOR.rules
+    echo "Verify permissions for udev-rules file..."
+    cat /etc/udev/rules.d/99-$VENDOR.rules
     # Reload udev rules
     echo "udevadm: reload-rules..."
-    sudo udevadm control --reload-rules || echo "udevadm reload-rules done without an error..."
-    sudo udevadm trigger
+    sudo udevadm control --reload-rules || echo "udevadm reload-rules done with an error..."
+    sudo udevadm trigger || echo "udevadm trigger done with an error..."
     # Increment for further serial port
     ((serial_counter++))
     sleep 2

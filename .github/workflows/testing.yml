@@ -173,15 +173,6 @@ jobs:
             echo $SECRETS_JSON > vars.json
             cat vars.json
 
-      # Auto mapping of USB ports to udev rules
-      - name: Auto mapping of USB ports to udev rules
-        shell: bash
-        if : ${{ inputs.test_hardware == 'Real_hardware' }} 
-        run: |
-            echo "Check the udev daemon is running..."
-            pgrep -a udevd || echo "udevd not running"
-            sudo chmod +x .github/scripts/udev_mapping_serial_ports.sh
-            .github/scripts/udev_mapping_serial_ports.sh ${{ inputs.board_target }}
 
       # Run Twister tests (read serial ports from udev_mapping.txt file created in previous step)
       - name: Run Twister tests

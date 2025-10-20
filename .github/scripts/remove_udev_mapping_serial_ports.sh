@@ -13,8 +13,8 @@ if [[ -f "$OUTPUT_FILE" ]]; then
         if [[ -n "$symlink" ]]; then
             echo "Executing: sudo rm /etc/udev/rules.d/99-$symlink.rules"
             sudo rm "/etc/udev/rules.d/99-$symlink.rules"
-            sudo udevadm control --reload-rules
-			sudo udevadm trigger
+            sudo udevadm control --reload-rules || echo "Error for udevadm reload-rules."
+			sudo udevadm trigger || echo "Error for udevadm reload-rules."
         fi
     done < "$OUTPUT_FILE"
 
