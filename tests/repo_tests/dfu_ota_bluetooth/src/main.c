@@ -52,6 +52,8 @@ static struct fs_mount_t littlefs_mnt = {
 
 int main(void)
 {
+	k_busy_wait(3000000);
+
 	int rc = STATS_INIT_AND_REG(smp_svr_stats, STATS_SIZE_32,
 				    "smp_svr_stats");
 
