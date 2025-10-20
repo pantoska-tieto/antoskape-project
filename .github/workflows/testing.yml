@@ -63,7 +63,6 @@ jobs:
         -v /var/run/dbus:/var/run/dbus 
         -v /run/dbus:/run/dbus 
         -v /dev:/dev
-        -v /etc/udev/rules.d:/etc/udev/rules.d
         -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
@@ -95,11 +94,9 @@ jobs:
             sudo apt-get update
             sudo apt-get install -y iperf
             sudo apt-get install -y sysbench fio
-            sudo apt-get install -y curl
-            sudo apt-get install -y udev            
+            sudo apt-get install -y curl         
             sudo apt-get install -y python3-dev
             sudo apt-get install -y golang-go
-            sudo /usr/lib/systemd/systemd-udevd --daemon
 
       # Install Python extras for testing
       - name: Install Python extra packages
@@ -172,9 +169,6 @@ jobs:
         run: |
             echo $SECRETS_JSON > vars.json
             cat vars.json
-            echo "Content of /etc/udev/rules.d/99-esp32.rules:\n"
-            cat /etc/udev/rules.d/99-esp32.rules
-            sudo udevadm trigger || echo "Error for udevadm trigger."
 
 
       # Run Twister tests (read serial ports from udev_mapping.txt file created in previous step)
