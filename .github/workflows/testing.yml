@@ -58,7 +58,6 @@ jobs:
     container:
       image: ${{ inputs.docker_image }}
       options: >
-        --device=/dev/ttyUSB0 
         --privileged
         -v /var/run/dbus:/var/run/dbus 
         -v /run/dbus:/run/dbus 
