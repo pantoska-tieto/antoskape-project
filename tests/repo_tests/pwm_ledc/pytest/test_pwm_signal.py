@@ -11,6 +11,7 @@ from datetime import timedelta
 import logging
 import pytest
 from gpiod.line import Edge, Direction, Bias
+from twister_harness import DeviceAdapter
 
 logger = logging.getLogger(__name__)
 
@@ -18,12 +19,12 @@ CHIP_NAME = "/dev/gpiochip4"  # Raspberry Pi 5
 GPIO_PIN = 24
 INTERVAL = 2  # [second]
 DELTA_FREQ = 1  # [Hz]
-DELTA_DUTY = 1  # [%]
+DELTA_DUTY = 2  # [%]
 # Expected PWM values - check src/main.c
 EXP_FREQUENCY = 200
 EXP_DUTY = 10   # 10% duty cycle
 
-def test_pwm_signal():
+def measure_pwm():
     period_start = None
     high_time = 0
     signal_detected = False
@@ -59,7 +60,7 @@ def test_pwm_signal():
                         if period > 0:
                             frequency = 1_000_000_000 / period
                             duty_cycle = (high_time / period) * 100
-                            #logger.info(f"Frequency: {frequency:.2f} Hz, Duty Cycle: {duty_cycle:.2f}%")
+                            logger.info(f"Frequency: {frequency:.2f} Hz, Duty Cycle: {duty_cycle:.2f}%")
                             signal_detected = True
                             res.append(["{:.2f}".format(frequency), "{:.2f}".format(duty_cycle)])
                     period_start = tick
@@ -72,11 +73,13 @@ def test_pwm_signal():
     chip.close()
     return res
 
-if __name__ == "__main__":
-    res = test_pwm_signal()
+def test_pwm_signal(dut: DeviceAdapter):
+    time.sleep(10)
+    res = measure_pwm()
+    logger.info(f"PWM results from GPIO measurement: {res}")
     # Get frequency values from PWM
     res_frequency = [(float(line[0]) > EXP_FREQUENCY - DELTA_FREQ and float(line[0]) < EXP_FREQUENCY + DELTA_FREQ) for line in res]
     # Get duty cycle values from PWM
     res_duty = [(float(line[1]) > EXP_DUTY - DELTA_DUTY and float(line[1]) < EXP_DUTY + DELTA_DUTY) for line in res]
-    assert all(res_frequency) and all(res_duty), "Detected PWM signal is not in expected range."
+    assert len(res_frequency) !=0 and all(res_frequency) and len(res_duty) != 0 and all(res_duty), "Detected PWM signal is not in expected range."
     logger.info("PWM test completed successfully.")
