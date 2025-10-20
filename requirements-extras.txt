@@ -19,3 +19,5 @@ pytz
 rpi-lgpio
 # PWM hardware measurements
 gpiod
+# Go app for MCUmgr tool installation
+golang-go 
