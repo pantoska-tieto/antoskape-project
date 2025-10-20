@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 logger.info("DFU with OTA through Bluetooth started...")
 
 # setting path for tools module
-_p = Path(os.path.abspath(__file__)).parents[4]
+_p = Path(os.path.abspath(__file__)).parents[5]
 sys.path.append(f"{str(_p)}/tests")
 from tools import tools
 
