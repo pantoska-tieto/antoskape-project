@@ -1,0 +1,1 @@
+SUBSYSTEM=="tty", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="b2fe9675c199ef11861a187161ce3355", SYMLINK+="esp32_0"

@@ -90,8 +90,6 @@ jobs:
         id: runner-label
         run: |
             echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
-            sudo chmod +x .github/scripts/udev_mapping_serial_ports.sh
-            .github/scripts/udev_mapping_serial_ports.sh esp32
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
 
