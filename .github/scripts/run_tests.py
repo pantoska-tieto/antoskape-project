@@ -153,12 +153,12 @@ if __name__ == "__main__":
                 # Only integration tests on platfom(s) hardware
                 elif args.integration_tests and args.integration_tests == "yes" and port and port != "":
                     cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
-                        --device-testing --device-serial {port} --tag integration \
+                        --device-testing --device-serial /dev/ttyUSB0 --tag integration \
                         --flash-before"            
                 # All other tests (device HW needed)
                 else:
                     cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
-                        --device-testing --device-serial {port} --flash-before"
+                        --device-testing --device-serial /dev/ttyUSB0 --flash-before"
 
                 # Run all tests from the tests list file
                 for line in tests:
