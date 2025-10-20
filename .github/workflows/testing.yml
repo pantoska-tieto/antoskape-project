@@ -268,7 +268,7 @@ jobs:
             rm -rf test-summary
             sudo mkdir -p test-summary
             echo "Verify ESP32 board..."
-            cat twister-out/esp32s3_devkitc_esp32s3_procpu/zephyr/pwm_ledc/repo_tests.pwm.ledc/zephyr/.config | grep CONFIG_BOARD
+            cat customer-application/twister-out/esp32s3_devkitc_esp32s3_procpu/zephyr/pwm_ledc/repo_tests.pwm.ledc/zephyr/.config | grep CONFIG_BOARD
 
       # Collect all test output xml reports into one folder
       - name: Copy files to CI report summary
