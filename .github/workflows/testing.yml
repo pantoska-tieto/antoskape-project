@@ -171,7 +171,10 @@ jobs:
         shell: bash
         run: |
             echo $SECRETS_JSON > vars.json
+            echp "Content of /etc/udev/rules.d/99-esp32.rules:\n"
+            cat /etc/udev/rules.d/99-esp32.rules
             cat vars.json
+            sudo udevadm trigger || echo "Error for udevadm trigger."
 
 
       # Run Twister tests (read serial ports from udev_mapping.txt file created in previous step)
