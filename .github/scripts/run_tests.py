@@ -39,12 +39,6 @@ def define_args():
         help="Test target is hardware or simulation",
     )
     parser.add_argument(
-        "--device_serial",
-        required=False,
-        default=None,
-        help="Text file path with udev port rules",
-    )
-    parser.add_argument(
         "--tag",
         required=False,
         default=None,
@@ -141,31 +135,29 @@ if __name__ == "__main__":
                 print(err)
                 print(f"Return code for test command from subprocess.run: {code}")
         else:
-            # Run tests for all devices connected to test bench
-            for port in parse_serial_ports(args.device_serial):
-                # Unit tests for local libs (no device needed)
-                if args.target and "app/unit/host" in args.target:
-                    cmd_test = "west twister -vv --detailed-test-id"
-                # Robot tests
-                # TODO! Add looping over ports for all devices
-                elif args.target and "app/robot" in args.target:
-                    cmd_test = "pabot"
-                # Only integration tests on platfom(s) hardware
-                elif args.integration_tests and args.integration_tests == "yes" and port and port != "":
-                    cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
-                        --device-testing --device-serial {port} --tag integration \
-                        --flash-before"            
-                # All other tests (device HW needed)
-                else:
-                    cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
-                        --device-testing --device-serial {port} --flash-before"
+            # Unit tests for local libs (no device needed)
+            if args.target and "app/unit/host" in args.target:
+                cmd_test = "west twister -vv --detailed-test-id"
+            # Robot tests
+            # TODO! Add looping over ports for all devices
+            elif args.target and "app/robot" in args.target:
+                cmd_test = "pabot"
+            # Only integration tests on platfom(s) hardware
+            elif args.integration_tests and args.integration_tests == "yes":
+                cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
+                    --device-testing --device-serial /dev/ttyUSB0 --tag integration \
+                    --flash-before"            
+            # All other tests (device HW needed)
+            else:
+                cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
+                    --device-testing --device-serial /dev/ttyUSB0 --flash-before"
 
-                # Run all tests from the tests list file
-                for line in tests:
-                    out, err, code = run_cmd(f'{cmd_test} {line.replace("\n", "")}{arguments}')
-                    print(out)
-                    # Show test summary reports review
-                    print(err)
-                    print(f"Return code for test command from subprocess.run: {code}")
+            # Run all tests from the tests list file
+            for line in tests:
+                out, err, code = run_cmd(f'{cmd_test} {line.replace("\n", "")}{arguments}')
+                print(out)
+                # Show test summary reports review
+                print(err)
+                print(f"Return code for test command from subprocess.run: {code}")
     else:
          raise Exception("No test list provided!")
