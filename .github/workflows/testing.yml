@@ -114,7 +114,7 @@ jobs:
             go install github.com/apache/mynewt-mcumgr-cli/mcumgr@latest
             echo "Home dir:" $HOME
             sudo ls -la $HOME/go/bin
-            sudo setcap cap_net_raw,cap_net_admin+eip /github/home/go/bin/mcumgr
+            sudo setcap cap_net_raw,cap_net_admin+eip $HOME/go/bin/mcumgr
             getcap $HOME/go/bin/mcumgr || echo "No mcumgr capabilities set"
 
       #  Review of variables from Build workflow

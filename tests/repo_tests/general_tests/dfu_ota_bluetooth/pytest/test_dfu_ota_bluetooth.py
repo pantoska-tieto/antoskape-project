@@ -27,7 +27,7 @@ logger.info("Home dir for Zephyr app:", home_dir)
 mcumgr_path = Path(f"{os.path.expanduser("~")}/go/bin/mcumgr")
 
 if mcumgr_path.exists():
-    MCUMGR_PATH = mcumgr_path
+    MCUMGR_PATH = str(mcumgr_path)
 else:
     raise FileNotFoundError(f"mcumgr tool not found on path: {mcumgr_path}")
 
