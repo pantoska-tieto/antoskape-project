@@ -60,7 +60,8 @@ jobs:
       options: >
         --device=/dev/ttyUSB0
         --privileged
-        --network=host
+        --cap-add=NET_ADMIN
+        --cap-add=SYS_ADMIN
         -v /var/run/dbus:/var/run/dbus 
         -v /run/dbus:/run/dbus 
         -v /dev:/dev
