@@ -27,9 +27,12 @@ logger.info("Home dir for Zephyr app:", home_dir)
 mcumgr_path = Path(f"{os.path.expanduser("~")}/go/bin/mcumgr")
 
 if mcumgr_path.exists():
-    MCUMGR_PATH = str(mcumgr_path)
+    #MCUMGR_PATH = str(mcumgr_path)
+    pass
 else:
     raise FileNotFoundError(f"mcumgr tool not found on path: {mcumgr_path}")
+
+MCUMGR_PATH = "/github/home/go/bin/mcumgr"
 
 PEER_NAME = "TietoBLE-OTA"  # BLE peer name to connect to
 BUILD_DIR = "build/smp_svr/zephyr/zephyr.signed.bin"
