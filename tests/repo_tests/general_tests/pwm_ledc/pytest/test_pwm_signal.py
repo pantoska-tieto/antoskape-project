@@ -74,6 +74,7 @@ def measure_pwm():
     return res
 
 def test_pwm_signal(dut: DeviceAdapter):
+    time.sleep(5)
     res = measure_pwm()
     logger.info(f"PWM results from GPIO measurement: {res}")
     # Get frequency values from PWM
