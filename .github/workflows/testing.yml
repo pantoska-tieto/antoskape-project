@@ -124,7 +124,6 @@ jobs:
             sudo ls -la $HOME/go/bin
             sudo setcap cap_net_raw,cap_net_admin+eip $HOME/go/bin/mcumgr
             getcap $HOME/go/bin/mcumgr || echo "No mcumgr capabilities set"
-            sudo rm -f /run/dbus/pid
             sudo dbus-daemon --system --fork
             sudo bluetoothd --nodetach &
             sudo hciconfig
