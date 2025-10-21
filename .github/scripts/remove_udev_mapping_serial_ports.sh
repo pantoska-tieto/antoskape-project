@@ -11,10 +11,11 @@ if [[ -f "$OUTPUT_FILE" ]]; then
         # Parse name inside SYMLINK+="..." for udev file
         symlink=$(echo "$line" | awk -F'SYMLINK\\+="' '{print $2}' | awk -F'_' '{print $1}')
         if [[ -n "$symlink" ]]; then
-            echo "Executing: sudo rm /etc/udev/rules.d/99-$symlink.rules"
+            echo "Removing /etc/udev/rules.d/99-$symlink.rules..."
             sudo rm "/etc/udev/rules.d/99-$symlink.rules"
-            sudo udevadm control --reload-rules
-			sudo udevadm trigger
+            echo "udevadm: reload-rules..."
+            sudo udevadm control --reload-rules || echo "Error for udevadm reload-rules."
+	        sudo udevadm trigger || echo "Error for udevadm reload-rules."
         fi
     done < "$OUTPUT_FILE"
 

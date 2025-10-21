@@ -5,6 +5,7 @@
 pytest-asyncio
 # pytest fixture
 pytest-repeat
+pytest-order
 # Bluetooth library
 bleak
 # Robot test fw

@@ -15,6 +15,9 @@ static const struct pwm_dt_spec pwm_led = PWM_DT_SPEC_GET(PWM_CTLR_NODE);
 
 int main(void)
 {
+    // Time delay to stabilize PWM signal
+    k_sleep(K_SECONDS(5)); 
+
     // Set duty cycle PWM signal
     uint32_t period = 5000U;     // 5000 microseconds = 200Hz
     uint32_t pulse_width = 500U; // 500 microseconds => duty cycle = 10%
@@ -23,6 +26,9 @@ int main(void)
         printk("PWM device is not ready");
         return 0;
     }
+
+    // Time delay to stabilize PWM signal
+    k_sleep(K_SECONDS(5)); 
 
     // Start transmitting PWM signal
     printk("Starting PWM on target device...\n");

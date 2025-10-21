@@ -107,12 +107,12 @@ jobs:
         run: |
             echo "Detected runner architecture: $RUNNER_ARCH"
             if [[ $RUNNER_ARCH == 'ARM64' ]]; then
-            echo "Set container name to fit the runner arch: zephyrprojectrtos/ci:v0.28.4-arm64"
-            echo "image=zephyrprojectrtos/ci:v0.28.4-arm64" >> $GITHUB_OUTPUT
+            echo "Set container name to fit the runner arch: zephyrprojectrtos/ci:latest"
+            echo "image=zephyrprojectrtos/ci:latest" >> $GITHUB_OUTPUT
             fi
             if [[ $RUNNER_ARCH == 'X64' ]]; then
-            echo "Set container name to fit the runner arch: zephyrprojectrtos/ci:v0.28.4-amd64"
-            echo "image=zephyrprojectrtos/ci:v0.28.4-amd64" >> $GITHUB_OUTPUT
+            echo "Set container name to fit the runner arch: zephyrprojectrtos/ci:latest"
+            echo "image=zephyrprojectrtos/ci:latest" >> $GITHUB_OUTPUT
             fi
 
   build:

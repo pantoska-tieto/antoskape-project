@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 CHIP_NAME = "/dev/gpiochip4"  # Raspberry Pi 5
 GPIO_PIN = 24
-INTERVAL = 2  # [second]
+INTERVAL = 5  # [second]
 DELTA_FREQ = 1  # [Hz]
 DELTA_DUTY = 2  # [%]
 # Expected PWM values - check src/main.c
