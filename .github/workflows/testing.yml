@@ -70,6 +70,7 @@ jobs:
         -v /var/lib/bluetooth:/var/lib/bluetooth
         -v /lib/modules:/lib/modules
         -v /usr/src:/usr/src
+        -v /run/dbus/pid:/run/dbus/pid
         -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
@@ -125,8 +126,6 @@ jobs:
             getcap $HOME/go/bin/mcumgr || echo "No mcumgr capabilities set"
             sudo rm -f /run/dbus/pid
             sudo dbus-daemon --system --fork
-            sudo bluetoothd --nodetach & 
-            hciconfig
             btmgmt info
 
       #  Review of variables from Build workflow
