@@ -112,8 +112,10 @@ jobs:
         shell: bash
         run: |
             go install github.com/apache/mynewt-mcumgr-cli/mcumgr@latest
-            sudo ls -la ~/go/bin
-            sudo setcap cap_net_raw,cap_net_admin+eip ~/go/bin/mcumgr
+            echo "Home dir:" $HOME
+            sudo ls -la $HOME/go/bin
+            sudo setcap cap_net_raw,cap_net_admin+eip /github/home/go/bin/mcumgr
+            getcap $HOME/go/bin/mcumgr || echo "No mcumgr capabilities set"
 
       #  Review of variables from Build workflow
       - name: Show variables from caller workflow
