@@ -107,7 +107,7 @@ jobs:
             sudo apt-get install -y python3-dev
             sudo apt-get install -y libgpiod-dev gpiod
             sudo apt-get install -y golang-go
-            sudo apt-get install -y bluez bluez-tools
+            sudo apt-get install -y bluez bluez-tools libbluetooth-dev dbus
 
       # Install Python extras for testing
       - name: Install Python extra packages
@@ -126,7 +126,8 @@ jobs:
             getcap $HOME/go/bin/mcumgr || echo "No mcumgr capabilities set"
             sudo rm -f /run/dbus/pid
             sudo dbus-daemon --system --fork
-            btmgmt info
+            sudo bluetoothd --nodetach &
+            sudo hciconfig
 
       #  Review of variables from Build workflow
       - name: Show variables from caller workflow
