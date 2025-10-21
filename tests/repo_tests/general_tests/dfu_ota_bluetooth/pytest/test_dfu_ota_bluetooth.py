@@ -11,7 +11,6 @@ import time
 import subprocess
 from twister_harness import DeviceAdapter
 from pathlib import Path
-from twister_harness import Shell
 
 
 logger = logging.getLogger(__name__)
@@ -23,7 +22,15 @@ sys.path.append(f"{str(_p)}/tests")
 from tools import tools
 
 # General setup
-MCUMGR_PATH = "~/go/bin/mcumgr"
+home_dir = os.path.expanduser("~")
+logger.info("Home dir for Zephyr app:", home_dir)
+mcumgr_path = Path(f"{os.path.expanduser("~")}/go/bin/mcumgr")
+
+if mcumgr_path.exists():
+    MCUMGR_PATH = mcumgr_path
+else:
+    raise FileNotFoundError(f"mcumgr tool not found on path: {mcumgr_path}")
+
 PEER_NAME = "TietoBLE-OTA"  # BLE peer name to connect to
 BUILD_DIR = "build/smp_svr/zephyr/zephyr.signed.bin"
 TEST_PATH = "tests/repo_tests/general_tests/dfu_ota_bluetooth"
