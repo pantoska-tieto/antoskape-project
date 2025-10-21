@@ -146,11 +146,11 @@ if __name__ == "__main__":
             elif args.integration_tests and args.integration_tests == "yes":
                 cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
                     --device-testing --device-serial /dev/ttyUSB0 --tag integration \
-                    --device-flash-with-test"            
+                    --west-flash="--erase" --flash-before"            
             # All other tests (device HW needed)
             else:
                 cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
-                    --device-testing --device-serial /dev/ttyUSB0 --device-flash-with-test"
+                    --device-testing --device-serial /dev/ttyUSB0 --west-flash="--erase" --flash-before"
 
             # Run all tests from the tests list file
             for line in tests:
