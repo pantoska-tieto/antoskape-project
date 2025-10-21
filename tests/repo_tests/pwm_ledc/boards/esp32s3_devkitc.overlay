@@ -33,5 +33,6 @@
 	channel0@0 {
 		reg = <0x0>;
 		timer = <0>;
+		resolution = <13>;  // Optional: if supported by DTS
 	};
 };
