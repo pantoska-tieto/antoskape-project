@@ -32,7 +32,6 @@ if mcumgr_path.exists():
 else:
     raise FileNotFoundError(f"mcumgr tool not found on path: {mcumgr_path}")
 
-"/github/home/go/bin/mcumgr" = "/github/home/go/bin/mcumgr"
 
 PEER_NAME = "TietoBLE-OTA"  # BLE peer name to connect to
 BUILD_DIR = "build/smp_svr/zephyr/zephyr.signed.bin"
