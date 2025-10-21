@@ -119,12 +119,15 @@ jobs:
       - name: Setup for BT HCI socket
         shell: bash
         run: |
-            if ! pgrep dbus-daemon > /dev/null; then
-              echo "dbus-daemon is started"
-              sudo rm -f /run/dbus/pid
-              sudo dbus-daemon --system --fork
+            if dbus-send --system --type=method_call --dest=org.freedesktop.DBus \
+               /org/freedesktop/DBus org.freedesktop.DBus.ListNames > /dev/null 2>&1; then
+               echo "dbus-daemon is already running and responding"
             else
-              echo "dbus-daemon is already running"
+               echo "dbus-daemon not responding, attempting restart"
+               sudo pkill dbus-daemon || true
+               sleep 1
+               sudo rm -f /run/dbus/pid || echo "Could not remove /run/dbus/pid, might be locked"
+               sudo dbus-daemon --system --fork
             fi
             sudo bluetoothd --nodetach &
             sudo hciconfig
