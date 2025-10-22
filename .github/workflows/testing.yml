@@ -106,7 +106,7 @@ jobs:
             sudo apt-get install -y python3-dev
             sudo apt-get install -y libgpiod-dev gpiod
             sudo apt-get install -y golang-go
-            sudo apt-get install -y bluez bluez-tools libbluetooth-dev dbus
+            sudo apt-get install -y bluez bluez-tools libbluetooth-dev libdbus-1-dev dbus
 
       # Install Python extras for testing
       - name: Install Python extra packages
@@ -150,8 +150,13 @@ jobs:
                 exit 1
             fi
 
+            echo "Starting hciconfig command..."
+            bluetoothctl show     
+            
             # Show HCI status
-            sudo hciconfig          
+            echo "Starting hciconfig command..."
+            sudo hciconfig
+               
 
       # Setup for tools
       - name: Setup for test tools
