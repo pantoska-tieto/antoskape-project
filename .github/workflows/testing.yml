@@ -59,6 +59,7 @@ jobs:
       image: ${{ inputs.docker_image }}
       options: >
         --device=/dev/ttyUSB0
+        --cgroupns=host
         --privileged
         -v /var/run/dbus:/var/run/dbus 
         -v /run/dbus:/run/dbus 
@@ -158,9 +159,9 @@ jobs:
             echo "Check bluetoothds..."
             busctl tree org.bluez
 
-            # Show HCI status
-            echo "Starting hciconfig command..."
-            sudo hciconfig
+            # Show HCI status - skip in container!
+            # echo "Starting hciconfig command..."
+            # sudo hciconfig
                
 
       # Setup for tools
