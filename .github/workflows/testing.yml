@@ -166,9 +166,9 @@ jobs:
               sudo bluetoothd
           fi
 
-# Show HCI status
-sudo hciconfig
-            sudo hciconfig
+          # Show HCI status
+          sudo hciconfig
+                      sudo hciconfig
 
       # Setup for tools
       - name: Setup for test tools
