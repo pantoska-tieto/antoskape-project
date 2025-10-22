@@ -62,7 +62,7 @@ jobs:
         --privileged
         --cap-add=NET_ADMIN
         --cap-add=SYS_ADMIN
-        -v /var/run/dbus:/var/run/dbus 
+        -v /var/run:/var/run 
         -v /run/dbus:/run/dbus 
         -v /dev:/dev
         -v /etc/udev/rules.d:/etc/udev/rules.d
