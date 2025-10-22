@@ -118,57 +118,40 @@ jobs:
       - name: Setup for BT HCI socket
         shell: bash
         run: |
-          echo "Checking if systemctl is available..."
-          if command -v systemctl &> /dev/null; then
-              echo "Using systemctl to manage dbus and bluetoothd"
+            echo "Checking dbus-daemon status..."
+            if ! dbus-send --system --type=method_call --dest=org.freedesktop.DBus \
+                /org/freedesktop/DBus org.freedesktop.DBus.ListNames &> /dev/null; then
+                echo "dbus-daemon not responding, attempting restart"
+                sudo pkill dbus-daemon || true
+                sleep 1
+                sudo rm -f /run/dbus/pid || echo "Could not remove /run/dbus/pid, might be locked"
+                sudo dbus-daemon --system --fork
+            fi
 
-              echo "Restarting dbus-daemon..."
-              sudo systemctl restart dbus
+            echo "Waiting for dbus-daemon to become responsive..."
+            for i in {1..5}; do
+                if dbus-send --system --type=method_call --dest=org.freedesktop.DBus \
+                    /org/freedesktop/DBus org.freedesktop.DBus.ListNames &> /dev/null; then
+                    echo "dbus-daemon is now responsive"
+                    break
+                fi
+                echo "DBus not ready yet, retrying in 1s..."
+                sleep 1
+            done
 
-              echo "Waiting for dbus to become responsive..."
-              for i in {1..5}; do
-                  if dbus-send --system --type=method_call --dest=org.freedesktop.DBus \
-                      /org/freedesktop/DBus org.freedesktop.DBus.ListNames &> /dev/null; then
-                      echo "dbus-daemon is now responsive"
-                      break
-                  fi
-                  echo "DBus not ready yet, retrying in 1s..."
-                  sleep 1
-              done
+            # Final check before starting bluetoothd
+            if dbus-send --system --type=method_call --dest=org.freedesktop.DBus \
+                /org/freedesktop/DBus org.freedesktop.DBus.ListNames &> /dev/null; then
+                echo "Starting bluetoothd manually..."
+                sudo bluetoothd &
+                sleep 2
+            else
+                echo "DBus still not ready, aborting bluetoothd start"
+                exit 1
+            fi
 
-              echo "Starting bluetoothd via systemctl..."
-              sudo systemctl start bluetooth
-          else
-              echo "systemctl not available, falling back to manual dbus-daemon control"
-
-              echo "Checking dbus-daemon status..."
-              if ! dbus-send --system --type=method_call --dest=org.freedesktop.DBus \
-                  /org/freedesktop/DBus org.freedesktop.DBus.ListNames &> /dev/null; then
-                  echo "dbus-daemon not responding, attempting restart"
-                  sudo pkill dbus-daemon || true
-                  sleep 1
-                  sudo rm -f /run/dbus/pid || echo "Could not remove /run/dbus/pid, might be locked"
-                  sudo dbus-daemon --system --fork
-              fi
-
-              echo "Waiting for dbus-daemon to become responsive..."
-              for i in {1..5}; do
-                  if dbus-send --system --type=method_call --dest=org.freedesktop.DBus \
-                      /org/freedesktop/DBus org.freedesktop.DBus.ListNames &> /dev/null; then
-                      echo "dbus-daemon is now responsive"
-                      break
-                  fi
-                  echo "DBus not ready yet, retrying in 1s..."
-                  sleep 1
-              done
-
-              echo "Starting bluetoothd manually..."
-              sudo bluetoothd
-          fi
-
-          # Show HCI status
-          sudo hciconfig
-                      sudo hciconfig
+            # Show HCI status
+            sudo hciconfig          
 
       # Setup for tools
       - name: Setup for test tools
