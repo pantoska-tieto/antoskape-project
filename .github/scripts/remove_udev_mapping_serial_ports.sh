@@ -11,6 +11,8 @@ if [[ -f "$OUTPUT_FILE" ]]; then
         # Parse name inside SYMLINK+="..." for udev file
         symlink=$(echo "$line" | awk -F'SYMLINK\\+="' '{print $2}' | awk -F'_' '{print $1}')
         if [[ -n "$symlink" ]]; then
+            echo "Show symlinks for serial ports..."
+            ls -la /dev/ | grep USB
             echo "Removing /etc/udev/rules.d/99-$symlink.rules..."
             sudo rm "/etc/udev/rules.d/99-$symlink.rules"
             echo "udevadm: reload-rules..."
