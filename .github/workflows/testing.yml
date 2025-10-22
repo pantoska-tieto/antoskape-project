@@ -150,9 +150,9 @@ jobs:
                 exit 1
             fi
 
-            echo "Starting hciconfig command..."
-            bluetoothctl show     
-            
+            echo "Starting bluetoothctl command..."
+            sudo bluetoothctl show     
+
             # Show HCI status
             echo "Starting hciconfig command..."
             sudo hciconfig
