@@ -150,8 +150,26 @@ jobs:
                 exit 1
             fi
 
-            echo "Starting bluetoothctl command..."
-            sudo bluetoothctl show     
+            echo "Confirm container has access to /sys/class/bluetooth/hci0..."
+            sudo ls /sys/class/bluetooth/
+            sudo ls /sys/class/bluetooth/hci0
+            ls /sys/class/bluetooth/
+            ls /sys/class/bluetooth/hci0
+            
+            echo "Confirm container has access to /dev and /run/dbus..."
+            sudo ls /dev
+            sudo ls /run/dbus/system_bus_socket
+            ls /dev
+            ls /run/dbus/system_bus_socket
+
+            echo "systemctl status dbus..."
+            sudo systemctl status dbus
+
+            echo "bluetoothctl show..."
+            sudo bluetoothctl show
+
+            echo "Check bluetoothds..."
+            busctl tree org.bluez
 
             # Show HCI status
             echo "Starting hciconfig command..."
