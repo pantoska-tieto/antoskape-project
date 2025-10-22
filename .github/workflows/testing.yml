@@ -60,10 +60,12 @@ jobs:
       options: >
         --device=/dev/ttyUSB0
         --privileged
-        -v /var/run:/var/run
+        -v /var/run/dbus:/var/run/dbus 
+        -v /run/dbus:/run/dbus 
         -v /dev:/dev
         -v /etc/udev/rules.d:/etc/udev/rules.d
         -v /sys/class/bluetooth:/sys/class/bluetooth
+        -v /var/lib/bluetooth:/var/lib/bluetooth
         -v /lib/modules:/lib/modules
         -v /usr/src:/usr/src
         -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
@@ -134,32 +136,21 @@ jobs:
                 echo "DBus not ready yet, retrying in 1s..."
                 sleep 1
             done
+            # --------- sudo bluetoothd &   (on Host already!)
+            echo "Checking if bluetoothd is running..."
+            ps aux | grep bluetoothd
 
-            # Final check before starting bluetoothd
-            if dbus-send --system --type=method_call --dest=org.freedesktop.DBus \
-                /org/freedesktop/DBus org.freedesktop.DBus.ListNames &> /dev/null; then
-                echo "Starting bluetoothd manually..."
-                sudo bluetoothd &
-                sleep 2
-            else
-                echo "DBus still not ready, aborting bluetoothd start"
-                exit 1
-            fi
-
-            echo "Confirm container has access to /sys/class/bluetooth/hci0..."
-            sudo ls /sys/class/bluetooth/
-            sudo ls /sys/class/bluetooth/hci0
-            ls /sys/class/bluetooth/
-            ls /sys/class/bluetooth/hci0
+            # echo "Confirm container has access to /sys/class/bluetooth/hci0..."
+            # ls /sys/class/bluetooth/
+            # ls /sys/class/bluetooth/hci0
             
-            echo "Confirm container has access to /dev and /run/dbus..."
-            sudo ls /dev
-            sudo ls /run/dbus/system_bus_socket
-            ls /dev
-            ls /run/dbus/system_bus_socket
+            # echo "Confirm container has access to /dev and /run/dbus..."t
+            # ls /dev
+            # ls /run/dbus/system_bus_socket
 
-            echo "systemctl status dbus..."
-            sudo systemctl status dbus
+            # systemctl is not usable inside the container
+            # echo "systemctl status dbus..."
+            # sudo systemctl status dbus
 
             echo "bluetoothctl show..."
             sudo bluetoothctl show
