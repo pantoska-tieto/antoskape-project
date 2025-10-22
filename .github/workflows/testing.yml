@@ -60,12 +60,10 @@ jobs:
       options: >
         --device=/dev/ttyUSB0
         --privileged
-        -v /var/run:/var/run 
-        -v /run/dbus:/run/dbus 
+        -v /var/run:/var/run
         -v /dev:/dev
         -v /etc/udev/rules.d:/etc/udev/rules.d
         -v /sys/class/bluetooth:/sys/class/bluetooth
-        -v /var/lib/bluetooth:/var/lib/bluetooth
         -v /lib/modules:/lib/modules
         -v /usr/src:/usr/src
         -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
