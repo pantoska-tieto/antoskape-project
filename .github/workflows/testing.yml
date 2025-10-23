@@ -70,7 +70,7 @@ jobs:
         -v /var/lib/bluetooth:/var/lib/bluetooth
         -v /lib/modules:/lib/modules
         -v /usr/src:/usr/src
-        -v /etc/bluetooth:/etc/bluetooth
+        -v /usr/lib:/usr/lib
         -v /lib/systemd/system:/lib/systemd/system
         -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
     env:
@@ -108,6 +108,7 @@ jobs:
             sudo apt-get install -y python3-dev
             sudo apt-get install -y libgpiod-dev gpiod
             sudo apt-get install -y golang-go
+            sudo apt-get install -y bluez bluez-tools libbluetooth-dev libdbus-1-dev dbus
 
       # Install Python extras for testing
       - name: Install Python extra packages
