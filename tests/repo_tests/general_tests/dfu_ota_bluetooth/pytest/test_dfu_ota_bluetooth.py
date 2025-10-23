@@ -26,6 +26,9 @@ home_dir = os.path.expanduser("~")
 logger.info("Home dir for Zephyr app:", home_dir)
 mcumgr_path = Path(f"{os.path.expanduser("~")}/go/bin/mcumgr")
 
+# TODO! Get the $USER mcumgr tool and pass its oath to test cases.
+# Currently the mcumgr path is hardcoded in the test case. It should be retrieved from 
+# the environment.
 if mcumgr_path.exists():
     #"/github/home/go/bin/mcumgr" = str(mcumgr_path)
     pass
@@ -56,7 +59,11 @@ def cmd_mcumgr(cmd):
 def test_old_image_list(dut: DeviceAdapter):
     # Check image list on board
     global old_hash
-    _out, _err, _ret = tools.run_cmd(["sudo", "/github/home/go/bin/mcumgr", "--conntype", "ble", "--connstring", f"peer_name={PEER_NAME}", "image", "list"])
+    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+                                      "--conntype", "ble", "--connstring", 
+                                      f"peer_name={PEER_NAME}", 
+                                      "image", 
+                                      "list"])
     time.sleep(5)
     logger.info(f"OUT from test_old_image_list(): {_out}")
     logger.info(f"ERR from test_old_image_list(): {_err}")
@@ -67,14 +74,30 @@ def test_old_image_list(dut: DeviceAdapter):
 @pytest.mark.order(2)
 def test_build_new_image():
     # Build new test image to be used for DFU
-    _out, _err, _ret = tools.run_cmd(["west", "build", "-p", "always", "-b", "esp32s3_devkitc/esp32s3/procpu", "--sysbuild", TEST_PATH, "--", "-DEXTRA_CONF_FILE='overlay-bt.conf'"]) 
+    _out, _err, _ret = tools.run_cmd(["west", 
+                                      "build", 
+                                      "-p", 
+                                      "always", 
+                                      "-b", 
+                                      "esp32s3_devkitc/esp32s3/procpu", 
+                                      "--sysbuild", 
+                                      TEST_PATH, 
+                                      "--", 
+                                      "-DEXTRA_CONF_FILE='overlay-bt.conf'"]) 
     assert _ret == 0, f"Buld for new image failed:\n{_err}\n"
     logger.info(f"New image was successfully built.")
 
 @pytest.mark.order(3)
 def test_upload_new_image():
     # Upload new test image to device
-    _out, _err, _ret = tools.run_cmd(["sudo", "/github/home/go/bin/mcumgr", "--conntype", "ble", "--connstring", f"peer_name={PEER_NAME}", "image", "upload", BUILD_DIR])
+    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+                                      "--conntype", 
+                                      "ble", 
+                                      "--connstring", 
+                                      f"peer_name={PEER_NAME}", 
+                                      "image", 
+                                      "upload", 
+                                      BUILD_DIR])
     time.sleep(5)
     logger.info(f"OUT from test_upload_new_image(): {_out}")
     resp = "".join([i for i in _out.split("\n") if "Done" in i])
@@ -85,7 +108,13 @@ def test_upload_new_image():
 def test_new_image_list():
     # Check image list on board - existing + new images
     global new_hash
-    _out, _err, _ret = tools.run_cmd(["sudo", "/github/home/go/bin/mcumgr", "--conntype", "ble", "--connstring", f"peer_name={PEER_NAME}", "image", "list"])
+    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+                                      "--conntype", 
+                                      "ble", 
+                                      "--connstring", 
+                                      f"peer_name={PEER_NAME}", 
+                                      "image", 
+                                      "list"])
     time.sleep(5)
     logger.info(f"OUT from test_new_image_list(): {_out}")
     resp = "".join([i for i in _out.split("\n") if "slot=1" in i])
@@ -97,8 +126,21 @@ def test_new_image_list():
 @pytest.mark.order(5)
 def test_set_pending():
     # Update status to 'pending' for new test image to be installed in next 'reset'
-    tools.run_cmd(["/github/home/go/bin/mcumgr", "--conntype", "ble", "--connstring", f"peer_name={PEER_NAME}", "image", "test", new_hash])
-    _out, _err, _ret = tools.run_cmd(["sudo", "/github/home/go/bin/mcumgr", "--conntype", "ble", "--connstring", f"peer_name={PEER_NAME}", "image", "list"])
+    tools.run_cmd(["/github/home/go/bin/mcumgr", 
+                   "--conntype", 
+                   "ble", 
+                   "--connstring", 
+                   f"peer_name={PEER_NAME}", 
+                   "image", 
+                   "test", 
+                   new_hash])
+    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+                                      "--conntype", 
+                                      "ble", 
+                                      "--connstring", 
+                                      f"peer_name={PEER_NAME}", 
+                                      "image", 
+                                      "list"])
     logger.info(f"OUT from test_set_pending(): {_out}")
     time.sleep(5)
     assert "flags: pending" in _out, "New FW image has wrong flag."
@@ -107,7 +149,12 @@ def test_set_pending():
 @pytest.mark.order(6)
 def test_reset_fw():
     # Reset board to upgrade FW to new test image
-    _out, _err, _ret = tools.run_cmd(["sudo", "/github/home/go/bin/mcumgr", "--conntype", "ble", "--connstring", f"peer_name={PEER_NAME}", "reset"])
+    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+                                      "--conntype", 
+                                      "ble", 
+                                      "--connstring", 
+                                      f"peer_name={PEER_NAME}", 
+                                      "reset"])
     # Wait for the boot to complete
     time.sleep(15)
     assert "Done" in _out, "Soft reset of a device failed."
@@ -116,7 +163,13 @@ def test_reset_fw():
 @pytest.mark.order(7)
 def test_dfu():
     # Check the new image (new FW) after boot in active and confirmed
-    _out, _err, _ret = tools.run_cmd(["sudo", "/github/home/go/bin/mcumgr", "--conntype", "ble", "--connstring", f"peer_name={PEER_NAME}", "image", "list"])
+    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+                                      "--conntype", 
+                                      "ble", 
+                                      "--connstring", 
+                                      f"peer_name={PEER_NAME}", 
+                                      "image", 
+                                      "list"])
     time.sleep(5)
     logger.info(f"OUT from test_dfu(): {_out}")
     new_hash_fin = "".join([i.split(":")[1].strip() for i in _out.split("\n") if "hash" in i])

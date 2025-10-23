@@ -11,6 +11,7 @@
 8. [Shell tests with native_sim](Shell_tests_with_native_sim.md)
 9. [Tests list](Tests_list.md)
 10. [Tests user guide](Tests_user_guide.md)
+11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
 ---
 
 The Zephyr kernel and subsystems can be configured at build time to adapt them for specific application and platform needs. Configuration is handled through Kconfig, which is the same configuration system used by the Linux kernel. The goal is to support configuration without having to change any source code. This guide will help you understand how the configuration setup with Kconfig symbols works and how to use it for enhancing a testing workflows.

@@ -11,6 +11,7 @@
 8. Shell tests with native_sim [this page]
 9. [Tests list](Tests_list.md)
 10. [Tests user guide](Tests_user_guide.md)
+11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
 ---
 
 Error in `west twister...` command run if pytest expects a shell prompt:<br/>

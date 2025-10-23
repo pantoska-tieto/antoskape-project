@@ -11,6 +11,7 @@
 8. [Shell tests with native_sim.md](Shell_tests_with_native_sim.md)
 9. [Tests list](Tests_list.md)
 10. Tests user guide [this page]
+11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
 ---
 
 This document will guide you through the process of adding and setting up Zephyr tests in the application. All application tests are stored under the `tests/` directory. Each test suite is a folder containing test cases. Each test case is a file with a `.py` or `.c` extension (based on test framework used for the test suite - Pytest, Ztest).

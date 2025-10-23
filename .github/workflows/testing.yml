@@ -114,55 +114,12 @@ jobs:
         run: |
             pip install -r requirements-extras.txt
 
-      # Setup Bluetooth HCI socket
-      - name: Setup for BT HCI socket
+      # Setup Bluetooth stack
+      - name: Setup for BT stack
         shell: bash
         run: |
-            echo "Checking dbus-daemon status..."
-            if ! dbus-send --system --type=method_call --dest=org.freedesktop.DBus \
-                /org/freedesktop/DBus org.freedesktop.DBus.ListNames &> /dev/null; then
-                echo "dbus-daemon not responding, attempting restart"
-                sudo pkill dbus-daemon || true
-                sleep 1
-                sudo rm -f /run/dbus/pid || echo "Could not remove /run/dbus/pid, might be locked"
-                sudo dbus-daemon --system --fork
-            fi
-
-            echo "Waiting for dbus-daemon to become responsive..."
-            for i in {1..5}; do
-                if dbus-send --system --type=method_call --dest=org.freedesktop.DBus \
-                    /org/freedesktop/DBus org.freedesktop.DBus.ListNames &> /dev/null; then
-                    echo "dbus-daemon is now responsive"
-                    break
-                fi
-                echo "DBus not ready yet, retrying in 1s..."
-                sleep 1
-            done
-            # --------- sudo bluetoothd &   (on Host already!)
-            echo "Checking if bluetoothd is running..."
-            ps aux | grep bluetoothd
-
-            # echo "Confirm container has access to /sys/class/bluetooth/hci0..."
-            # ls /sys/class/bluetooth/
-            # ls /sys/class/bluetooth/hci0
-            
-            # echo "Confirm container has access to /dev and /run/dbus..."t
-            # ls /dev
-            # ls /run/dbus/system_bus_socket
-
-            # systemctl is not usable inside the container
-            # echo "systemctl status dbus..."
-            # sudo systemctl status dbus
-
-            echo "bluetoothctl show..."
-            sudo bluetoothctl show
-
-            echo "Check bluetoothds..."
-            busctl tree org.bluez
-
-            # Show HCI status - skip in container!
-            # echo "Starting hciconfig command..."
-            # sudo hciconfig
+            sudo chmod +x .github/scripts/bluetooth_setup.sh
+            .github/scripts/bluetooth_setup.sh
                
 
       # Setup for tools
