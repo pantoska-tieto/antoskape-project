@@ -70,6 +70,10 @@ jobs:
         -v /var/lib/bluetooth:/var/lib/bluetooth
         -v /lib/modules:/lib/modules
         -v /usr/src:/usr/src
+        -v /usr/bin:/usr/bin
+        -v /usr/lib:/usr/lib
+        -v /etc/bluetooth:/etc/bluetooth
+        -v /lib/systemd/system:/lib/systemd/system
         -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
