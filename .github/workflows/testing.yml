@@ -102,8 +102,9 @@ jobs:
       - name: Install lib extras
         shell: bash
         run: |
-            sudo gpg --no-default-keyring --keyring /etc/apt/trusted.gpg.d/deadsnakes.gpg --keyserver keyserver.ubuntu.com --recv-keys BA6932366A755776
             sudo apt-get update
+            sudo apt-get install -y dirmngr gnupg
+            sudo gpg --no-default-keyring --keyring /etc/apt/trusted.gpg.d/deadsnakes.gpg --keyserver keyserver.ubuntu.com --recv-keys BA6932366A755776
             sudo apt-get install -y iperf
             sudo apt-get install -y sysbench fio
             sudo apt-get install -y curl
