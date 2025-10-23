@@ -49,7 +49,7 @@ for DEV in ${PORT}*; do
     echo "udevadm: reload-rules..."
     sudo udevadm control --reload-rules || echo "Error for udevadm reload-rules."
 	sudo udevadm trigger || echo "Error for udevadm reload-rules."
-    echo "Show symlinks for serial ports..."
+    echo "Show HOST USB-ports. New udev-symlinks are not visible here - created in GitHub container."
     sudo ls -la /dev/ | grep USB
     # Increment for further serial port
     ((serial_counter++))
