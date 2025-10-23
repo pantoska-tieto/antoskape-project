@@ -71,7 +71,7 @@ jobs:
         -v /lib/modules:/lib/modules
         -v /usr/src:/usr/src
         -v /usr/lib:/usr/lib
-        -v /lib/systemd/system:/lib/systemd/system
+        -v /etc/bluetooth:/etc/bluetooth
         -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
