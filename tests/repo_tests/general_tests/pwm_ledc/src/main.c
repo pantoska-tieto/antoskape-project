@@ -32,4 +32,7 @@ int main(void)
     } else {
         printk("PWM set: period = %u us, pulse = %u us", period, pulse_width);
     }
+
+    // Time delay to stabilize PWM signal
+    k_sleep(K_SECONDS(5)); 
 }

@@ -11,6 +11,7 @@
 8. [Shell tests with native_sim](Shell_tests_with_native_sim.md)
 9. [Tests list](Tests_list.md)
 10. [Tests user guide](Tests_user_guide.md)
+11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
 ---
 
 For storing the binaries and other artifacts, the project uses Artifactory storage server. Artifactory is a repository manager that allows you to store and manage your artifacts in a centralized location. The project uses Fre version of <strong>JFrog Artifactory (Freemium)</strong> - self-hosted version. The Artifactory server is configured to store the binaries and other artifacts in a centralized location, which makes it easy to manage and access the artifacts from anywhere in the organization. Actually the test results records are stored in Artifactory server - `metadata.json` file with incremental test results generated each time when Testing GitHub workflow is executed. At this development phase no other binaries are archived in Artifacory but the system is prepared for smooth integration of other artifacts to be stored in Artifacts in future. The only restriction is 2GB of storage space per repository. If you need to store more than 2GB of artifacts data, you can use Artifactory Pro or other paid storage solutions. For more details see [JFROG ARTIFACTORY OPEN SOURCE ](https://jfrog.com/community/download-artifactory-oss/) page.

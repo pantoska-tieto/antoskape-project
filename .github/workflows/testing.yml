@@ -58,12 +58,18 @@ jobs:
     container:
       image: ${{ inputs.docker_image }}
       options: >
-        --device=/dev/ttyUSB0 
+        --device=/dev/ttyUSB0
+        --cgroupns=host
         --privileged
         -v /var/run/dbus:/var/run/dbus 
-        -v /run/dbus:/run/dbus 
+        -v /run/dbus:/run/dbus
+        -v /run/udev:/run/udev
         -v /dev:/dev
         -v /etc/udev/rules.d:/etc/udev/rules.d
+        -v /sys/class/bluetooth:/sys/class/bluetooth
+        -v /var/lib/bluetooth:/var/lib/bluetooth
+        -v /lib/modules:/lib/modules
+        -v /usr/src:/usr/src
         -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
@@ -98,12 +104,33 @@ jobs:
             sudo apt-get install -y curl
             sudo apt-get install -y udev            
             sudo apt-get install -y python3-dev
+            sudo apt-get install -y libgpiod-dev gpiod
+            sudo apt-get install -y golang-go
+            sudo apt-get install -y bluez bluez-tools libbluetooth-dev libdbus-1-dev dbus
 
       # Install Python extras for testing
       - name: Install Python extra packages
         shell: bash
         run: |
             pip install -r requirements-extras.txt
+
+      # Setup Bluetooth stack
+      - name: Setup for BT stack
+        shell: bash
+        run: |
+            sudo chmod +x .github/scripts/bluetooth_setup.sh
+            .github/scripts/bluetooth_setup.sh
+               
+
+      # Setup for tools
+      - name: Setup for test tools
+        shell: bash
+        run: |
+            go install github.com/apache/mynewt-mcumgr-cli/mcumgr@latest
+            echo "Home dir:" $HOME
+            sudo ls -la $HOME/go/bin
+            sudo setcap cap_net_raw,cap_net_admin+eip $HOME/go/bin/mcumgr
+            getcap $HOME/go/bin/mcumgr || echo "No mcumgr capabilities set"
 
       #  Review of variables from Build workflow
       - name: Show variables from caller workflow

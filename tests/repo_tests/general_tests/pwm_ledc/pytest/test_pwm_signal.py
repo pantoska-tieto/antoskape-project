@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 CHIP_NAME = "/dev/gpiochip4"  # Raspberry Pi 5
 GPIO_PIN = 24
-INTERVAL = 2  # [second]
+INTERVAL = 5  # [second]
 DELTA_FREQ = 1  # [Hz]
 DELTA_DUTY = 2  # [%]
 # Expected PWM values - check src/main.c
@@ -74,6 +74,7 @@ def measure_pwm():
     return res
 
 def test_pwm_signal(dut: DeviceAdapter):
+    time.sleep(5)
     res = measure_pwm()
     logger.info(f"PWM results from GPIO measurement: {res}")
     # Get frequency values from PWM

@@ -11,6 +11,7 @@
 8. [Shell tests with native_sim.md](Shell_tests_with_native_sim.md)
 9. Tests list [this page]
 10. [Tests user guide](Tests_user_guide.md)
+11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
 ---
 
 
@@ -95,6 +96,11 @@ Tests are stored in multiple directories based on <br/>
         <td>6</td>
         <td><a href="../tests/repo_tests/general_tests/zperf/TESTINFO.md">Test for a capabilities to transfer data package through Wifi connection with using perf-tool.</a></td>
         <td>[PYTEST] Test to transmit and receive UDP data package via Wifi connection with using Linux performance analysis tool.</td>
+        </tr>
+        <tr>
+        <td>7</td>
+        <td><a href="../tests/repo_tests/general_tests/dfu_ota_bluetooth/TESTINFO.md">Test for a capabilities to perform DFU OTA over Bluetooth.</a></td>
+        <td>[PYTEST] Test to execute DFU OTA (Device Firmware Update Over-the-Air) upgrade of Zephyr image on target device over the Bluetooth.</td>
         </tr>
         <tr>
         <td  colspan="3"><strong>REPOSITORY - SHELL TESTS</strong></td>

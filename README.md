@@ -11,6 +11,7 @@
 8. [Shell tests with native_sim](documentation/Shell_tests_with_native_sim.md)
 9. [Tests list](documentation/Tests_list.md)
 10. [Tests user guide](documentation/Tests_user_guide.md)
+11. [MCUmgr subsystem for testing purposes](documentation/MCUmgr_subsystem_for_testing_purpose.md)
 ---
 
 This repo is representing **custom Zephyr RTOS application** for building and testing custom testcases with Pytest framework. It is using structure based on basic Zephyr example application [https://github.com/zephyrproject-rtos/example-application](https://github.com/zephyrproject-rtos/example-application).
