@@ -205,8 +205,7 @@ jobs:
         run: |
             west build -p always -b esp32s3_devkitc/esp32s3/procpu --sysbuild tests/repo_tests/general_tests/dfu_ota_bluetooth -- -DEXTRA_CONF_FILE="overlay-bt.conf"
             west flash
-            sudo /github/home/go/bin/mcumgr --conntype ble --connstring peer_name='TietoBLE-OTA' image list
-            sudo /home/peter/go/bin/mcumgr --conntype ble --connstring peer_name='TietoBLE-OTA' image list
+            $HOME/go/bin/mcumgr --conntype ble --connstring peer_name='TietoBLE-OTA' image list
 
       # Generate test run metadata json file
       - name: Create metadata json file
