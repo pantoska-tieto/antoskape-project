@@ -50,7 +50,7 @@ for DEV in ${PORT}*; do
     sudo udevadm control --reload-rules || echo "Error for udevadm reload-rules."
 	sudo udevadm trigger || echo "Error for udevadm reload-rules."
     echo "Show symlinks for serial ports..."
-    ls -la /dev/ | grep USB
+    sudo ls -la /dev/ | grep USB
     # Increment for further serial port
     ((serial_counter++))
     sleep 2

@@ -60,4 +60,3 @@ busctl tree org.bluez
 # No access to Host BT HCI stack!
 # echo "Starting hciconfig command..."
 # sudo hciconfig
-echo "Mapping udev finished and Device udev-rules saved to $OUTPUT_FILE"
