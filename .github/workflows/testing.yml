@@ -62,7 +62,8 @@ jobs:
         --cgroupns=host
         --privileged
         -v /var/run/dbus:/var/run/dbus 
-        -v /run/dbus:/run/dbus 
+        -v /run/dbus:/run/dbus
+        -v /run/udev:/run/udev
         -v /dev:/dev
         -v /etc/udev/rules.d:/etc/udev/rules.d
         -v /sys/class/bluetooth:/sys/class/bluetooth

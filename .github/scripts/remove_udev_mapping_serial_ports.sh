@@ -17,7 +17,7 @@ if [[ -f "$OUTPUT_FILE" ]]; then
             sudo rm "/etc/udev/rules.d/99-$symlink.rules"
             echo "udevadm: reload-rules..."
             sudo udevadm control --reload-rules || echo "Error for udevadm reload-rules."
-	        sudo udevadm trigger || echo "Error for udevadm reload-rules."
+	        sudo udevadm trigger || echo "Error for udevadm trigger."
         fi
     done < "$OUTPUT_FILE"
 
