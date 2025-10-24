@@ -60,6 +60,8 @@ jobs:
       options: >
         --device=/dev/ttyUSB0
         --cgroupns=host
+        --cap-add=NET_RAW
+        --cap-add=NET_ADMIN
         --privileged
         -v /var/run/dbus:/var/run/dbus 
         -v /run/dbus:/run/dbus
@@ -71,7 +73,7 @@ jobs:
         -v /usr/src:/usr/src
         -v /lib/systemd/system:/lib/systemd/system
         -v /var/lib/bluetooth:/var/lib/bluetooth
-        -v /sys/class/bluetooth:/sys/class/bluetooth
+        -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
         -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
     env:
       CMAKE_PREFIX_PATH: /opt/toolchains
