@@ -111,6 +111,7 @@ jobs:
             sudo apt-get install -y libgpiod-dev gpiod
             sudo apt-get install -y golang-go
             sudo apt-get install -y bluez bluez-tools libbluetooth-dev libdbus-1-dev dbus
+            sudo apt-get install -y strace
 
       # Install Python extras for testing
       - name: Install Python extra packages
