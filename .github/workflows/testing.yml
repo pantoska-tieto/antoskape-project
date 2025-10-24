@@ -75,6 +75,7 @@ jobs:
         -v /usr/src:/usr/src
         -v /lib/systemd/system:/lib/systemd/system
         -v /var/lib/bluetooth:/var/lib/bluetooth
+        -v /usr/libexec/bluetooth:/usr/libexec/bluetooth
         -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
         -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
     env:
@@ -192,6 +193,22 @@ jobs:
                 if regex.match(dir):
                   with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
                     f.write(f'test_list={os.path.join(dir)}\n')
+
+      # Check AF_BLUETOOTH availability
+      - name: Test AF_BLUETOOTH
+        shell: python
+        id: py-bt-test
+        run: |
+            import socket
+
+            try:
+                # Try to create a raw Bluetooth HCI socket
+                s = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_RAW, socket.BTPROTO_HCI)
+                print("AF_BLUETOOTH socket creation: SUCCESS")
+                s.close()
+            except Exception as e:
+                print("AF_BLUETOOTH socket creation: FAILED")
+                print(f"Error: {e}")            
 
       # Pass secrets for tests into json file
       - name: Create json file with secrets variables
