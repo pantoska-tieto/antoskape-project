@@ -59,9 +59,11 @@ jobs:
       image: ${{ inputs.docker_image }}
       options: >
         --device=/dev/ttyUSB0
+        --device=/dev/rfkill
         --cgroupns=host
         --cap-add=NET_RAW
         --cap-add=NET_ADMIN
+        --cap-add=SYS_ADMIN
         --privileged
         -v /var/run/dbus:/var/run/dbus 
         -v /run/dbus:/run/dbus
