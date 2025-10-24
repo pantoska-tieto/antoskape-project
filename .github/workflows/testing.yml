@@ -124,6 +124,8 @@ jobs:
         run: |
             sudo chmod +x .github/scripts/bluetooth_setup.sh
             .github/scripts/bluetooth_setup.sh
+            echo "Output from strace bluetoothctl:"
+            sudo strace -e socket,connect,openat bluetoothctl show
                
 
       # Setup for tools
