@@ -12,6 +12,7 @@
 9. [Tests list](Tests_list.md)
 10. [Tests user guide](Tests_user_guide.md)
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
+12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
 ---
 
 A **workflow** is a configurable automated process that will run one or more jobs. Workflows are defined by a YAML file checked in to your repository and will run when triggered by an event in your repository, or they can be triggered manually, or at a defined schedule.
@@ -164,7 +165,7 @@ This GitHub repository workflow has implemented the following Twister command sk
 
 "Test suite scenario to run" parameter is not filled (empty field) . All test suites from desired folder are selected to run.
 
-```
+```c
 west twister -vv --platform esp32s3_devkitc/esp32s3/procpu \
     --device-testing --device-serial /dev/ttyUSB0 \
     --west-flash \
@@ -176,7 +177,7 @@ west twister -vv --platform esp32s3_devkitc/esp32s3/procpu \
 
 "Test suite scenario to run" parameter is filled with scenario-string. All test suites/test cases from desired folder are ignored except the demanded test scenario, which will run with "west twister" command.
 
-```
+```c
 west twister -vv --platform esp32s3_devkitc/esp32s3/procpu \
     --device-testing --device-serial /dev/ttyUSB0 
     --west-flash \

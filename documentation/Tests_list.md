@@ -12,6 +12,7 @@
 9. Tests list [this page]
 10. [Tests user guide](Tests_user_guide.md)
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
+12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
 ---
 
 
@@ -133,7 +134,7 @@ Tests are stored in multiple directories based on <br/>
         <tr>
         <td>6</td>
         <td><a href="../tests/repo_tests/shell_tests/i2c_shell_mocked/TESTINFO.md">Test for I2C write & read commands with UART shell prompt on emulated I2C bus.</a></td>
-        <td>[PYTEST] Test to transmit and accept I2C bus shell commands with using emulated I2C bus (derived from Zephyr emulation module for Bosch BMS160 sensor). The verification through UART serial port.</td>
+        <td>[PYTEST] Test to write and read register values in I2C bus through  the custom shell commands with using emulated I2C bus (derived from Zephyr emulation module for Bosch BMS160 sensor). The verification through UART serial port.</td>
         </tr>
         <tr>
         <td>7</td>
@@ -149,6 +150,11 @@ Tests are stored in multiple directories based on <br/>
         <td>9</td>
         <td><a href="../tests/repo_tests/shell_tests/wifi_shell/TESTINFO.md">Test for successful connection to Wifi router.</a></td>
         <td>[PYTEST] Test to create the connection to Wifi router with demanded SSID after booting the board. The verification through UART serial port.</td>
+        </tr>
+        <tr>
+        <td>10</td>
+        <td><a href="../tests/repo_tests/shell_tests/spi_shell_mocked/TESTINFO.md">Test for SPI write & read commands with UART shell prompt on emulated SPI bus.</a></td>
+        <td>[PYTEST] Test to write and read register values in SPI bus through  the custom shell commands with using emulated SPI bus (derived from Zephyr emulation module for Bosch BMS160 sensor). The verification through UART serial port.</td>
         </tr>
         <tr>
         <td  colspan="3"><strong>UNIT TESTS</strong></td>

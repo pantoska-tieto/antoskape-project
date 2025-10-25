@@ -12,6 +12,7 @@
 9. [Tests list](Tests_list.md)
 10. Tests user guide [this page]
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
+12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
 ---
 
 This document will guide you through the process of adding and setting up Zephyr tests in the application. All application tests are stored under the `tests/` directory. Each test suite is a folder containing test cases. Each test case is a file with a `.py` or `.c` extension (based on test framework used for the test suite - Pytest, Ztest).
@@ -41,7 +42,7 @@ This keyword defines the parsing mode for the shell output. It can take values l
 - one_line – for matching single-line responses.
 - multi_line – for matching multiple lines of output.
 
-```
+```c
 harness: shell
     harness_config:
       type: one_line
@@ -100,7 +101,7 @@ For basic guideline how to setup Zephyr tests in the application, see the offici
 - Update `testcase.yaml` or `sample.yaml` file with demanded test framework to be applied in test run:  `harness: ztest` for Ztest, `harness: pytest` for Pytest (see below example).
 
 
-```
+```c
 tests:
   repo_tests.dut.gpio_toggle_ztest:
     platform_allow:
@@ -142,7 +143,7 @@ For more detailed explanation how thw prj.conf file is used in build process and
 Example - build configuration to get Bluetooth support:<br/>
 <br/>
 
-```
+```c
 CONFIG_SYSTEM_WORKQUEUE_STACK_SIZE=2048
 
 CONFIG_BT=y
@@ -174,7 +175,7 @@ CONFIG_SETTINGS=y
 
 5\. Update the `CMakeLists.txt` file with build configuration options. Example:<br/>
 
-```
+```c
 cmake_minimum_required(VERSION 3.20.0)
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(peripheral)
@@ -201,7 +202,7 @@ Example for Pytest workaround:<br/>
 
 _conftest.py with generic fixtures - vars.json file consists of GitHub secrets variables exported to it within GitHub jobs:_
 
-```
+```c
 @pytest.fixture(scope="module")
 def get_secrets(request):
     # Root path - pytest.ini location
@@ -213,7 +214,7 @@ def get_secrets(request):
 
 _Appying imported secrets in pytest test cases:_
 
-```
+```c
 @pytest.mark.dependency(name="scan")
 def test_wifi_scan(get_secrets, dut: DeviceAdapter, shell: Shell):
     logger.info("Testcase: check available wifi SSIDs")

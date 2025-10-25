@@ -12,6 +12,7 @@
 9. [Tests list](Tests_list.md)
 10. [Tests user guide](Tests_user_guide.md)
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
+12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
 ---
 
 For storing the binaries and other artifacts, the project uses Artifactory storage server. Artifactory is a repository manager that allows you to store and manage your artifacts in a centralized location. The project uses Fre version of <strong>JFrog Artifactory (Freemium)</strong> - self-hosted version. The Artifactory server is configured to store the binaries and other artifacts in a centralized location, which makes it easy to manage and access the artifacts from anywhere in the organization. Actually the test results records are stored in Artifactory server - `metadata.json` file with incremental test results generated each time when Testing GitHub workflow is executed. At this development phase no other binaries are archived in Artifacory but the system is prepared for smooth integration of other artifacts to be stored in Artifacts in future. The only restriction is 2GB of storage space per repository. If you need to store more than 2GB of artifacts data, you can use Artifactory Pro or other paid storage solutions. For more details see [JFROG ARTIFACTORY OPEN SOURCE ](https://jfrog.com/community/download-artifactory-oss/) page.
@@ -40,7 +41,7 @@ JFrog Platform requires filestore and database services:
 <br/>
 
 
-```
+```c
 sudo apt update
 sudo apt install postgresql
 
@@ -58,7 +59,7 @@ tcp        0      0 127.0.0.1:5432          0.0.0.0:*               LISTEN
 
 2.\ Download the JFrog Container Registry (Freemium) installation .tar.gz package from the [JFrog website](https://jfrog.com/container-registry/) - go to the page bottom and click on <strong>SELF-HOSTED</strong> (FREE DOWNLOAD) button - and extract it to a directory of your choice. The recommended target installation folder is:
 
-```
+```c
 /usr/local/jfrog/artifactory/
 ```
 
@@ -67,7 +68,7 @@ tcp        0      0 127.0.0.1:5432          0.0.0.0:*               LISTEN
 
 3.\ Setup the environment variables for Artifactory installation:<br/>
 
-```
+```c
 export JFROG_HOME=/usr/local/jfrog
 ```
 
@@ -75,7 +76,7 @@ export JFROG_HOME=/usr/local/jfrog
 
 4.\ Start installation process by running the following commands in the Artifactory installation directory:
 
-```
+```c
 cd $JFROG_HOME/artifactory/app/bin
 ./installService.sh
 ```
@@ -86,7 +87,7 @@ cd $JFROG_HOME/artifactory/app/bin
 
 <br/>
 
-```
+```c
 ## @formatter:off
 ## JFROG ARTIFACTORY SYSTEM CONFIGURATION FILE
 ## HOW TO USE: comment-out any field and keep the correct yaml indentation by deleting only the leading '#' character.
@@ -155,7 +156,7 @@ access:
 
 6.\ Start as an OS Service (Recommended for Production). As mentioned in outputs from previous installation steps, the Artifactory service should be started for the first time manually to complete PostgreSQL installation process (see step 5):
 
-```
+```c
 # For systemd-based systems
 sudo systemctl start artifactory.service 
 
@@ -167,7 +168,7 @@ sudo systemctl enable artifactory.service
 NOTE:<br/>
 Later on you can check/restart/stop the service by running the following commands (for systemd-based systems):
 
-```
+```c
 Start Artifactory with:
 > systemctl start artifactory.service
 
@@ -190,7 +191,7 @@ http://localhost:8082
 Youu can add custom domain name into the `BASE URL` parameter (e.g.  http://mytest-artifactory.com) and reach the Artifactory storage system from any network station. For this purpose the update of hosts file on the client machine is required to map the custom domain name to the IP address of the Artifactory server. Edit the hosts file in Lunux machine:
 		
 
-```
+```c
 sudo nano /etc/hosts
 
 # Then add the following line to hosts file
@@ -207,7 +208,7 @@ In case of issues with Artifactory installation, you can check the logs in the `
 
 If you encounter an error related to missing PostgreSQL username in the installation step 6, you can follow these steps to resolve the issue:
 
-```
+```c
 # Open PostgreSQL terminal in command line
 sudo -u postgres psql
 

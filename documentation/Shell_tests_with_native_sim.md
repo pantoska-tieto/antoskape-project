@@ -12,11 +12,12 @@
 9. [Tests list](Tests_list.md)
 10. [Tests user guide](Tests_user_guide.md)
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
+12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
 ---
 
 Error in `west twister...` command run if pytest expects a shell prompt:<br/>
 
-```
+```c
 dut = NativeSimulatorAdapter()
 @pytest.fixture(scope=determine_scope)
 def shell(dut: DeviceAdapter) -> Shell:
@@ -46,7 +47,7 @@ Two working workarounds can be applied.
 You can use the Kconfig symbol `CONFIG_UART_NATIVE_PTY_0_ON_STDINOUT=y` in a prj.conf or any .conf file to enable Zephyr's native POSIX UART backend 
 to connect UART_0 to the host's stdin/stdout via a pseudoterminal (PTY). Update the testcase.yaml/sample.yaml:<br/>
 
-```
+```c
 CONFIG_KERNEL_SHELL=y
 CONFIG_CRC=y
 
@@ -56,7 +57,7 @@ CONFIG_UART_NATIVE_PTY_0_ON_STDINOUT=y
 
 Then you can use the the regular `harness: pytest` in  testcase.yaml/sample.yaml to invoke Pytest to run the test. Pytest plugin will then attach to the simulator process’ stdin/stdout and is able to read from pseudoterminal /dev/pts/N without any additional setup:
 
-```
+```c
 from twister_harness import Shell
 
 def test_shell_print_help(shell: Shell):
@@ -67,7 +68,7 @@ def test_shell_print_help(shell: Shell):
 
 For direct access to pseudoterminal without using Pytest test there is a simple way to verify shell-command output (create a test case) inside testcase.yaml/sample.yaml (regex can be used):
 
-```
+```c
 harness: shell
     harness_config:
       pytest_dut_scope: session
@@ -88,7 +89,7 @@ If you don’t want to use the native POSIX UART backend (CONFIG_UART_NATIVE_PTY
 
 1. Extend src/main.c with test-logic writing a test value to UART shell e.g.:
 
-```
+```c
 // Perform custom write if address is set
 if (user_mem_address >= 0) {
     int ret = custom_i2c_write(emul_i2c, 0x69, 0x56);      
@@ -100,7 +101,7 @@ if (user_mem_address >= 0) {
 
 2. Extend testcase.yaml/sample.yaml with `harness: console` section and verify main.c test-logic (prints on pseudoterminal /dev/pts/N) with regex-pattern:
 
-```
+```c
 tests:
   sensor.shell.i2c.read.console:
     tags:
@@ -125,7 +126,7 @@ For console/session configuration, the regex field does not support standard esc
 ### Split configuration file on tes-case level
 If each test case needs a differnet configuration file, the following logic can be applied in testcase.yaml/sample.yaml:
 
-```
+```c
 tests:
   display.shell.framebuffer:
     platform_allow:
