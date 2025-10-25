@@ -9,8 +9,6 @@
 #include <zephyr/drivers/i2c_emul.h>
 #include <zephyr/drivers/emul.h>
 #include <zephyr/sys/printk.h>
-#include "checks.h"
-#include "fixture.h"
 
 
 // Simulate a proper I2C device by using an array to represent the register space

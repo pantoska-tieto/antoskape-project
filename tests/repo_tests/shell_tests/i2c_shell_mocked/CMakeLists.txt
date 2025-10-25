@@ -7,9 +7,6 @@ project(device)
 target_include_directories(app PRIVATE include)
 target_sources(app
   PRIVATE
-    include/checks.h
-    include/fixture.h
-    #src/fixture.c
     src/shell_module.c
     src/main.c
 )
