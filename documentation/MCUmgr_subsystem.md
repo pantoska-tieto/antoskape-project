@@ -12,6 +12,7 @@
 9. [Tests list](Tests_list.md)
 10. [Tests user guide](Tests_user_guide.md)
 11. MCUmgr subsystem for testing purposes [this page]
+12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
 ---
 
 The MCUmgr management subsystem allows remote management of Zephyr-enabled devices.  There are various tools and libraries 
@@ -28,7 +29,7 @@ available which enable usage of MCUmgr functionality - the `mcumgr` CLI tool is 
 
 The tool is written in the Go programming language. Once Go is installed and set up on your system, you can install the mcumgr CLI tool.
 
-```
+```c
 sudo apt-get update && sudo apt install golang-go 
 go install github.com/apache/mynewt-mcumgr-cli/mcumgr@latest
 
@@ -61,7 +62,7 @@ The image is "active" and "confirmed", which means it will be executed again upo
 
 <br/>
 
-```
+```c
 (.venv) peter@rpi5:~/zephyrproject/customer-application$ sudo ~/go/bin/mcumgr --conntype ble --connstring peer_name="BLE_Name" image list
 Images:
     image=0 slot=0
@@ -86,7 +87,7 @@ Get image list from target BT device over Bluetooth. New image is listed besides
 
 <br/>
 
-```
+```c
 (.venv) peter@rpi5:~/zephyrproject/customer-application$ sudo ~/go/bin/mcumgr --conntype ble --connstring peer_name="BLE_Name" image list
 Images:
     image=0 slot=0
@@ -112,7 +113,7 @@ The image gets status "pending", which means it will be executed again upon next
 
 <br/>
 
-```
+```c
 (.venv) peter@rpi5:~/zephyrproject/customer-application$ sudo ~/go/bin/mcumgr --conntype ble --connstring peer_name="BLE_Name" image list
 Images:
     image=0 slot=0
@@ -138,7 +139,7 @@ The FW image with previous status "pending" is applied after soft reset. The "im
 
 <br/>
 
-```
+```c
 (.venv) peter@rpi5:~/zephyrproject/customer-application$ sudo ~/go/bin/mcumgr --conntype ble --connstring peer_name="BLE_Name" image list
 Images:
     image=0 slot=0

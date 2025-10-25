@@ -12,6 +12,7 @@
 9. [Tests list](Tests_list.md)
 10. [Tests user guide](Tests_user_guide.md)
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
+12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
 ---
 
 The Zephyr kernel and subsystems can be configured at build time to adapt them for specific application and platform needs. Configuration is handled through Kconfig, which is the same configuration system used by the Linux kernel. The goal is to support configuration without having to change any source code. This guide will help you understand how the configuration setup with Kconfig symbols works and how to use it for enhancing a testing workflows.
@@ -44,7 +45,7 @@ For basic debug proceeding with Kconfig configuration system in <strong>custom Z
 
 1\. Build the Zephyr application with the following command (example):
 
-```
+```c
 west build -p always -b esp32s3_devkitc/esp32s3/procpu tests/repo_tests/shell
 ```
 
@@ -67,7 +68,7 @@ Don't use the option with GUI-format updates with `west build --build-dir build 
 
 3\. Start the text-based menuconfig interface (recommended) to explore and change the configuration options in build/ directory:
 
-```
+```c
 west build --build-dir build -t menuconfig
 ```
 
@@ -121,7 +122,7 @@ To enablle/disable the demanded symbol dependend on parent's symbols you have to
 ## Seeing changes made by menuconfig
 Above steps have the same final effect - updating the `build/zephyr/.config` file. To verify the changes made by menuconfig, you can use the following command (without `--pristine` (-p) option). If you would apply the `--pristine` (-p) option, you’ll lose menuconfig changes. So make sure you do an incremental build (just don’t use the pristine flag) to test those changes out. But eventually you will want to make them persistent.
 
-```
+```c
 west build -b esp32s3_devkitc/esp32s3/procpu tests/repo_tests/shell
 ```
 
@@ -129,7 +130,7 @@ How to get the list of updated symbols with `west build --build-dir build -t men
 
 Running a build command on a Zephyr project pulls in configurations from all over the place (eg: the board’s default configuration from the Zephyr tree, the project’s prj.conf file, and any .conf files in the boards directory), what results to quite large list of symbols in `build/zephyr/.config` file. But luckily the `west build --build-dir build -t menuconfig` command before updateting the .config file makes a copy called `build/zephyr/.config.old` which we can compare using the diff command:
 
-```
+```c
 diff build/zephyr/.config.old build/zephyr/.config
 
 # This will output the lines that differ between file1.txt and file2.txt, using symbols like:
@@ -151,7 +152,7 @@ Both menuconfig and guiconfig have the `Save minimal config` option. As the name
 
 Output file from Save minimal config is in
 
-```
+```c
 {application}/build/zephyr/kconfig/defconfig
 ```
 

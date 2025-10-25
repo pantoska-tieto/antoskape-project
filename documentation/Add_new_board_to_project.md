@@ -12,6 +12,7 @@
 9. [Tests list](Tests_list.md)
 10. [Tests user guide](Tests_user_guide.md)
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
+12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
 ---
 
 
@@ -52,7 +53,7 @@ Inside the board directory, create the following files:
 Typical Zephyr project sample/test folder structure:<br/>
 <br/>
 
-```
+```c
 my_sample/
 ├── CMakeLists.txt                      # CMake build configuration for the Zephyr project
 ├── prj.conf                            # Project-specific configuration options for Zephyr
@@ -73,7 +74,7 @@ Example for testcase.yaml content:<br/>
 
 <br/>
 
-```
+```c
 tests:
   repo_tests.wifi_shell:
     harness: pytest
@@ -96,7 +97,7 @@ Example for "ESP32 S3 Devkitc" compound board identifier:<br/>
 
 <br/>
 
-```
+```c
 <board_name>/<soc_name>/<core_name>
 
 Example:  esp32s3_devkitc/esp32s3/procpu
@@ -122,7 +123,7 @@ add board's <strong>compound identifier</strong> to `plattform_allow:` section<b
 <br/>
 before the find_package() declaration. See example:
 
-```
+```c
 cmake_minimum_required(VERSION 3.20.0)
 set(DTC_OVERLAY_FILE "boards/esp32s3_devkitc.overlay")
 
