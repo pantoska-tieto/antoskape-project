@@ -89,22 +89,18 @@ jobs:
                 -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
                 -w /customer-application \
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
-                ${{ inputs.docker_image }}
-      
-      # Initiate Zephyr environment
-      - name: Initialize
-        shell: bash
-        run: |
-            echo "Checking out Zephyr env..."
-            pwd
-            echo "Current github workspace:"
-            ls -la
-            echo "Parent github folder"
-            ls -la ..
-            rm -rf ../.west
-            west init -l .
-            west update -o=--depth=1 -n
-            west blobs fetch hal_espressif
+                ${{ inputs.docker_image }} \
+                bash -c "
+                  echo 'Initializing Zephyr environment...'
+                  pwd
+                  echo "Current github workspace:"
+                  ls -la
+                  echo "Parent github folder"
+                  ls -la ..
+                  rm -rf ../.west
+                  west init -l .
+                  west update -o=--depth=1 -n
+                  west blobs fetch hal_espressif
             
       # Install lib extras for testing
       - name: Install lib extras
