@@ -131,22 +131,53 @@ jobs:
     defaults:
       run:
         working-directory: customer-application
-    container:
-      image: ${{ needs.process-image.outputs.image }}
-      options: >
-        --device=/dev/ttyUSB0 
-        --privileged  
-        -v /var/run/dbus:/var/run/dbus 
-        -v /run/dbus:/run/dbus 
-        -v /dev:/dev
-        -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
-    env:
-      CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
+      - name: Change permissions
+        shell: bash
+        run: |
+            sudo chown -R $(id -u):$(id -g) "${GITHUB_WORKSPACE}"
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           path: customer-application
+      
+      # Run docker container
+      - name: Run Zephyr Docker container
+        shell: bash
+        run: |
+            docker run --rm \
+                --user $(id -u):$(id -g) \
+                --device=/dev/ttyUSB0 \
+                --cgroupns=host \
+                --privileged \
+                --network host \
+                -v "${GITHUB_WORKSPACE}/customer-application:/customer-application" \
+                -v /var/run/dbus:/var/run/dbus \
+                -v /run/dbus:/run/dbus \
+                -v /run/udev:/run/udev \
+                -v /dev:/dev \
+                -v /etc/udev/rules.d:/etc/udev/rules.d \
+                -v /sys/class/bluetooth:/sys/class/bluetooth \
+                -v /var/lib/bluetooth:/var/lib/bluetooth \
+                -v /lib/modules:/lib/modules \
+                -v /usr/src:/usr/src \
+                -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
+                -w /customer-application \
+                -e CMAKE_PREFIX_PATH=/opt/toolchains \
+                ${{ inputs.docker_image }} \
+                bash -c "
+                  git config --global --add safe.directory '${GITHUB_WORKSPACE}/zephyr'
+                  echo 'Initializing Zephyr environment...'
+                  pwd
+                  echo "Current github workspace:"
+                  ls -la
+                  echo "Parent github folder"
+                  ls -la ..
+                  rm -rf ../.west
+                  west init -l .
+                  west update -o=--depth=1 -n
+                  west blobs fetch hal_espressif
 
       - name: Set build env variables
         shell: bash
@@ -171,23 +202,7 @@ jobs:
           INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
           INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
           INPUT_TEST_HARDWARE: ${{ github.event.inputs.test_hardware }}
-
-      # Initiate Zephyr environment
-      - name: Initialize
-        shell: bash
-        run: |
-            git config --global --add safe.directory "${GITHUB_WORKSPACE}/zephyr"
-            echo "Checking out Zephyr env..."
-            pwd
-            echo "Current github workspace:"
-            ls -la
-            echo "Parent github folder"
-            ls -la ..
-            rm -rf ../.west
-            west init -l .
-            west update -o=--depth=1 -n
-            west blobs fetch hal_espressif
-            
+           
       # Install lib extras for testing
       - name: Install lib extras
         shell: bash
