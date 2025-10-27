@@ -132,11 +132,6 @@ jobs:
       run:
         working-directory: customer-application
     steps:
-      - name: Change permissions
-        shell: bash
-        run: |
-            sudo chown -R $(id -u):$(id -g) "${GITHUB_WORKSPACE}"
-
       - name: Checkout
         uses: actions/checkout@v4
         with:
