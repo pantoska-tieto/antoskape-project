@@ -55,29 +55,33 @@ jobs:
     defaults:
       run:
         working-directory: customer-application
-    container:
-      image: ${{ inputs.docker_image }}
-      options: >
-        --device=/dev/ttyUSB0
-        --cgroupns=host
-        --privileged
-        -v /var/run/dbus:/var/run/dbus 
-        -v /run/dbus:/run/dbus
-        -v /run/udev:/run/udev
-        -v /dev:/dev
-        -v /etc/udev/rules.d:/etc/udev/rules.d
-        -v /sys/class/bluetooth:/sys/class/bluetooth
-        -v /var/lib/bluetooth:/var/lib/bluetooth
-        -v /lib/modules:/lib/modules
-        -v /usr/src:/usr/src
-        -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
-    env:
-      CMAKE_PREFIX_PATH: /opt/toolchains
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           path: customer-application
+      
+      # Run docker container
+      - name: Run Zephyr Docker container
+        shell: bash
+        run: |
+            docker run --rm \
+                --device=/dev/ttyUSB0 \
+                --cgroupns=host \
+                --privileged \
+                --network host \
+                -v /var/run/dbus:/var/run/dbus \
+                -v /run/dbus:/run/dbus \
+                -v /run/udev:/run/udev \
+                -v /dev:/dev \
+                -v /etc/udev/rules.d:/etc/udev/rules.d \
+                -v /sys/class/bluetooth:/sys/class/bluetooth \
+                -v /var/lib/bluetooth:/var/lib/bluetooth \
+                -v /lib/modules:/lib/modules \
+                -v /usr/src:/usr/src \
+                -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
+                -e CMAKE_PREFIX_PATH=/opt/toolchains \
+                ${{ inputs.docker_image }}
       
       # Initiate Zephyr environment
       - name: Initialize
