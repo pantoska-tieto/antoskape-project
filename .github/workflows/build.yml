@@ -145,7 +145,7 @@ jobs:
             ls -la "${GITHUB_WORKSPACE}"
             ls -la "${GITHUB_WORKSPACE}/customer-application"
 
-            docker run --rm \
+            docker run -d --name zephyr-env \
                 --user $(id -u):$(id -g) \
                 --device=/dev/ttyUSB0 \
                 --cgroupns=host \
@@ -165,6 +165,7 @@ jobs:
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
                 -w /workspace \
                 ${{ needs.process-image.outputs.image }} \
+                sleep infinity && 
                 bash -c "ls -la '${GITHUB_WORKSPACE}' && bash chmod +x /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh && 
                 bash /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh"
 
@@ -196,9 +197,9 @@ jobs:
       - name: Install lib extras
         shell: bash
         run: |
-            sudo apt-get update
-            sudo apt-get install -y iperf
-            sudo apt-get install -y sysbench fio
+            docker exec zephyr-env bash -c "sudo apt-get update &&
+            sudo apt-get install -y iperf &&
+            sudo apt-get install -y sysbench fio"
 
       # Install Python extras for testing
       - name: Install Python extra packages
