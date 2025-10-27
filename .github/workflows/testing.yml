@@ -59,7 +59,7 @@ jobs:
       - name: Change permissions
         shell: bash
         run: |
-            sudo chown -R $(id -u):$(id -g) customer-application
+            sudo chown -R $(id -u):$(id -g) "${GITHUB_WORKSPACE}"
 
       - name: Checkout
         uses: actions/checkout@v4
