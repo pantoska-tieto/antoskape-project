@@ -152,7 +152,6 @@ jobs:
                 --cgroupns=host \
                 --privileged \
                 --network host \
-                -v "${GITHUB_WORKSPACE}/customer-application:/customer-application" \
                 -v /var/run/dbus:/var/run/dbus \
                 -v /run/dbus:/run/dbus \
                 -v /run/udev:/run/udev \
@@ -163,7 +162,6 @@ jobs:
                 -v /lib/modules:/lib/modules \
                 -v /usr/src:/usr/src \
                 -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
-                -w /customer-application \
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
                  ${{ needs.process-image.outputs.image }} \
                 bash -c "
