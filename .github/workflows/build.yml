@@ -146,12 +146,14 @@ jobs:
       - name: Run Zephyr Docker container
         shell: bash
         run: |
+            sudo chmod +x .github/scripts/zephyr_workspace_init.sh
             docker run --rm \
                 --user $(id -u):$(id -g) \
                 --device=/dev/ttyUSB0 \
                 --cgroupns=host \
                 --privileged \
                 --network host \
+                -v "${GITHUB_WORKSPACE}:/workspace" \
                 -v /var/run/dbus:/var/run/dbus \
                 -v /run/dbus:/run/dbus \
                 -v /run/udev:/run/udev \
@@ -163,19 +165,9 @@ jobs:
                 -v /usr/src:/usr/src \
                 -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
-                 ${{ needs.process-image.outputs.image }} \
-                bash -c "
-                  git config --global --add safe.directory '${GITHUB_WORKSPACE}/zephyr'
-                  echo 'Initializing Zephyr environment...'
-                  pwd
-                  echo 'Current github workspace:'
-                  ls -la
-                  echo 'Parent github folder'
-                  ls -la ..
-                  rm -rf ../.west
-                  west init -l .
-                  west update -o=--depth=1 -n
-                  west blobs fetch hal_espressif"
+                -w /workspace \
+                ${{ needs.process-image.outputs.image }} \
+                .github/zephyr_workspace_init.sh
 
       - name: Set build env variables
         shell: bash
