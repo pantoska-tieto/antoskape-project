@@ -94,14 +94,14 @@ jobs:
                   git config --global --add safe.directory '${GITHUB_WORKSPACE}/zephyr'
                   echo 'Initializing Zephyr environment...'
                   pwd
-                  echo "Current github workspace:"
+                  echo 'Current github workspace:'
                   ls -la
-                  echo "Parent github folder"
+                  echo 'Parent github folder'
                   ls -la ..
                   rm -rf ../.west
                   west init -l .
                   west update -o=--depth=1 -n
-                  west blobs fetch hal_espressif
+                  west blobs fetch hal_espressif"
             
       # Install lib extras for testing
       - name: Install lib extras
