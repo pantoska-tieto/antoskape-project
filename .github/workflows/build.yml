@@ -149,7 +149,7 @@ jobs:
             echo "Check workspace ..."
             ls -la "${GITHUB_WORKSPACE}"
             ls -la "${GITHUB_WORKSPACE}/customer-application"
-            docker run --rm \
+            docker run -d \
                 --user $(id -u):$(id -g) \
                 --device=/dev/ttyUSB0 \
                 --cgroupns=host \
