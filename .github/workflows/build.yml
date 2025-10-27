@@ -165,7 +165,7 @@ jobs:
                 -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
                 -w /customer-application \
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
-                ${{ inputs.docker_image }} \
+                 ${{ needs.process-image.outputs.image }} \
                 bash -c "
                   git config --global --add safe.directory '${GITHUB_WORKSPACE}/zephyr'
                   echo 'Initializing Zephyr environment...'
