@@ -146,7 +146,9 @@ jobs:
       - name: Run Zephyr Docker container
         shell: bash
         run: |
-            sudo chmod +x .github/scripts/zephyr_workspace_init.sh
+            echo "Check workspace ..."
+            ls -la "${GITHUB_WORKSPACE}
+            ls -la "${GITHUB_WORKSPACE}/customer-application
             docker run --rm \
                 --user $(id -u):$(id -g) \
                 --device=/dev/ttyUSB0 \
@@ -167,7 +169,8 @@ jobs:
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
                 -w /workspace \
                 ${{ needs.process-image.outputs.image }} \
-                /workspace/.github/scripts/zephyr_workspace_init.sh
+                sudo chmod +x /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh \
+                /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh
 
       - name: Set build env variables
         shell: bash
