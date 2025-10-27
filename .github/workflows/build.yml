@@ -169,7 +169,7 @@ jobs:
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
                 -w /workspace \
                 ${{ needs.process-image.outputs.image }} \
-                bash sudo chmod +x /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh \
+                bash chmod +x /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh \
                 bash /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh
 
       - name: Set build env variables
