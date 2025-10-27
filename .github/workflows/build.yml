@@ -144,6 +144,7 @@ jobs:
             echo "Check workspace ..."
             ls -la "${GITHUB_WORKSPACE}"
             ls -la "${GITHUB_WORKSPACE}/customer-application"
+
             docker run -d \
                 --user $(id -u):$(id -g) \
                 --device=/dev/ttyUSB0 \
@@ -164,7 +165,7 @@ jobs:
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
                 -w /workspace \
                 ${{ needs.process-image.outputs.image }} \
-                bash -c "bash chmod +x /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh && 
+                bash -c "ls -la /workspace && bash chmod +x /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh && 
                 bash /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh"
 
       - name: Set build env variables
