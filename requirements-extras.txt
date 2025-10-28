@@ -1,6 +1,8 @@
 # EXTRAS: needed for testing and support purposes
 # These are installed with: pip install -r requirements-extras.txt
 
+# General
+PyYAML
 # Async test cases
 pytest-asyncio
 # pytest fixture

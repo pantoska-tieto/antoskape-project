@@ -84,7 +84,7 @@ jobs:
       - name: Setup for BT stack
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u root -w /workspace/customer-application zephyr-env \
             bash -c "chmod +x .github/scripts/bluetooth_setup.sh && \
             .github/scripts/bluetooth_setup.sh"
                
@@ -93,7 +93,7 @@ jobs:
       - name: Setup for test tools
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u root -w /workspace/customer-application zephyr-env \
             bash -c "go install github.com/apache/mynewt-mcumgr-cli/mcumgr@latest && \
             echo 'Home dir:' $HOME && \
             sudo ls -la $HOME/go/bin && \
