@@ -185,7 +185,8 @@ jobs:
                bash -c "id -u pantoska-tieto &>/dev/null || \
                echo 'pantoska-tieto:x:$MY_UID:$MY_GID:GitHub \
                Runner:/home/pantoska-tieto:/bin/bash' >> /etc/passwd && \
-               usermod -aG dialout pantoska-tieto"
+               usermod -aG dialout pantoska-tieto && \
+               chmod 666 /dev/ttyUSB0"
 
       - name: Set build env variables
         shell: bash
