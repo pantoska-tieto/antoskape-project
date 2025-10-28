@@ -165,7 +165,7 @@ jobs:
                 -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
                 -e GITHUB_OUTPUT=$GITHUB_OUTPUT \
-                -v "$(dirname "$GITHUB_OUTPUT")":"$(dirname "$GITHUB_OUTPUT")"
+                -v "$(dirname "$GITHUB_OUTPUT")":"$(dirname "$GITHUB_OUTPUT")" \
                 -w /workspace \
                 ${{ needs.process-image.outputs.image }} \
                 sleep infinity
