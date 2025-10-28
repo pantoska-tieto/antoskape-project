@@ -144,6 +144,7 @@ jobs:
             echo "Check workspace ..."
             ls -la "${GITHUB_WORKSPACE}"
             ls -la "${GITHUB_WORKSPACE}/customer-application"
+            echo "GITHUB_OUTPUT=$GITHUB_OUTPUT"
 
             docker run -d --name zephyr-env \
                 --user $(id -u):$(id -g) \
@@ -163,6 +164,8 @@ jobs:
                 -v /usr/src:/usr/src \
                 -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
+                -e GITHUB_OUTPUT=$GITHUB_OUTPUT \
+                -v "$(dirname "$GITHUB_OUTPUT")":"$(dirname "$GITHUB_OUTPUT")"
                 -w /workspace \
                 ${{ needs.process-image.outputs.image }} \
                 sleep infinity
