@@ -237,7 +237,7 @@ jobs:
               if [ -f build/zephyr/zephyr.bin ]; then
                 west flash
               else
-                echo "Skipping flash: No valid build output found."
+                echo 'Skipping flash: No valid build output found.'
               fi"
 
   start_testing:
