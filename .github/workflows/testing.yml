@@ -165,9 +165,10 @@ jobs:
       - name: Create json file with secrets variables
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "echo $SECRETS_JSON > vars.json && \
-            cat vars.json"
+            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application \
+            -e SECRETS_JSON="${SECRETS_JSON}" zephyr-env \
+            bash -c 'echo "$SECRETS_JSON" > vars.json && \
+            cat vars.json'
 
       # Auto mapping of USB ports to udev rules
       - name: Auto mapping of USB ports to udev rules
