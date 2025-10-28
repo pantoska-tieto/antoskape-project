@@ -230,7 +230,8 @@ jobs:
         shell: bash
         run: |
             docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "python3 -m venv .venv && source .venv/bin/activate && \
+            bash -c "python3 -m venv .venv || { echo 'Failed to create .venv in customer-application/'; exit 1; }
+            source .venv/bin/activate && \
             pip install -r requirements-extras.txt"
 
       # Example for custom application build
