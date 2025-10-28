@@ -121,7 +121,7 @@ jobs:
         shell: bash
         run: |
             docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "python3 -m venv .venv && source .venv/bin/activate && \
+            bash -c "source .venv/bin/activate && \
             python .github/scripts/tests_yaml_parser.py"
 
       # Generate tests paths to run with twister command
@@ -131,7 +131,7 @@ jobs:
         if : ${{ inputs.test_scenario == 'N/A' || '' }} 
         run: |
             docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "python3 -m venv .venv && source .venv/bin/activate && \
+            bash -c "source .venv/bin/activate && \
             python .github/scripts/get_tests_list.py --tests_scope ${{ inputs.tests_target }}"
 
       - name: Create test list with test scenario
@@ -140,7 +140,7 @@ jobs:
         if : ${{ inputs.test_scenario != 'N/A' || '' }} 
         run: |
             docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "python3 -m venv .venv && source .venv/bin/activate && \
+            bash -c "source .venv/bin/activate && \
             python .github/scripts/get_tests_list.py --tests_scenario ${{ inputs.tests_target }}"
         
       - name: Create test list with robot tests
@@ -149,7 +149,7 @@ jobs:
         if : ${{ inputs.tests_target == 'app/robot' }} 
         run: |
             docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "python3 -m venv .venv && source .venv/bin/activate && \
+            bash -c "source .venv/bin/activate && \
             python .github/scripts/get_tests_list.py --tests_robot ${{ inputs.tests_target }}"
 
       # Put list of testcases into output variable for shell script usage
@@ -158,7 +158,7 @@ jobs:
         id: py-script
         run: |
             docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "python3 -m venv .venv && source .venv/bin/activate && \
+            bash -c "source .venv/bin/activate && \
             python .github/scripts/output_tests_list.py"
 
       # Pass secrets for tests into json file
@@ -183,7 +183,7 @@ jobs:
         shell: bash
         run: |
             docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "python3 -m venv .venv && source .venv/bin/activate && \
+            bash -c "source .venv/bin/activate && \
             python .github/scripts/run_tests.py --platform ${{ inputs.board_target }} \
             --device_serial udev_mapping.txt \
             --tag ${{ inputs.test_tag }} \
@@ -199,7 +199,7 @@ jobs:
         shell: bash
         run: |
             docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "python3 -m venv .venv && source .venv/bin/activate && \
+            bash -c "source .venv/bin/activate && \
             python .github/scripts/tests_metadata_parser.py \
             --artifactory_user ${{ secrets.ARTIFACTORY_USER }} --artifactory_pwd ${{ secrets.ARTIFACTORY_PWD }}"
 
@@ -208,7 +208,7 @@ jobs:
         shell: bash
         run: |
             docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "python3 -m venv .venv && source .venv/bin/activate && \
+            bash -c "source .venv/bin/activate && \
             python .github/scripts/meta_report.py --run_id ${{ github.run_id }}"
 
       # Archive all test artifacts except Robot tests
@@ -299,7 +299,7 @@ jobs:
         if : ${{ inputs.tests_target != 'app/robot' }} 
         run: |
             docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "python3 -m venv .venv && source .venv/bin/activate && \
+            bash -c "source .venv/bin/activate && \
             python .github/scripts/prepare_ci_report_files.py"
 
       # Archive test output xml reports
@@ -333,7 +333,7 @@ jobs:
         shell: bash
         run: |
             docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "python3 -m venv .venv && source .venv/bin/activate && \
+            bash -c "source .venv/bin/activate && \
             python .github/scripts/test_report_email.py --server_pwd '${{ secrets.EMAIL_SERVER_PASSWD }}'"
 
       # Teardown: remove udev file from host machine with serial ports mapping

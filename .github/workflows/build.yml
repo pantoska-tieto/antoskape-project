@@ -225,14 +225,7 @@ jobs:
             "apt-get update && apt-get install -y \
             iperf sysbench fio"
 
-      # Activate Python .venv
-      - name: Activate Python .venv
-        shell: bash
-        run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "source .venv/bin/activate"
-
-      # Install Python extras for testing
+      # Create Python virtual env and install required packages
       - name: Install Python extra packages
         shell: bash
         run: |
