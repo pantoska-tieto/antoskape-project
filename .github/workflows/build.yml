@@ -178,11 +178,14 @@ jobs:
       # Add github-runner User to container /etc/passwd
       - name: Add runner-user to container
         shell: bash
-        run: |
-            docker exec --user=root zephyr-env \
+        run: |            
+            export UID=$(id -u)
+            export GID=$(id -g)
+            docker exec --user=root -e UID=$UID -e GID=$GID zephyr-env \
                bash -c "id -u pantoska-tieto &>/dev/null || \
-               echo 'pantoska-tieto:x:$(id -u):$(id -g):GitHub \
-               Runner:/home/pantoska-tieto:/bin/bash' >> /etc/passwd"
+               echo 'pantoska-tieto:x:$UID:$GID:GitHub \
+               Runner:/home/pantoska-tieto:/bin/bash' >> /etc/passwd && \
+               usermod -aG dialout pantoska-tieto"
 
       - name: Set build env variables
         shell: bash
