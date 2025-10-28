@@ -165,9 +165,15 @@ jobs:
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
                 -w /workspace \
                 ${{ needs.process-image.outputs.image }} \
-                bash -c "chmod +x /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh && \
-                /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh && \
-                sleep infinity"
+                sleep infinity
+
+      # Install Zephyr workspace
+      - name: Install Zephyr workspace
+        shell: bash
+        run: |
+            docker exec -u $(id -u):$(id -g) zephyr-env \
+            bash -c "chmod +x /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh && \
+                /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh"
 
       - name: Set build env variables
         shell: bash
@@ -197,7 +203,7 @@ jobs:
       - name: Install lib extras
         shell: bash
         run: |
-            docker exec zephyr-env bash -c "sudo apt-get update &&
+            docker exec -u $(id -u):$(id -g) zephyr-env bash -c "sudo apt-get update &&
             sudo apt-get install -y iperf &&
             sudo apt-get install -y sysbench fio"
 
