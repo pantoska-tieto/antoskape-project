@@ -179,11 +179,11 @@ jobs:
       - name: Add runner-user to container
         shell: bash
         run: |            
-            export UID=$(id -u)
-            export GID=$(id -g)
-            docker exec --user=root -e UID=$UID -e GID=$GID zephyr-env \
+            export MY_UID=$(id -u)
+            export MY_GID=$(id -g)
+            docker exec --user=root -e MY_UID=$MY_UID -e MY_GID=$MY_GID zephyr-env \
                bash -c "id -u pantoska-tieto &>/dev/null || \
-               echo 'pantoska-tieto:x:$UID:$GID:GitHub \
+               echo 'pantoska-tieto:x:$MY_UID:$MY_GID:GitHub \
                Runner:/home/pantoska-tieto:/bin/bash' >> /etc/passwd && \
                usermod -aG dialout pantoska-tieto"
 
