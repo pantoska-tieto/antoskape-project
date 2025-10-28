@@ -175,6 +175,15 @@ jobs:
             bash -c "chmod +x /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh && \
                 /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh"
 
+      # Add github-runner User to container /etc/passwd
+      - name: Add runner-user to container
+        shell: bash
+        run: |
+            docker exec --user=root zephyr-env \
+               bash -c "id -u pantoska-tieto &>/dev/null || \
+               echo 'pantoska-tieto:x:$(id -u):$(id -g):GitHub \
+               Runner:/home/pantoska-tieto:/bin/bash' >> /etc/passwd"
+
       - name: Set build env variables
         shell: bash
         run: |
