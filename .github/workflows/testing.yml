@@ -61,61 +61,15 @@ jobs:
         with:
           path: customer-application
       
-      # Run docker container
-      - name: Run Zephyr Docker container
+      # Check docker container is existing and available
+      - name: Check Docker container is available
         shell: bash
         run: |
-            echo "Check workspace ..."
-            ls -la "${GITHUB_WORKSPACE}"
-            ls -la "${GITHUB_WORKSPACE}/customer-application"
-
-            docker run -d --name zephyr-env \
-                --user $(id -u):$(id -g) \
-                --device=/dev/ttyUSB0 \
-                --cgroupns=host \
-                --privileged \
-                --network host \
-                -v "${GITHUB_WORKSPACE}:/workspace" \
-                -v /var/run/dbus:/var/run/dbus \
-                -v /run/dbus:/run/dbus \
-                -v /run/udev:/run/udev \
-                -v /dev:/dev \
-                -v /etc/udev/rules.d:/etc/udev/rules.d \
-                -v /sys/class/bluetooth:/sys/class/bluetooth \
-                -v /var/lib/bluetooth:/var/lib/bluetooth \
-                -v /lib/modules:/lib/modules \
-                -v /usr/src:/usr/src \
-                -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
-                -e CMAKE_PREFIX_PATH=/opt/toolchains \
-                -w /workspace \
-                ${{ needs.process-image.outputs.image }} \
-                sleep infinity
-            
-      # Install Zephyr workspace
-      - name: Install Zephyr workspace
-        shell: bash
-        run: |
-            docker exec -u $(id -u):$(id -g) zephyr-env \
-            bash -c "chmod +x /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh && \
-                /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh"
-                
-      # Add github-runner to users and groups 
-      - name: Add runner-user and group to container
-        shell: bash
-        run: |            
-            export MY_UID=$(id -u)
-            export MY_GID=$(id -g)
-            docker exec -u root -e MY_UID=$MY_UID -e MY_GID=$MY_GID zephyr-env \
-               bash -c "
-                 getent group '$MY_GID' >/dev/null || \
-                   echo 'pantoska-tieto:x:$MY_GID:' >> /etc/group  && \
-
-                 id -u pantoska-tieto &>/dev/null || \
-                   echo 'pantoska-tieto:x:$MY_UID:$MY_GID:GitHub \
-                 Runner:/home/pantoska-tieto:/bin/bash' >> /etc/passwd && \
-                 
-                 usermod -aG dialout pantoska-tieto && \
-                 chmod 666 /dev/ttyUSB0"
+            echo "Check docker container is available ..."
+            if ! docker ps --filter "name=zephyr-env" --format "{{.Names}}" | grep -q zephyr-env; then \
+              echo "[Error] Docker container not found! Please check the Docker image is available."
+              exit 1
+            fi
 
       # Install lib extras for testing
       - name: Install lib extras
@@ -125,21 +79,6 @@ jobs:
             "apt-get update && apt-get install -y \
             iperf sysbench fio curl udev python3-dev libgpiod-dev gpiod golang-go \
             bluez bluez-tools libbluetooth-dev libdbus-1-dev dbus"
-
-      # Activate Python .venv
-      - name: Activate Python .venv
-        shell: bash
-        run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "source .venv/bin/activate"
-
-      # Install Python extras for testing
-      - name: Install Python extra packages
-        shell: bash
-        run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "python3 -m venv .venv && source .venv/bin/activate && \
-            pip install -r requirements-extras.txt"
 
       # Setup Bluetooth stack
       - name: Setup for BT stack
