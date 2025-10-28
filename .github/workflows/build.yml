@@ -203,10 +203,8 @@ jobs:
       - name: Install lib extras
         shell: bash
         run: |
-            docker exec --user=root zephyr-env bash -c " \
-            apt-get update && \
-            apt-get install -y iperf && \
-            sysbench fio"
+            docker exec --user=root zephyr-env bash -c "apt-get update && apt-get install -y \
+            iperf sysbench fio"
 
       # Install Python extras for testing
       - name: Install Python extra packages
