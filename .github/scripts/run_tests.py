@@ -24,7 +24,7 @@ def define_args():
         "--test_list",
         required=False,
         default=None,
-        help="List in text file with tests to be run",
+        help="Text filename with tests to be run",
     )
     parser.add_argument(
         "--platform",

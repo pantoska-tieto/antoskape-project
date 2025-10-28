@@ -133,7 +133,7 @@ jobs:
             bash -c "source .venv/bin/activate && \
             python .github/scripts/tests_yaml_parser.py"
 
-      # Generate tests paths to run with twister command
+      # Generate tests paths to run with twister command into repo_tests.txt
       - name: Create test list with tests scope
         shell: bash
         # No test scenario is filtered
@@ -160,16 +160,6 @@ jobs:
             docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
             bash -c "source .venv/bin/activate && \
             python .github/scripts/get_tests_list.py --tests_robot ${{ inputs.tests_target }}"
-
-      # Put list of testcases into output variable for shell script usage
-      - name: Put tests list file to env variable
-        shell: bash
-        id: py-script
-        run: |
-            docker exec -u root -w /workspace/customer-application \
-            -e GITHUB_OUTPUT=$GITHUB_OUTPUT zephyr-env \
-            bash -c "source .venv/bin/activate && \
-            python .github/scripts/output_tests_list.py"
 
       # Pass secrets for tests into json file
       - name: Create json file with secrets variables
@@ -199,7 +189,7 @@ jobs:
             --tag ${{ inputs.test_tag }} \
             --pytest_args ${{ inputs.pytest_args }} \
             --scenario ${{ inputs.test_scenario }} \
-            --test_list ${{steps.py-script.outputs.test_list}} \
+            --test_list "repo_tests.txt" \
             --target ${{ inputs.tests_target }} \
             --integration_tests ${{ inputs.integration_tests }} \
             --test_hardware ${{ inputs.test_hardware }}"
