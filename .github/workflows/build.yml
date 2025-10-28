@@ -203,30 +203,35 @@ jobs:
       - name: Install lib extras
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) zephyr-env bash -c "sudo apt-get update &&
-            sudo apt-get install -y iperf &&
+            docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
+            sudo apt-get update && \
+            sudo apt-get install -y iperf && \
             sudo apt-get install -y sysbench fio"
 
       # Install Python extras for testing
       - name: Install Python extra packages
         shell: bash
         run: |
-            pip install -r requirements-extras.txt
+            docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
+            pip install -r requirements-extras.txt"
 
       # Example for custom application build
       - name: Build app for ${{ env.BOARD_TARGET }}
         shell: bash
-        run: west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky
+        run: |
+            docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
+            west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky"
        
       # Conditional flash - for 'native_siFlm' board case
       - name: Flash app if build file is valid
         shell: bash
         run: |
-            if [ -f build/zephyr/zephyr.bin ]; then
-              west flash
-            else
-              echo "Skipping flash: No valid build output found."
-            fi
+            docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
+              if [ -f build/zephyr/zephyr.bin ]; then
+                west flash
+              else
+                echo "Skipping flash: No valid build output found."
+              fi"
 
   start_testing:
     name: Trigger test framework
