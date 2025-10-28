@@ -165,9 +165,9 @@ jobs:
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
                 -w /workspace \
                 ${{ needs.process-image.outputs.image }} \
-                sleep infinity && 
-                bash -c "ls -la '${GITHUB_WORKSPACE}' && bash chmod +x /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh && 
-                bash /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh"
+                sleep infinity \ 
+                bash -c "chmod +x /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh && 
+                /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh"
 
       - name: Set build env variables
         shell: bash
