@@ -58,6 +58,6 @@ busctl tree org.bluez
 # Show HCI status - not working and causing error:
 # can't init hci: can't create socket: address family not supported by protocol
 # No access to Host BT HCI stack!
-# echo "Starting hciconfig command..."
-# sudo hciconfig
+echo "Starting hciconfig command..."
+hciconfig
 echo "Bluetooth stack setup completed."
