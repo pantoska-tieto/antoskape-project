@@ -183,11 +183,11 @@ jobs:
             export MY_GID=$(id -g)
             docker exec --user=root -e MY_UID=$MY_UID -e MY_GID=$MY_GID zephyr-env \
                bash -c "
-                 getent group \$MY_GID >/dev/null || \
-                   echo 'pantoska-tieto:x:\$MY_GID:' >> /etc/group  && \
+                 getent group '$MY_GID' >/dev/null || \
+                   echo 'pantoska-tieto:x:$MY_GID:' >> /etc/group  && \
 
                  id -u pantoska-tieto &>/dev/null || \
-                   echo 'pantoska-tieto:x:\$MY_UID:\$MY_GID:GitHub \
+                   echo 'pantoska-tieto:x:$MY_UID:$MY_GID:GitHub \
                  Runner:/home/pantoska-tieto:/bin/bash' >> /etc/passwd && \
                  
                  usermod -aG dialout pantoska-tieto && \
