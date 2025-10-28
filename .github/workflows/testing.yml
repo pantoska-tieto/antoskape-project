@@ -121,7 +121,8 @@ jobs:
         shell: bash
         run: |
             docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
-            bash -c "source .venv/bin/activate && \
+            bash -c "python3 -m venv .venv || { echo 'Failed to create .venv in customer-application/'; exit 1; }
+            source .venv/bin/activate && \
             python .github/scripts/tests_yaml_parser.py"
 
       # Generate tests paths to run with twister command
