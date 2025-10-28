@@ -211,8 +211,16 @@ jobs:
       - name: Install Python extra packages
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env bash -c " \
+            docker exec --user=$(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            bash -c "python3 -m venv .venv && source .venv/bin/activate && \
             pip install -r requirements-extras.txt"
+
+      # Activate Python .venv
+      - name: Activate Python .venv
+        shell: bash
+        run: |
+            docker exec --user=$(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            bash -c "source .venv/bin/activate"
 
       # Example for custom application build
       - name: Build app for ${{ env.BOARD_TARGET }}
