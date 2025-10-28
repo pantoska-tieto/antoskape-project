@@ -166,7 +166,8 @@ jobs:
         shell: bash
         id: py-script
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application \
+            -e GITHUB_OUTPUT=$GITHUB_OUTPUT zephyr-env \
             bash -c "source .venv/bin/activate && \
             python .github/scripts/output_tests_list.py"
 
