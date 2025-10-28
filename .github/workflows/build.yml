@@ -239,14 +239,14 @@ jobs:
       - name: Build app for ${{ env.BOARD_TARGET }}
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env bash -c " \
+            docker exec --user=$(id -u):$(id -g) -w /workspace/customer-application zephyr-env bash -c " \
             west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky"
        
       # Conditional flash - for 'native_siFlm' board case
       - name: Flash app if build file is valid
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env bash -c " \
+            docker exec --user=root -w /workspace/customer-application zephyr-env bash -c " \
               if [ -f build/zephyr/zephyr.bin ]; then
                 west flash
               else
