@@ -225,7 +225,7 @@ jobs:
       - name: Install lib extras
         shell: bash
         run: |
-            docker exec -u root -w zephyr-env bash -c \
+            docker exec -u root zephyr-env bash -c \
             "apt-get update && apt-get install -y \
             iperf sysbench fio"
 
@@ -233,7 +233,7 @@ jobs:
       - name: Install Python extra packages
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "python3 -m venv .venv || { echo 'Failed to create .venv in customer-application/'; exit 1; }
             source .venv/bin/activate && \
             pip install -r requirements-extras.txt"
@@ -242,14 +242,14 @@ jobs:
       - name: Build app for ${{ env.BOARD_TARGET }}
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w zephyr-env bash -c " \
+            docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
             west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky"
        
       # Conditional flash - for 'native_siFlm' board case
       - name: Flash app if build file is valid
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w zephyr-env bash -c " \
+            docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
               if [ -f build/zephyr/zephyr.bin ]; then
                 west flash
               else
