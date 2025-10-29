@@ -201,6 +201,26 @@ jobs:
         run: |
             pip install -r requirements-extras.txt
 
+      # Debud zephyr env after intiation
+      - name: Check Zephyr workspace after installation
+        shell: bash
+        run: |
+            echo "pwd"
+            pwd
+            echo "Checking out Zephyr env..."
+            echo "Current github folder:"
+            ls -la
+            echo "Parent github folder: ls -la .."
+            ls -la ..
+            echo "Grand Parent github folder: ls -la ../.."
+            ls -la ../..
+            echo "Root github folder: ls -la /"
+            ls -la /
+            echo "User home folder: ls -la ~"
+            ls -la ~
+            echo "Check for pyserial python module installation..."
+            grep -r 'pyserial' $(python -c "import site; print(site.getsitepackages()[0])")
+
       # Example for custom application build
       - name: Build app for ${{ env.BOARD_TARGET }}
         shell: bash
@@ -215,20 +235,3 @@ jobs:
             else
               echo "Skipping flash: No valid build output found."
             fi
-
-  start_testing:
-    name: Trigger test framework
-    if: ${{ needs.build.outputs.testing == 'Build with testing' }}
-    needs: [process-runner, process-image, build] 
-    uses: ./.github/workflows/testing.yml
-    with:
-      docker_image: ${{ needs.process-image.outputs.image }}
-      runner_label: ${{ needs.process-runner.outputs.label }}
-      board_target: ${{ needs.build.outputs.board_target }}
-      test_tag: ${{ needs.build.outputs.test_tag }}
-      pytest_args: ${{ needs.build.outputs.pytest_args }}
-      test_scenario: ${{ needs.build.outputs.test_scenario }}
-      tests_target: ${{ needs.build.outputs.tests_target }}
-      integration_tests: ${{ needs.build.outputs.integration_tests }}
-      test_hardware: ${{ needs.build.outputs.test_hardware }}
-    secrets: inherit
