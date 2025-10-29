@@ -186,10 +186,10 @@ jobs:
             export MY_UID=$(id -u)
             export MY_GID=$(id -g)
             docker exec -u root -e MY_UID=$MY_UID -e MY_GID=$MY_GID zephyr-env \               
-            bash -c "getent group $MY_GID >/dev/null || groupadd -g $MY_GID pantoska-tieto && \
-              id -u pantoska-tieto &>/dev/null || useradd -m -u $MY_UID -g $MY_GID -s /bin/bash pantoska-tieto && \
-              echo 'pantoska-tieto ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
-              usermod -aG dialout pantoska-tieto && \
+            bash -c "getent group $MY_GID >/dev/null || groupadd -g $MY_GID pantoska-tieto
+              id -u pantoska-tieto &> /dev/null || useradd -m -u $MY_UID -g $MY_GID -s /bin/bash pantoska-tieto
+              echo 'pantoska-tieto ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+              usermod -aG dialout pantoska-tieto
               chmod 666 /dev/ttyUSB0"
 
       - name: Set build env variables
