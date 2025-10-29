@@ -220,6 +220,13 @@ jobs:
           INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
           INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
           INPUT_TEST_HARDWARE: ${{ github.event.inputs.test_hardware }}
+
+      # Enable sudo for runner user
+      - name: Update runner UID permissions
+        shell: bash
+        run: |
+            docker exec -u root zephyr-env bash -c \
+            "echo 'pantoska-tieto ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers"
            
       # Install lib extras for testing
       - name: Install lib extras

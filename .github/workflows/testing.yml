@@ -87,18 +87,6 @@ jobs:
             docker exec -u root zephyr-env \
             bash -c "chmod +x .github/scripts/bluetooth_setup.sh && \
             .github/scripts/bluetooth_setup.sh"
-               
-
-      # Setup for tools
-      - name: Setup for test tools
-        shell: bash
-        run: |
-            docker exec -u $(id -u):$(id -g) zephyr-env \
-            bash -c "go install github.com/apache/mynewt-mcumgr-cli/mcumgr@latest && \
-            echo 'Home dir:' $HOME && \
-            sudo ls -la $HOME/go/bin && \
-            sudo setcap cap_net_raw,cap_net_admin+eip $HOME/go/bin/mcumgr  && \
-            getcap $HOME/go/bin/mcumgr || echo 'No mcumgr capabilities set'"
 
       #  Review of variables from Build workflow
       - name: Show variables from caller workflow
@@ -291,7 +279,7 @@ jobs:
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "rm -rf test-summary && \
-            sudo mkdir -p test-summary"
+            mkdir -p test-summary"
 
       # Collect all test output xml reports into one folder
       - name: Copy files to CI report summary
