@@ -175,7 +175,7 @@ jobs:
         shell: bash
         if : ${{ inputs.test_hardware == 'Real_hardware' }} 
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u root -w /workspace/customer-application zephyr-env \
             bash -c "chmod +x .github/scripts/udev_mapping_serial_ports.sh && \
             .github/scripts/udev_mapping_serial_ports.sh ${{ inputs.board_target }}"
 
@@ -190,7 +190,7 @@ jobs:
             --tag ${{ inputs.test_tag }} \
             --pytest_args ${{ inputs.pytest_args }} \
             --scenario ${{ inputs.test_scenario }} \
-            --test_list "repo_tests.txt" \
+            --test_list repo_tests.txt \
             --target ${{ inputs.tests_target }} \
             --integration_tests ${{ inputs.integration_tests }} \
             --test_hardware ${{ inputs.test_hardware }}"

@@ -3,6 +3,7 @@
 
 # General
 PyYAML
+requests
 # Async test cases
 pytest-asyncio
 # pytest fixture
