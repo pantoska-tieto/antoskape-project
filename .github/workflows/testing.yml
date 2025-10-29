@@ -109,9 +109,7 @@ jobs:
         shell: bash
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
-            bash -c "python3 -m venv .venv || { echo 'Failed to create .venv in customer-application/'; exit 1; }
-            source .venv/bin/activate && \
-            pip install -r requirements-extras.txt"
+            bash -c "pip install -r requirements-extras.txt"
             
       # Generate list of all tests in application in txt-format
       - name: Create list of all application tests

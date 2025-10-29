@@ -141,9 +141,13 @@ jobs:
       - name: Run Zephyr Docker container
         shell: bash
         run: |
-            echo "Check workspace ..."
-            ls -la "${GITHUB_WORKSPACE}"
-            ls -la "${GITHUB_WORKSPACE}/customer-application"
+            echo "pwd"
+            pwd
+            echo "Checking out Zephyr env..."
+            echo "Current github folder:"
+            ls -la
+            echo "Parent github folder: ls -la .."
+            ls -la ..
 
             docker run -d --name zephyr-env \
                 --user $(id -u):$(id -g) \
@@ -241,9 +245,28 @@ jobs:
         shell: bash
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
-            bash -c "python3 -m venv .venv || { echo 'Failed to create .venv in customer-application/'; exit 1; }
-            source .venv/bin/activate && \
-            pip install -r requirements-extras.txt"
+            bash -c "pip install -r requirements-extras.txt"
+
+      # Debud zephyr env after intiation
+      - name: Check Zephyr workspace after installation
+        shell: bash
+        run: |
+            docker exec -u $(id -u):$(id -g) zephyr-env \
+            bash -c "echo 'pwd'
+            echo 'Checking out Zephyr env...'
+            echo 'Current github folder:'
+            ls -la
+            echo 'Parent github folder: ls -la ..'
+            ls -la ..
+            echo 'Grand Parent github folder: ls -la ../..'
+            ls -la ../..
+            echo 'Root github folder: ls -la /'
+            ls -la /
+            echo 'User home folder: ls -la ~'
+            ls -la ~
+            echo 'Check for pyserial python module installation...'
+            grep -r 'pyserial' $(python -c 'import site; print(site.getsitepackages()[0])')"
+
 
       # Example for custom application build
       - name: Build app for ${{ env.BOARD_TARGET }}
