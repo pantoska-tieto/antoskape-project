@@ -190,7 +190,7 @@ jobs:
                    echo 'pantoska-tieto:x:$MY_UID:$MY_GID:GitHub \
                  Runner:/home/pantoska-tieto:/bin/bash' >> /etc/passwd && \
                  
-                 echo "Setting Home dir for runner user: pantoska-tieto"
+                 echo 'Setting Home dir for runner user: pantoska-tieto'
                  mkdir -p /home/pantoska-tieto
                  chown $MY_UID:$MY_GID /home/pantoska-tieto
 
