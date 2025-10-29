@@ -30,7 +30,7 @@ mcumgr_path = Path(f"{os.path.expanduser("~")}/go/bin/mcumgr")
 # Currently the mcumgr path is hardcoded in the test case. It should be retrieved from 
 # the environment.
 if mcumgr_path.exists():
-    #"/github/home/go/bin/mcumgr" = str(mcumgr_path)
+    #"/home/pantoska-tieto/go/bin/mcumgr" = str(mcumgr_path)
     pass
 else:
     raise FileNotFoundError(f"mcumgr tool not found on path: {mcumgr_path}")
@@ -59,7 +59,7 @@ def cmd_mcumgr(cmd):
 def test_old_image_list(dut: DeviceAdapter):
     # Check image list on board
     global old_hash
-    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    _out, _err, _ret = tools.run_cmd(["/home/pantoska-tieto/go/bin/mcumgr", 
                                       "--conntype", "ble", "--connstring", 
                                       f"peer_name={PEER_NAME}", 
                                       "image", 
@@ -90,7 +90,7 @@ def test_build_new_image():
 @pytest.mark.order(3)
 def test_upload_new_image():
     # Upload new test image to device
-    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    _out, _err, _ret = tools.run_cmd(["/home/pantoska-tieto/go/bin/mcumgr", 
                                       "--conntype", 
                                       "ble", 
                                       "--connstring", 
@@ -108,7 +108,7 @@ def test_upload_new_image():
 def test_new_image_list():
     # Check image list on board - existing + new images
     global new_hash
-    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    _out, _err, _ret = tools.run_cmd(["/home/pantoska-tieto/go/bin/mcumgr", 
                                       "--conntype", 
                                       "ble", 
                                       "--connstring", 
@@ -126,7 +126,7 @@ def test_new_image_list():
 @pytest.mark.order(5)
 def test_set_pending():
     # Update status to 'pending' for new test image to be installed in next 'reset'
-    tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    tools.run_cmd(["/home/pantoska-tieto/go/bin/mcumgr", 
                    "--conntype", 
                    "ble", 
                    "--connstring", 
@@ -134,7 +134,7 @@ def test_set_pending():
                    "image", 
                    "test", 
                    new_hash])
-    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    _out, _err, _ret = tools.run_cmd(["/home/pantoska-tieto/go/bin/mcumgr", 
                                       "--conntype", 
                                       "ble", 
                                       "--connstring", 
@@ -149,7 +149,7 @@ def test_set_pending():
 @pytest.mark.order(6)
 def test_reset_fw():
     # Reset board to upgrade FW to new test image
-    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    _out, _err, _ret = tools.run_cmd(["/home/pantoska-tieto/go/bin/mcumgr", 
                                       "--conntype", 
                                       "ble", 
                                       "--connstring", 
@@ -163,7 +163,7 @@ def test_reset_fw():
 @pytest.mark.order(7)
 def test_dfu():
     # Check the new image (new FW) after boot in active and confirmed
-    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    _out, _err, _ret = tools.run_cmd(["/home/pantoska-tieto/go/bin/mcumgr", 
                                       "--conntype", 
                                       "ble", 
                                       "--connstring", 

@@ -180,26 +180,22 @@ jobs:
                 .github/scripts/zephyr_workspace_init.sh"
 
       # Add github-runner to users and groups inside container 
-      - name: Add runner-user and group to container
+      - name: Set runner-user permissions
         shell: bash
         run: |            
             export MY_UID=$(id -u)
             export MY_GID=$(id -g)
-            docker exec -u root -e MY_UID=$MY_UID -e MY_GID=$MY_GID zephyr-env \
-               bash -c "
-                 getent group '$MY_GID' >/dev/null || \
-                   echo 'pantoska-tieto:x:$MY_GID:' >> /etc/group  && \
+            docker exec -u root -e MY_UID=$MY_UID -e MY_GID=$MY_GID zephyr-env \               
+            bash -c "getent group '$MY_GID' >/dev/null || \
+                      groupadd -g $MY_GID pantoska-tieto
 
-                 id -u pantoska-tieto &>/dev/null || \
-                   echo 'pantoska-tieto:x:$MY_UID:$MY_GID:GitHub \
-                 Runner:/home/pantoska-tieto:/bin/bash' >> /etc/passwd && \
-                 
-                 echo 'Setting Home dir for runner user: pantoska-tieto'
-                 mkdir -p /home/pantoska-tieto
-                 chown $MY_UID:$MY_GID /home/pantoska-tieto
+                    id -u pantoska-tieto &>/dev/null || \
+                      useradd -m -u $MY_UID -g $MY_GID -s /bin/bash pantoska-tieto
 
-                 usermod -aG dialout pantoska-tieto && \
-                 chmod 666 /dev/ttyUSB0"
+                    echo 'pantoska-tieto ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+                    usermod -aG dialout pantoska-tieto
+                    chmod 666 /dev/ttyUSB0"
 
       - name: Set build env variables
         shell: bash
@@ -224,13 +220,6 @@ jobs:
           INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
           INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
           INPUT_TEST_HARDWARE: ${{ github.event.inputs.test_hardware }}
-
-      # Enable sudo for runner user
-      - name: Update runner UID permissions
-        shell: bash
-        run: |
-            docker exec -u root zephyr-env bash -c \
-            "echo 'pantoska-tieto ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers"
            
       # Install lib extras for testing
       - name: Install lib extras
