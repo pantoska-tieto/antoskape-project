@@ -94,10 +94,10 @@ jobs:
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "go install github.com/apache/mynewt-mcumgr-cli/mcumgr@latest
-            echo 'Home dir:' $HOME
-            ls -la $HOME/go/bin
-            sudo setcap cap_net_raw,cap_net_admin+eip $HOME/go/bin/mcumgr
-            getcap $HOME/go/bin/mcumgr || echo 'No mcumgr capabilities set'"
+            echo 'Show mcumgr installation:'
+            ls -la ~/go/bin
+            sudo setcap cap_net_raw,cap_net_admin+eip ~/go/bin/mcumgr
+            getcap ~/go/bin/mcumgr || echo 'No mcumgr capabilities set'"
 
 
       #  Review of variables from Build workflow
