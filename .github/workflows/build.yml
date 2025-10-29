@@ -144,7 +144,6 @@ jobs:
             echo "Check workspace ..."
             ls -la "${GITHUB_WORKSPACE}"
             ls -la "${GITHUB_WORKSPACE}/customer-application"
-            echo "GITHUB_OUTPUT=$GITHUB_OUTPUT"
 
             docker run -d --name zephyr-env \
                 --user $(id -u):$(id -g) \
@@ -164,7 +163,7 @@ jobs:
                 -v /usr/src:/usr/src \
                 -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
-                -w /workspace \
+                -w /workspace/customer-application \
                 ${{ needs.process-image.outputs.image }} \
                 sleep infinity
 
@@ -173,10 +172,10 @@ jobs:
         shell: bash
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
-            bash -c "chmod +x /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh && \
-                /workspace/customer-application/.github/scripts/zephyr_workspace_init.sh"
+            bash -c "chmod +x .github/scripts/zephyr_workspace_init.sh && \
+                .github/scripts/zephyr_workspace_init.sh"
 
-      # Add github-runner to users and groups 
+      # Add github-runner to users and groups inside container 
       - name: Add runner-user and group to container
         shell: bash
         run: |            
@@ -191,6 +190,10 @@ jobs:
                    echo 'pantoska-tieto:x:$MY_UID:$MY_GID:GitHub \
                  Runner:/home/pantoska-tieto:/bin/bash' >> /etc/passwd && \
                  
+                 echo "Setting Home dir for runner user: pantoska-tieto"
+                 mkdir -p /home/pantoska-tieto
+                 chown $MY_UID:$MY_GID /home/pantoska-tieto
+
                  usermod -aG dialout pantoska-tieto && \
                  chmod 666 /dev/ttyUSB0"
 
@@ -222,7 +225,7 @@ jobs:
       - name: Install lib extras
         shell: bash
         run: |
-            docker exec -u root -w /workspace/customer-application zephyr-env bash -c \
+            docker exec -u root -w zephyr-env bash -c \
             "apt-get update && apt-get install -y \
             iperf sysbench fio"
 
@@ -230,7 +233,7 @@ jobs:
       - name: Install Python extra packages
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) -w zephyr-env \
             bash -c "python3 -m venv .venv || { echo 'Failed to create .venv in customer-application/'; exit 1; }
             source .venv/bin/activate && \
             pip install -r requirements-extras.txt"
@@ -239,14 +242,14 @@ jobs:
       - name: Build app for ${{ env.BOARD_TARGET }}
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env bash -c " \
+            docker exec -u $(id -u):$(id -g) -w zephyr-env bash -c " \
             west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky"
        
       # Conditional flash - for 'native_siFlm' board case
       - name: Flash app if build file is valid
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env bash -c " \
+            docker exec -u $(id -u):$(id -g) -w zephyr-env bash -c " \
               if [ -f build/zephyr/zephyr.bin ]; then
                 west flash
               else

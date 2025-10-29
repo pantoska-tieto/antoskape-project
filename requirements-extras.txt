@@ -4,6 +4,7 @@
 # General
 PyYAML
 requests
+Jinja2
 # Async test cases
 pytest-asyncio
 # pytest fixture

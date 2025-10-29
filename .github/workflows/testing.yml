@@ -75,7 +75,7 @@ jobs:
       - name: Install lib extras
         shell: bash
         run: |
-            docker exec -u root -w /workspace/customer-application zephyr-env bash -c \
+            docker exec -u root zephyr-env bash -c \
             "apt-get update && apt-get install -y \
             iperf sysbench fio curl udev python3-dev libgpiod-dev gpiod golang-go \
             bluez bluez-tools libbluetooth-dev libdbus-1-dev dbus"
@@ -84,7 +84,7 @@ jobs:
       - name: Setup for BT stack
         shell: bash
         run: |
-            docker exec -u root -w /workspace/customer-application zephyr-env \
+            docker exec -u root zephyr-env \
             bash -c "chmod +x .github/scripts/bluetooth_setup.sh && \
             .github/scripts/bluetooth_setup.sh"
                
@@ -93,7 +93,7 @@ jobs:
       - name: Setup for test tools
         shell: bash
         run: |
-            docker exec -u root -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "go install github.com/apache/mynewt-mcumgr-cli/mcumgr@latest && \
             echo 'Home dir:' $HOME && \
             sudo ls -la $HOME/go/bin && \
@@ -104,7 +104,7 @@ jobs:
       - name: Show variables from caller workflow
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c 'echo "Variables from caller workflow:"
             echo "docker_image: ${{ inputs.docker_image }}"
             echo "runner_label: ${{ inputs.runner_label }}"
@@ -120,7 +120,7 @@ jobs:
       - name: Install Python extra packages
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "python3 -m venv .venv || { echo 'Failed to create .venv in customer-application/'; exit 1; }
             source .venv/bin/activate && \
             pip install -r requirements-extras.txt"
@@ -129,7 +129,7 @@ jobs:
       - name: Create list of all application tests
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "source .venv/bin/activate && \
             python .github/scripts/tests_yaml_parser.py"
 
@@ -139,7 +139,7 @@ jobs:
         # No test scenario is filtered
         if : ${{ inputs.test_scenario == 'N/A' || '' }} 
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "source .venv/bin/activate && \
             python .github/scripts/get_tests_list.py --tests_scope ${{ inputs.tests_target }}"
 
@@ -148,7 +148,7 @@ jobs:
         # Specific test scenario is filtered
         if : ${{ inputs.test_scenario != 'N/A' || '' }} 
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "source .venv/bin/activate && \
             python .github/scripts/get_tests_list.py --tests_scenario ${{ inputs.tests_target }}"
         
@@ -157,7 +157,7 @@ jobs:
         # Specific test scenario is filtered
         if : ${{ inputs.tests_target == 'app/robot' }} 
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "source .venv/bin/activate && \
             python .github/scripts/get_tests_list.py --tests_robot ${{ inputs.tests_target }}"
 
@@ -165,8 +165,7 @@ jobs:
       - name: Create json file with secrets variables
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application \
-            -e SECRETS_JSON="${SECRETS_JSON}" zephyr-env \
+            docker exec -u $(id -u):$(id -g) -e SECRETS_JSON="${SECRETS_JSON}" zephyr-env \
             bash -c 'echo "$SECRETS_JSON" > vars.json && \
             cat vars.json'
 
@@ -175,7 +174,7 @@ jobs:
         shell: bash
         if : ${{ inputs.test_hardware == 'Real_hardware' }} 
         run: |
-            docker exec -u root -w /workspace/customer-application zephyr-env \
+            docker exec -u root zephyr-env \
             bash -c "chmod +x .github/scripts/udev_mapping_serial_ports.sh && \
             .github/scripts/udev_mapping_serial_ports.sh ${{ inputs.board_target }}"
 
@@ -183,7 +182,7 @@ jobs:
       - name: Run Twister tests
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "source .venv/bin/activate && \
             python .github/scripts/run_tests.py --platform ${{ inputs.board_target }} \
             --device_serial udev_mapping.txt \
@@ -199,7 +198,7 @@ jobs:
       - name: Create metadata json file
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "source .venv/bin/activate && \
             python .github/scripts/tests_metadata_parser.py \
             --artifactory_user ${{ secrets.ARTIFACTORY_USER }} --artifactory_pwd ${{ secrets.ARTIFACTORY_PWD }}"
@@ -208,7 +207,7 @@ jobs:
       - name: Create HTML test report
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "source .venv/bin/activate && \
             python .github/scripts/meta_report.py --run_id ${{ github.run_id }}"
 
@@ -290,7 +289,7 @@ jobs:
         shell: bash
         if : ${{ inputs.tests_target != 'app/robot' }} 
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "rm -rf test-summary && \
             sudo mkdir -p test-summary"
 
@@ -299,7 +298,7 @@ jobs:
         shell: bash
         if : ${{ inputs.tests_target != 'app/robot' }} 
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "source .venv/bin/activate && \
             python .github/scripts/prepare_ci_report_files.py"
 
@@ -333,7 +332,7 @@ jobs:
       - name: Send test report email
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "source .venv/bin/activate && \
             python .github/scripts/test_report_email.py --server_pwd '${{ secrets.EMAIL_SERVER_PASSWD }}'"
 
@@ -342,7 +341,7 @@ jobs:
         shell: bash
         if : ${{ inputs.test_hardware == 'Real_hardware' }} 
         run: |
-            docker exec -u $(id -u):$(id -g) -w /workspace/customer-application zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "chmod +x .github/scripts/remove_udev_mapping_serial_ports.sh
             .github/scripts/remove_udev_mapping_serial_ports.sh"
 
