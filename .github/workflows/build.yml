@@ -244,7 +244,7 @@ jobs:
       - name: Install Python extra packages
         shell: bash
         run: |
-            docker exec -u $(id -u):$(id -g) zephyr-env \
+            docker exec -u root zephyr-env \
             bash -c "pip install -r requirements-extras.txt"
 
       # Debud zephyr env after intiation
