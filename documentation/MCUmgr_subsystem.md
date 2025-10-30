@@ -202,12 +202,14 @@ build:
 <br/>
 
 PROS:
-- all operations in workflow steps are performed in docker container automatically without a need to run docker-commands.
-- simpe maintenance of steps-code because of close integration docker container - GitHub network instance.
+- All operations in workflow steps are performed in docker container automatically without a need to run docker-commands.
+- Simpe maintenance of steps-code because of automated integration Docker container - GitHub runner instance.
 
 CONS:
-- restricted access to Host runner network through `--network` option.
-- create container & install zephyr workspace steps are not persistent and must be triggered in each GitHub workflow file repeatedly (time and resource consuming).
+- Restricted access to Host runner network through `--network` option. GitHub runner applies only a whitelisted set of options (like --volume, --env, --cpus, --memory) and explicitly disallows dangerous flags.
+- Create container & install zephyr workspace steps are not persistent and must be triggered in each GitHub workflow file repeatedly (time and resource consuming).
+- Docker container lifecycle is controlled by runner and container is removed at the end of job/workflow file.
+- Container name during the workflow run is unpredictable (hashed by default). The manual manipulation with such container cannot be performed without a more complex scripting. 
 
 <br/>
 
@@ -255,14 +257,14 @@ run: |
 <br/>
 
 PROS:
-- full access to Host network and all resources through docker `--network` option.
-- wider maintenance options to control docker container, which is running out of GitHub network instance.
-- docker container can be triggered with flag `sleep infinity` and thus available for all GitHub workflow files/jobs - persistent docker container lifecycle.
+- Full access to Host network and all resources through docker `--network` option.
+- Wider maintenance options to control docker container, which is running out of GitHub runner control layer.
+- Docker container can be triggered with flag `sleep infinity` and thus available for all GitHub workflow files/jobs - persistent docker container lifecycle.
 
 CONS:
-- all operations in workflow steps require explicit access to docker container with docker-commands.
-- more developer errors prone and more complex debugging for workflow steps code.
-- docker lifecycle is not controlled automatically by GitHub network and must be manually managed in the code (stop & remove container).
+- All operations in workflow steps require explicit access to docker container with docker-commands.
+- More developer errors prone and more complex debugging for workflow steps code.
+- Docker lifecycle is not controlled automatically by GitHub network and must be manually managed in the code (stop & remove container).
 
 <br/>
 
