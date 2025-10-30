@@ -15,8 +15,23 @@
 12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
 ---
 
-The MCUmgr management subsystem allows remote management of Zephyr-enabled devices.  There are various tools and libraries 
-available which enable usage of MCUmgr functionality - the `mcumgr` CLI tool is used in this repository for tests with Bluetooth stack.
+The Simple Management Protocol (SMP) provided by MCUmgr allows remote management of Zephyr-enabled devices. The following management operations can be done with this subsystem:<br/>
+
+- Image management
+- File System management
+- OS management
+- Settings (config) management
+- Shell management
+- Statistic management
+- Zephyr management
+
+over the following transports:
+
+- Bluetooth Low Energy (LE)
+- Serial (UART)
+- UDP over IP
+
+There are various tools and libraries available which enable usage of MCUmgr functionality - the `mcumgr` CLI tool is used in this repository for tests with Bluetooth stack.
 
 - For more details about mcumbr-CLI tool see [mcumgr Command-line tool](https://docs.nordicsemi.com/bundle/ncs-3.0.2/page/nrf/app_dev/bootloaders_dfu/dfu_tools_mcumgr_cli.html) guide.
 - mcumgr tool repository can be found here: [mcumgr GitHub repo](https://github.com/apache/mynewt-mcumgr).
@@ -44,12 +59,7 @@ sudo ./mcumgr
 
 ## Usage of mcumbr CLI tool 
 
-`mcumgr` provides the tools for:<br/>
-- image management, 
-- file system management, 
-- OS management.
-
-The argument `--conntype` determines what interface is used for communication with the device (ble, serial etc.). The argument `--connstring` is used to specify the connection details of the device. All below examples are for "Bluetooth" interface used for communication with target device.
+The argument `--conntype` determines what interface/transport is used for communication with the device (ble, serial etc.). The argument `--connstring` is used to specify the connection details of the device. All below examples are for "Bluetooth" interface used for communication with target device.
 
 For handling with application <strong>image</strong> on target BT device the following commands are mostly used:
 
@@ -149,7 +159,112 @@ Images:
         hash: 37dbff844a55ac7b55d3f830e5e3d7f6c6aec5b4e5cb5b332bc855ace01aad64
 ```
 
-<br/> 
+<br/>
+
+## MCUmgr restrictions for BLE transport in GitHub workflow
+When using `mcumgr` tool in general GitHub workflow where the docker container is created within container: section (container-context) the usage of mcumgr commands fail with the following error for device `hci0`:
+
+```c
+[hci0]: can't init hci: can't create socket: address family not supported by protocol
+```
+<br/>
+
+HCI sockets are not exposed as "/dev/devicesmeans" that menas `/dev/hci0` does not exist as a device file — they are accessed via <strong>AF_BLUETOOTH</strong> sockets in the <strong>kernel</strong>! Docker container cannot access this BT kernel socket through doecker-run arguments (--volume or -v flag/option), it needs an access to Host runner newtork (`--network` option) to get kernel-sockets available for access. As noted in official Github workflow documentation, the `--network` option is not supported in `jobs.<job_id>.container.options` what is crucial for resolving above issue - see [Setting container resource options](https://docs.github.com/en/actions/how-tos/write-workflows/choose-where-workflows-run/run-jobs-in-a-container). 
+
+
+<br/>
+
+Container-context in workflow .yml file:
+
+```c
+build:
+    name: Build Zephyr workspace
+    needs: [process-image, process-runner]
+    runs-on: ${{ needs.process-runner.outputs.label }}
+    outputs:
+      testing: ${{ env.RUN_TESTS }}
+      board_target: ${{ env.BOARD_TARGET }}
+    defaults:
+      run:
+        working-directory: customer-application
+    container:                                              ---> Section to define source image and container attributes!
+      image: ${{ needs.process-image.outputs.image }}
+      options: >
+        --device=/dev/ttyUSB0 
+        --privileged  
+        -v /var/run/dbus:/var/run/dbus 
+        -v /run/dbus:/run/dbus 
+        -v /dev:/dev
+        -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket
+    env:
+      CMAKE_PREFIX_PATH: /opt/toolchains
+```
+<br/>
+
+PROS:
+- all operations in workflow steps are performed in docker container automatically without a need to run docker-commands.
+- simpe maintenance of steps-code because of close integration docker container - GitHub network instance.
+
+CONS:
+- restricted access to Host runner network through `--network` option.
+- create container & install zephyr workspace steps are not persistent and must be triggered in each GitHub workflow file repeatedly (time and resource consuming).
+
+<br/>
+
+Because for BLE tests with mcumgr tool the access to AF_BLUETOOTH socket family is crucial condition (required for tools like bluetoothd, bluetoothctl, and BLE communication), the low level container run within GitHub workflow is necessary (direct access to Host runner network through `--network` option) - the step-context approach:
+
+<br/>
+
+Step-context in workflow .yml file:
+
+```c
+steps:					
+    # Run docker container								
+    - name: Run Zephyr Docker container
+    shell: bash
+    run: |
+        docker run -d --name zephyr-env \
+            --user $(id -u):$(id -g) \
+            --device=/dev/ttyUSB0 \
+            --cgroupns=host \
+            --privileged \
+            --network host \                            ---> Direct access to Host network!
+            -v /var/run/dbus:/var/run/dbus \
+            -v /run/dbus:/run/dbus \
+            -v /dev:/dev \
+            -v /etc/udev/rules.d:/etc/udev/rules.d \
+            -v /sys/class/bluetooth:/sys/class/bluetooth \
+            -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
+            -e CMAKE_PREFIX_PATH=/opt/toolchains \
+            -w /workspace/customer-application \
+            ${{ needs.process-image.outputs.image }} \
+            sleep infinity
+```
+<br/>
+
+In contrast to container-context the step-context requires to call "docker exec \<container-name\>" command in each ongoing steps of the workflow to invoke required commands/actions. See example:
+
+```c
+# Install Python packages
+- name: Install Python extra packages
+shell: bash
+run: |
+    docker exec -u root zephyr-env \
+    bash -c "pip install -r requirements-extras.txt"
+```
+<br/>
+
+PROS:
+- full access to Host network and all resources through docker `--network` option.
+- wider maintenance options to control docker container, which is running out of GitHub network instance.
+- docker container can be triggered with flag `sleep infinity` and thus available for all GitHub workflow files/jobs - persistent docker container lifecycle.
+
+CONS:
+- all operations in workflow steps require explicit access to docker container with docker-commands.
+- more developer errors prone and more complex debugging for workflow steps code.
+- docker lifecycle is not controlled automatically by GitHub network and must be manually managed in the code (stop & remove container).
+
+<br/>
 
 ## Kconfig versus mcumgr tool
 The Kconfig file plays an important role in setup for `mcumgr` tool. Check all mandatory Kconfig symbols are present in sample.yaml or testcase.yaml files to get mcumgr-tool working properly!

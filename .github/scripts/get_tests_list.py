@@ -75,7 +75,7 @@ if __name__ == "__main__":
         # Get list of demanded tests
         test_list = [root for root, dirs, files in os.walk(target, topdown=True) for file in files if file == "prj.conf"]
         # Create demanded tests list in .txt file form
-        with open(f"{scope}_tests.txt", "w") as f:
+        with open(f"repo_tests.txt", "w") as f:
             for line in test_list:
                 f.write(f"-T {line}\n")
 
@@ -83,12 +83,12 @@ if __name__ == "__main__":
     if args.tests_scenario:
         scope, target = get_test_paths(args.tests_scenario)
         # Store option --testsuite-root to support test scenario filtering
-        with open("scenario_tests.txt", "w") as f:
+        with open("repo_tests.txt", "w") as f:
             f.write(f"--testsuite-root {target}\n")
 
     # Robot tests are triggered
     if args.tests_robot:
         scope, target = get_test_paths(args.tests_robot)
         # Robot tests
-        with open("robot_tests.txt", "w") as f:
+        with open("repo_tests.txt", "w") as f:
             f.write(f"--testlevelsplit {target}\n")

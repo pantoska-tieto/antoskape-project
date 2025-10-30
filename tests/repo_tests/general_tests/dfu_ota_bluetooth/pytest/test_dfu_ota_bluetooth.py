@@ -24,20 +24,13 @@ from tools import tools
 # General setup
 home_dir = os.path.expanduser("~")
 logger.info("Home dir for Zephyr app:", home_dir)
-mcumgr_path = Path(f"{os.path.expanduser("~")}/go/bin/mcumgr")
+MCUMGR_PATH = Path(f"{os.path.expanduser("~")}/go/bin/mcumgr")
 
-# TODO! Get the $USER mcumgr tool and pass its oath to test cases.
-# Currently the mcumgr path is hardcoded in the test case. It should be retrieved from 
-# the environment.
-if mcumgr_path.exists():
-    #"/github/home/go/bin/mcumgr" = str(mcumgr_path)
-    pass
-else:
-    raise FileNotFoundError(f"mcumgr tool not found on path: {mcumgr_path}")
-
+if not MCUMGR_PATH.exists():
+    raise FileNotFoundError(f"mcumgr tool not found on path: {MCUMGR_PATH}")
 
 PEER_NAME = "TietoBLE-OTA"  # BLE peer name to connect to
-BUILD_DIR = "build/smp_svr/zephyr/zephyr.signed.bin"
+BUILD_DIR = "build/dfu_ota_bluetooth/zephyr/zephyr.signed.bin"
 TEST_PATH = "tests/repo_tests/general_tests/dfu_ota_bluetooth"
 old_hash = ""               # image hash-tag 
 new_hash = ""               # image hash-tag 
@@ -59,7 +52,7 @@ def cmd_mcumgr(cmd):
 def test_old_image_list(dut: DeviceAdapter):
     # Check image list on board
     global old_hash
-    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    _out, _err, _ret = tools.run_cmd([MCUMGR_PATH, 
                                       "--conntype", "ble", "--connstring", 
                                       f"peer_name={PEER_NAME}", 
                                       "image", 
@@ -90,7 +83,7 @@ def test_build_new_image():
 @pytest.mark.order(3)
 def test_upload_new_image():
     # Upload new test image to device
-    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    _out, _err, _ret = tools.run_cmd([MCUMGR_PATH, 
                                       "--conntype", 
                                       "ble", 
                                       "--connstring", 
@@ -108,7 +101,7 @@ def test_upload_new_image():
 def test_new_image_list():
     # Check image list on board - existing + new images
     global new_hash
-    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    _out, _err, _ret = tools.run_cmd([MCUMGR_PATH, 
                                       "--conntype", 
                                       "ble", 
                                       "--connstring", 
@@ -126,7 +119,7 @@ def test_new_image_list():
 @pytest.mark.order(5)
 def test_set_pending():
     # Update status to 'pending' for new test image to be installed in next 'reset'
-    tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    tools.run_cmd([MCUMGR_PATH, 
                    "--conntype", 
                    "ble", 
                    "--connstring", 
@@ -134,7 +127,7 @@ def test_set_pending():
                    "image", 
                    "test", 
                    new_hash])
-    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    _out, _err, _ret = tools.run_cmd([MCUMGR_PATH, 
                                       "--conntype", 
                                       "ble", 
                                       "--connstring", 
@@ -149,7 +142,7 @@ def test_set_pending():
 @pytest.mark.order(6)
 def test_reset_fw():
     # Reset board to upgrade FW to new test image
-    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    _out, _err, _ret = tools.run_cmd([MCUMGR_PATH, 
                                       "--conntype", 
                                       "ble", 
                                       "--connstring", 
@@ -163,7 +156,7 @@ def test_reset_fw():
 @pytest.mark.order(7)
 def test_dfu():
     # Check the new image (new FW) after boot in active and confirmed
-    _out, _err, _ret = tools.run_cmd(["/github/home/go/bin/mcumgr", 
+    _out, _err, _ret = tools.run_cmd([MCUMGR_PATH, 
                                       "--conntype", 
                                       "ble", 
                                       "--connstring", 

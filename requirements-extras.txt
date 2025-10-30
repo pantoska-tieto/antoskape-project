@@ -1,6 +1,10 @@
 # EXTRAS: needed for testing and support purposes
 # These are installed with: pip install -r requirements-extras.txt
 
+# General
+PyYAML
+requests
+Jinja2
 # Async test cases
 pytest-asyncio
 # pytest fixture
@@ -19,3 +23,24 @@ pytz
 rpi-lgpio
 # PWM hardware measurements
 gpiod
+# Others - comparison to local zephyr install
+bumble
+dbus-fast
+lgpio
+multidict
+prompt_toolkit
+propcache
+pydantic
+pydantic_core
+pyee
+pyserial
+pyserial-asyncio
+readchar
+RPi.GPIO
+shellingham
+smp
+smpclient
+typer
+typing-inspection
+websockets
+yarl

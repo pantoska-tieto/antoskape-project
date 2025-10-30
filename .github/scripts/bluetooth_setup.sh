@@ -9,10 +9,10 @@ echo "Checking dbus-daemon status..."
 if ! dbus-send --system --type=method_call --dest=org.freedesktop.DBus \
     /org/freedesktop/DBus org.freedesktop.DBus.ListNames &> /dev/null; then
     echo "dbus-daemon not responding, attempting restart"
-    sudo pkill dbus-daemon || true
+    pkill dbus-daemon || true
     sleep 1
-    sudo rm -f /run/dbus/pid || echo "Could not remove /run/dbus/pid, might be locked"
-    sudo dbus-daemon --system --fork
+    rm -f /run/dbus/pid || echo "Could not remove /run/dbus/pid, might be locked"
+    dbus-daemon --system --fork
 fi
 
 echo "Waiting for dbus-daemon to become responsive..."
@@ -49,7 +49,7 @@ ps aux | grep bluetoothd
 
 # Check for BT daemon status
 echo "bluetoothctl show..."
-sudo bluetoothctl show
+bluetoothctl show
 
 # Check for Linux BlueZ status
 echo "Check bluetoothds..."
@@ -58,6 +58,6 @@ busctl tree org.bluez
 # Show HCI status - not working and causing error:
 # can't init hci: can't create socket: address family not supported by protocol
 # No access to Host BT HCI stack!
-# echo "Starting hciconfig command..."
-# sudo hciconfig
-echo "Mapping udev finished and Device udev-rules saved to $OUTPUT_FILE"
+echo "Starting hciconfig command..."
+hciconfig
+echo "Bluetooth stack setup completed."
