@@ -246,7 +246,7 @@ jobs:
             echo 'Root github folder: ls -la /'
             ls -la /
             echo 'User home folder: ls -la ~'
-            echo ~
+            echo ~"
 
       # Example for custom application build
       - name: Build app for ${{ env.BOARD_TARGET }}
