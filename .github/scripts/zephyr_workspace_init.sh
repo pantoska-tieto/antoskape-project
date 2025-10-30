@@ -4,8 +4,7 @@ set -e
 export HOME=/tmp
 cd /workspace/customer-application
 git config --global --add safe.directory "/workspace/zephyr"
-git config --global --add safe.directory "/workspace/modules/lib/uoscore-uedhoc"
-git config --global --add safe.directory "/workspace/modules/lib/zcbor"
+git config --global --add safe.directory "/workspace/modules"
 echo "Initializing Zephyr environment..."
 pwd
 echo "Current github workspace:"

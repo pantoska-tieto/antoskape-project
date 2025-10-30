@@ -224,33 +224,29 @@ jobs:
             "apt-get update && apt-get install -y \
             iperf sysbench fio"
 
-      # Create Python virtual env and install required packages
+      # Install Python packages
       - name: Install Python extra packages
         shell: bash
         run: |
             docker exec -u root zephyr-env \
             bash -c "pip install -r requirements-extras.txt"
 
-      # Debud zephyr env after intiation
+      # Verify zephyr env after installation
       - name: Check Zephyr workspace after installation
         shell: bash
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "echo 'pwd'
-            echo 'Checking out Zephyr env...'
+            pwd
+            echo 'Checking out Zephyr env:'
             echo 'Current github folder:'
             ls -la
             echo 'Parent github folder: ls -la ..'
             ls -la ..
-            echo 'Grand Parent github folder: ls -la ../..'
-            ls -la ../..
             echo 'Root github folder: ls -la /'
             ls -la /
             echo 'User home folder: ls -la ~'
-            ls -la ~
-            echo 'Check for pyserial python module installation...'
-            grep -r 'pyserial' $(python -c 'import site; print(site.getsitepackages()[0])')"
-
+            echo ~
 
       # Example for custom application build
       - name: Build app for ${{ env.BOARD_TARGET }}
