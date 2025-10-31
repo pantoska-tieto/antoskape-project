@@ -71,34 +71,6 @@ jobs:
               exit 1
             fi
 
-      # Install lib extras for testing
-      - name: Install lib extras
-        shell: bash
-        run: |
-            docker exec -u root zephyr-env bash -c \
-            "apt-get update && apt-get install -y \
-            iperf sysbench fio curl udev python3-dev libgpiod-dev gpiod golang-go \
-            bluez bluez-tools libbluetooth-dev libdbus-1-dev dbus"
-
-      # Setup Bluetooth stack
-      - name: Setup for BT stack
-        shell: bash
-        run: |
-            docker exec -u root zephyr-env \
-            bash -c "chmod +x .github/scripts/bluetooth_setup.sh && \
-            .github/scripts/bluetooth_setup.sh"
-
-      # Setup for tools
-      - name: Setup for test tools
-        shell: bash
-        run: |
-            docker exec -u $(id -u):$(id -g) zephyr-env \
-            bash -c "go install github.com/apache/mynewt-mcumgr-cli/mcumgr@latest
-            echo 'Show mcumgr installation:'
-            ls -la ~/go/bin
-            sudo setcap cap_net_raw,cap_net_admin+eip ~/go/bin/mcumgr
-            getcap ~/go/bin/mcumgr || echo 'No mcumgr capabilities set'"
-
       #  Review of variables from Build workflow
       - name: Show variables from caller workflow
         shell: bash
