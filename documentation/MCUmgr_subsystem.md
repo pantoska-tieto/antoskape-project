@@ -161,7 +161,7 @@ Images:
 
 <br/>
 
-## MCUmgr restrictions for BLE transport in GitHub workflow
+## GitHub container and step-context (MCUmgr restrictions for BLE transport)
 When using `mcumgr` tool in general GitHub workflow where the docker container is created within container: section (container-context) the usage of mcumgr commands fail with the following error for device `hci0`:
 
 ```c

@@ -25,23 +25,29 @@ Tests are stored in multiple directories based on <br/>
 
 <table>
     <thead>
-      <th><strong>TEST PATH</strong></th>
-      <th><strong>REQUIRED RESOURCES</strong></th>
-      <th><strong>PURPOSE</strong></th></tr>
+      <th><strong>TEST FOLDER</strong></th>
+      <th><strong>DESCRIPTION</strong></th>
     </thead>
       <tbody>
         <tr>
-        <td>tests/repo_tests/power_cycle_boot</td>
-        <td>Raspberry Pi 5, GPIO 25</strong></td>
-        <td>Control power off/on relay.</strong></td>
+        <td>tests/manual_tests/</td>
+        <td>Test to run manually (requiring test-depend. setup or tools to be initated, specific test commands etc.)</strong></td>
         </tr>
-        <tr><td>tests/repo_tests/pwm_ledc</td>
-        <td>Raspberry Pi 5, GPIO 24</td>
-        <td>Measure PWM signal - frequency and duty cycle.</strong></td>
+        <tr><td>tests/repo_tests/general_tests/</td>
+        <td>Automated tests. Harware and simulation tests for generic device functionalities.</td>
         </tr>
-        <tr><td>tests/repo_tests/gpio_toggle_pytest</td>
-        <td>ESP32 S3 devkitc, GPIO 9 (Device Under Test)</td>
-        <td>Verify tested GPIO pin status after toggling.</strong></td>
+        <tr><td>tests/repo_tests/shell_tests/</td>
+        <td>Automated tests. Tests using UART Shell interface to test generic device functionalities.</td>
+        </tr>
+        <tr><td>tests/robot_tests/</td>
+        <td>Test to run with Robot Framework. Not used in this project.</td>
+        </tr>
+        <tr><td>tests/unit_tests/dut/</td>
+        <td>Automated tests. Unit tests with Ztest/Pytest framwork for Device Under Test (DUT) features/modules.</td>
+        </tr>
+        </tr>
+        <tr><td>tests/unit_tests/host/</td>
+        <td>Automated tests. Unit tests with Ztest framwork for HOST system features/modules.</td>
         </tr>
       </tbody>
 </table>
