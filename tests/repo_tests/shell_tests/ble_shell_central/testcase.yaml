@@ -1,0 +1,17 @@
+tests:
+  bluetooth.central.console:
+    platform_allow:
+      - esp32s3_devkitc/esp32s3/procpu
+      - esp32c3_devkitm
+    harness: console
+    harness_config:
+      type: one_line
+      regex:
+        - ".*Device found: .* Name: PA-iPhone.*"
+  bluetooth.central.hardware:
+    harness: pytest
+    extra_args:
+      - CONFIG_BUILD_ONLY_NO_BLOBS=n
+    platform_allow:
+      - esp32s3_devkitc/esp32s3/procpu
+      - esp32c3_devkitm

@@ -29,17 +29,22 @@ For complete list of all tests in this repository follow this link: <a href="doc
     </thead>
       <tbody>
         <tr>
-        <td>tests/repo_tests/power_cycle_boot</td>
-        <td>Raspberry Pi 5, GPIO 25</td>
+        <td>tests/repo_tests/general_tests/power_cycle_boot</td>
+        <td>Raspberry Pi 5, GPIO 25.</td>
         <td>Control power off/on relay.</td>
         </tr>
-        <tr><td>tests/repo_tests/pwm_ledc</td>
-        <td>Raspberry Pi 5, GPIO 24</td>
+        <tr><td>tests/repo_tests/general_tests/pwm_ledc</td>
+        <td>Raspberry Pi 5, GPIO 24.</td>
         <td>Measure PWM signal - frequency and duty cycle.</td>
         </tr>
-        <tr><td>tests/repo_tests/gpio_toggle_pytest</td>
-        <td>ESP32 S3 devkitc, GPIO 9 (Device Under Test)</td>
+        <tr><td>tests/repo_tests/shell_tests/gpio_toggle_pytest</td>
+        <td>ESP32 S3 devkitc, GPIO 9 (Device Under Test).</td>
         <td>Verify tested GPIO pin status after toggling.</td>
+        </tr>
+        <tr><td>tests/repo_tests/shell_tests/ble_shell_central</td>
+        <td>Second compatible BLE board or BLE enabled device that can act as a Peripheral - e.g. iPhone with <strong>nRF Connect</strong> application.<br/>
+        (https://apps.apple.com/us/app/nrf-connect-for-mobile/id1054362403)</td>
+        <td>Create new Peripheral BT device to be connected from DUT.</td>
         </tr>
       </tbody>
 </table>
