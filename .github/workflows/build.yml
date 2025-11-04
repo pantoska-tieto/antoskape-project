@@ -143,6 +143,7 @@ jobs:
         run: |          
            if [ "$(docker ps -a --format '{{.Names}}' | grep -w zephyr-env)" ]; then
              echo "Removing existing zephyr-env container..."
+             docker stop -f zephyr-env
              docker rm -f zephyr-env
            else
              echo "No existing zephyr-env container found."
