@@ -54,6 +54,7 @@ In Bluetooth Low Energy (BLE), the Central device is one of the two primary role
         </tr>
         <tr><td>Peripheral</td>
         <td>Advertises its presence and waits for a Central to connect to it.</td>
+        </tr>
 </table>
 
 <br/>
