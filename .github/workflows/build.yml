@@ -136,6 +136,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: customer-application
+
+      # Clean up existing zephyr-env container if present
+      - name: Cleanup existing zephyr-env container if present
+        shell: bash
+        run: |
+          if docker ps -a --format '{{.Names}}' | grep -q '^zephyr-env$'; then
+            echo "Removing existing zephyr-env container..."
+            docker rm -f zephyr-env
+          else
+            echo "No existing zephyr-env container found."
+          fi
       
       # Run docker container
       - name: Run Zephyr Docker container
