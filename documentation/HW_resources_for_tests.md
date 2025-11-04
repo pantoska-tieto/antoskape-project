@@ -13,6 +13,7 @@
 10. [Tests user guide](Tests_user_guide.md)
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
 12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
+13. [BLE terms, roles and definitions](BLE_terms_definitions.md)
 ---
 
 Multiple test case executed on real board hardware are utilizing an external HW resources for verification the physical signals returned from the tested boards. The following table lists the mandatory HW resources for tests. In case these resources are not provided and correctly connected to test bench, the respective test case will fail.

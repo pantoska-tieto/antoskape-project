@@ -13,6 +13,7 @@
 10. [Tests user guide](Tests_user_guide.md)
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
 12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
+13. [BLE terms, roles and definitions](BLE_terms_definitions.md)
 ---
 
 A **workflow** is a configurable automated process that will run one or more jobs. Workflows are defined by a YAML file checked in to your repository and will run when triggered by an event in your repository, or they can be triggered manually, or at a defined schedule.

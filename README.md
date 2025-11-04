@@ -13,6 +13,7 @@
 10. [Tests user guide](documentation/Tests_user_guide.md)
 11. [MCUmgr subsystem for testing purposes](documentation/MCUmgr_subsystem_for_testing_purpose.md)
 12. [Simulation/emulation principles in testing](documentation/Simulation_emulation_principles.md)
+13. [BLE terms, roles and definitions](documentation/BLE_terms_definitions.md)
 ---
 
 This repo is representing **custom Zephyr RTOS application** for building and testing custom testcases with Pytest framework. It is using structure based on basic Zephyr example application [https://github.com/zephyrproject-rtos/example-application](https://github.com/zephyrproject-rtos/example-application).

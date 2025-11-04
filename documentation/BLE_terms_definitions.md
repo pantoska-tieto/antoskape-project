@@ -8,33 +8,15 @@
 5. [HW resources for tests](HW_resources_for_tests.md)
 6. [Kconfig tester guide](Kconfig_tester_guide.md)
 7. [Raspi runner installation](Raspi_runner_installation.md)
-8. Shell tests with native_sim [this page]
+8. [Shell tests with native_sim](Shell_tests_with_native_sim.md)
 9. [Tests list](Tests_list.md)
 10. [Tests user guide](Tests_user_guide.md)
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
 12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
-13. [BLE terms, roles and definitions](BLE_terms_definitions.md)
+13. BLE terms, roles and definitions [this page]
 ---
 
-Error in `west twister...` command run if pytest expects a shell prompt:<br/>
-
-```c
-dut = NativeSimulatorAdapter()
-@pytest.fixture(scope=determine_scope)
-def shell(dut: DeviceAdapter) -> Shell:
-"""Return ready to use shell interface"""
-shell = Shell(dut, timeout=20.0)
-if prompt := find_in_config(Path(dut.device_config.app_build_dir) / 'zephyr' / '.config',
-'CONFIG_SHELL_PROMPT_UART'):
-shell.prompt = prompt
-logger.info('Wait for prompt')
-if not shell.wait_for_prompt():
->           pytest.fail('Prompt not found')
-E           Failed: Prompt not found
-```
-
-<br/>
-
+To have an effective custom implementation, it is important to understand how a BLE connection works, what roles are played by the devices involved, and how data is transferred from one device to the other over the air. Many terms are used, they are usually not interchangeable, and mean different things: central, peripheral, client, server, advertise, scan, read, write, notify, and indicate. Understanding the terminology will make it easier to describe and build your BLE application.
 ## Root cause of “prompt not found” with native_sim
 
 - For native_sim, the pytest plugin attaches to the simulator process’ stdin/stdout (device type “native”). If your shell backend is UART-based, the prompt is printed on a pseudo-terminal (/dev/pts/N), not on the process stdout. The plugin won’t see it and times out waiting for the prompt.
