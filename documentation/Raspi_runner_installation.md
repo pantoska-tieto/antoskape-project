@@ -13,6 +13,7 @@
 10. [Tests user guide](Tests_user_guide.md)
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
 12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
+13. [BLE terms, roles and definitions](BLE_terms_definitions.md)
 ---
 
 Runners are the machines that execute jobs in a GitHub Actions workflow. The standalone GitHub self-hosted runner on Raspberry Pi5 (Raspi5) is used as default in this project for CI/CD workflows.

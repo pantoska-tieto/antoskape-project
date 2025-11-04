@@ -13,6 +13,7 @@
 10. Tests user guide [this page]
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
 12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
+13. [BLE terms, roles and definitions](BLE_terms_definitions.md)
 ---
 
 This document will guide you through the process of adding and setting up Zephyr tests in the application. All application tests are stored under the `tests/` directory. Each test suite is a folder containing test cases. Each test case is a file with a `.py` or `.c` extension (based on test framework used for the test suite - Pytest, Ztest).

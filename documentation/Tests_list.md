@@ -13,6 +13,7 @@
 10. [Tests user guide](Tests_user_guide.md)
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
 12. [Simulation/emulation principles in testing](Simulation_emulation_principles.md)
+13. [BLE terms, roles and definitions](BLE_terms_definitions.md)
 ---
 
 
@@ -161,6 +162,11 @@ Tests are stored in multiple directories based on <br/>
         <td>10</td>
         <td><a href="../tests/repo_tests/shell_tests/spi_shell_mocked/TESTINFO.md">Test for SPI write & read commands with UART shell prompt on emulated SPI bus.</a></td>
         <td>[PYTEST] Test to write and read register values in SPI bus through  the custom shell commands with using emulated SPI bus (derived from Zephyr emulation module for Bosch BMS160 sensor). The verification through UART serial port.</td>
+        </tr>
+        <tr>
+        <td>11</td>
+        <td><a href="../tests/repo_tests/shell_tests/ble_shell_central/TESTINFO.md">Test for basic Bluetooth LE Central role functionality.</a></td>
+        <td>[PYTEST] Test to verify basic Bluetooth LE Central role functionality by scanning for other Bluetooth LE devices and establishing a connection to the ones with a strong enough signal and specific advertising name.</td>
         </tr>
         <tr>
         <td  colspan="3"><strong>UNIT TESTS</strong></td>

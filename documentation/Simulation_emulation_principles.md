@@ -13,6 +13,7 @@
 10. [Tests user guide](Tests_user_guide.md)
 11. [MCUmgr subsystem for testing purposes](MCUmgr_subsystem_for_testing_purpose.md)
 12. Simulation/emulation principles in testing [this page]
+13. [BLE terms, roles and definitions](BLE_terms_definitions.md)
 ---
 
 Sensor emulator APIs are a general feature in Zephyr RTOS, especially for unit testing and driver validation. Zephyr provides a structured way to emulate hardware devices like SPI, I2C, GPIO, and others using its device emulation framework.<br/>
