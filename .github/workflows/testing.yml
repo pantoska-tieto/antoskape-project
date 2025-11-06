@@ -55,12 +55,7 @@ jobs:
     defaults:
       run:
         working-directory: customer-application
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          path: customer-application
-      
+    steps:      
       # Check docker container is existing and available
       - name: Check Docker container is available
         shell: bash
