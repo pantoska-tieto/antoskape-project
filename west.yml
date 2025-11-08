@@ -32,3 +32,15 @@ manifest:
           - cmsis      # required by the ARM port
           - hal_nordic # required by the custom_plank board (Nordic based)
           - hal_espressif # required by ESP32 board
+
+    - name: nrf
+      path: nrf
+      revision: main
+      url: https://github.com/nrfconnect/sdk-nrf
+      import:
+        - true
+
+    - name: nrfxlib
+      path: nrfxlib
+      revision: main
+      url: https://github.com/nrfconnect/sdk-nrfxlib
