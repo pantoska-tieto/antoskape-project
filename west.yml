@@ -25,20 +25,9 @@ manifest:
       url: https://github.com/zephyrproject-rtos/zephyr
       revision: main
       import:
-        - true
         # By using name-allowlist we can clone only the modules that are
         # strictly needed by the application.
         - name-allowlist:
           - cmsis      # required by the ARM port
           - hal_nordic # required by the custom_plank board (Nordic based)
           - hal_espressif # required by ESP32 board
-
-    - name: nrf
-      revision: main
-      url: https://github.com/nrfconnect/sdk-nrf
-      import:
-        - true
-
-    - name: nrfxlib
-      revision: main
-      url: https://github.com/nrfconnect/sdk-nrfxlib
