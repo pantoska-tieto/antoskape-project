@@ -72,7 +72,7 @@ on:
     
 env:
   RUNNER_LABEL: raspberrypi5-production
-  PLATFORM: "Nordic"
+  PLATFORM: Nordic
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
   TESTS_TARGET: app/repo/shell
   TEST_TAG: N/A
