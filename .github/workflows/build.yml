@@ -40,11 +40,6 @@ on:
         required: false
         default: ""
         type: string
-      pytest_args:
-        description: Arguments to the pytest subprocess (extend YAML config)
-        required: false
-        default: ""
-        type: string
       test_scenario:
         description: Test suite scenario to run
         required: false
