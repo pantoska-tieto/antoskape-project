@@ -27,10 +27,6 @@ on:
         description: Test TAGs to filter tests
         required: false
         type: string
-      pytest_args:
-        description: Arguments to the pytest subprocess (extend YAML config)
-        required: false
-        type: string
       test_scenario:
         description: Test suite scenario to run
         required: false
@@ -83,7 +79,6 @@ jobs:
             echo "tests_target: ${{ inputs.tests_target }}"
             echo "test_scenario: ${{ inputs.test_scenario }}"
             echo "test_tag: ${{ inputs.test_tag }}"
-            echo "pytest_args: ${{ inputs.pytest_args }}"
             echo "test_hardware: ${{ inputs.test_hardware }}"'
             
       # Generate list of all tests in application in txt-format
@@ -143,7 +138,6 @@ jobs:
             bash -c "python .github/scripts/run_tests.py --platform ${{ inputs.board_target }} \
             --device_serial udev_mapping.txt \
             --tag ${{ inputs.test_tag }} \
-            --pytest_args ${{ inputs.pytest_args }} \
             --scenario ${{ inputs.test_scenario }} \
             --test_list repo_tests.txt \
             --target ${{ inputs.tests_target }} \
@@ -298,11 +292,11 @@ jobs:
             .github/scripts/remove_udev_mapping_serial_ports.sh"
 
       # Stop and remove docker container
-      - name: Stop and remove docker container
-        shell: bash
-        run: |
-            docker stop zephyr-env || echo "Docker container zephyr-env not running"
-            docker rm zephyr-env || echo "Docker container zephyr-env already removed"
+      #- name: Stop and remove docker container
+      #  shell: bash
+      #  run: |
+      #      docker stop zephyr-env || echo "Docker container zephyr-env not running"
+      #      docker rm zephyr-env || echo "Docker container zephyr-env already removed"
 
   publish_test_summaries:
     name: Publish Test Summaries

@@ -51,12 +51,6 @@ def define_args():
         help="Test tags to filter tests",
     )
     parser.add_argument(
-        "--pytest_args",
-        required=False,
-        default=None,
-        help="Arguments to the pytest subprocess",
-    )
-    parser.add_argument(
         "--scenario",
         required=False,
         default=None,
@@ -113,8 +107,6 @@ if __name__ == "__main__":
 
     if args.tag and (args.tag != "N/A" and args.tag != ""):
         arguments += f" --tag {args.tag} --force-tags"
-    if args.pytest_args and (args.pytest_args != "N/A" and args.pytest_args != ""):
-        arguments += f" --pytest-args {args.pytest_args}"
     if args.scenario and (args.scenario != "N/A" and args.scenario != ""):
         arguments += f" --scenario {args.scenario}"
 

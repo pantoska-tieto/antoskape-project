@@ -62,6 +62,7 @@ on:
         options:
           - "app/repo"
           - "app/repo/general"
+          - "app/repo/project"
           - "app/repo/shell"
           - "app/unit/dut"
           - "app/unit/host"
@@ -128,7 +129,6 @@ jobs:
       platform: ${{ env.PLATFORM }}
       board_target: ${{ env.BOARD_TARGET }}
       test_tag: ${{ env.TEST_TAG }}
-      pytest_args: ${{ env.PYTEST_ARGS }}
       test_scenario: ${{ env.TEST_SCENARIO }}
       tests_target: ${{ env.TESTS_TARGET }}
       integration_tests: ${{ env.INTEGRATION_TESTS }}
@@ -230,7 +230,6 @@ jobs:
           INPUT_BOARD_TARGET: ${{ github.event.inputs.board_target }}
           INPUT_TESTS_TARGET: ${{ github.event.inputs.tests_target }}
           INPUT_TEST_TAG: ${{ github.event.inputs.test_tag }}
-          INPUT_PYTEST_ARGS: ${{ github.event.inputs.pytest_args }}
           INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
           INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
           INPUT_TEST_HARDWARE: ${{ github.event.inputs.test_hardware }}
@@ -316,7 +315,6 @@ jobs:
       platform: ${{ needs.build.outputs.platform }}
       board_target: ${{ needs.build.outputs.board_target }}
       test_tag: ${{ needs.build.outputs.test_tag }}
-      pytest_args: ${{ needs.build.outputs.pytest_args }}
       test_scenario: ${{ needs.build.outputs.test_scenario }}
       tests_target: ${{ needs.build.outputs.tests_target }}
       integration_tests: ${{ needs.build.outputs.integration_tests }}
@@ -324,10 +322,10 @@ jobs:
       testing: ${{ needs.build.outputs.testing }}
     secrets: inherit
 
-  start_testing:
+  start-testing:
     name: Trigger test framework
     if: ${{ needs.build.outputs.testing == 'Build with testing' }}
-    needs: [process-runner, process-image, build] 
+    needs: [process-runner, process-image, build, call-nordic] 
     uses: ./.github/workflows/testing.yml
     with:
       docker_image: ${{ needs.process-image.outputs.image }}
@@ -335,7 +333,6 @@ jobs:
       platform: ${{ needs.build.outputs.platform }}
       board_target: ${{ needs.build.outputs.board_target }}
       test_tag: ${{ needs.build.outputs.test_tag }}
-      pytest_args: ${{ needs.build.outputs.pytest_args }}
       test_scenario: ${{ needs.build.outputs.test_scenario }}
       tests_target: ${{ needs.build.outputs.tests_target }}
       integration_tests: ${{ needs.build.outputs.integration_tests }}

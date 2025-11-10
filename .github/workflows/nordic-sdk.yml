@@ -27,10 +27,6 @@ on:
         description: Test TAGs to filter tests
         required: false
         type: string
-      pytest_args:
-        description: Arguments to the pytest subprocess (extend YAML config)
-        required: false
-        type: string
       test_scenario:
         description: Test suite scenario to run
         required: false
@@ -168,7 +164,6 @@ jobs:
       platform: ${{ inputs.platform }}
       board_target: ${{ inputs.board_target }}
       test_tag: ${{ inputs.tests_target }}
-      pytest_args: ${{ inputs.pytest_args }}
       test_scenario: ${{ inputs.test_scenario }}
       tests_target: ${{ inputs.tests_target }}
       integration_tests: ${{ inputs.integration_tests }}
