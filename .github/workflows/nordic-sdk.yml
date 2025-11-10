@@ -3,46 +3,9 @@ name: Install nRF Connect SDK (NCS)
 on:
   workflow_call:
     inputs:
-      docker_image:
-        description: Docker image to use in tests
-        required: true
-        type: string
       runner_label:
         description: Label of the runner specified in Build workflow
         required: true
-        type: string
-      platform:
-        description: Target boards platform
-        required: true
-        type: string
-      board_target:
-        description: Target board for the build
-        required: true
-        type: string
-      test_hardware:
-        description: Tests target
-        required: true
-        type: string
-      test_tag:
-        description: Test TAGs to filter tests
-        required: false
-        type: string
-      test_scenario:
-        description: Test suite scenario to run
-        required: false
-        type: string
-      tests_target:
-        description: Tests scope to run
-        required: true
-        default: app/repo/shell
-        type: string
-      integration_tests:
-        description: Condition to run integration tests only
-        required: false
-        type: string
-      testing:
-        description: Condition to run testing workflow file
-        required: false
         type: string
 
 jobs:  
@@ -153,19 +116,3 @@ jobs:
               else
                 echo 'Skipping flash: No valid build output found.'
               fi"
-
-  start_testing:
-    name: Trigger test framework
-    if: ${{ inputs.testing == 'Build with testing' }}
-    uses: ./.github/workflows/testing.yml
-    with:
-      docker_image: ${{ inputs.docker_image }}      
-      runner_label: ${{ inputs.runner_label }}
-      platform: ${{ inputs.platform }}
-      board_target: ${{ inputs.board_target }}
-      test_tag: ${{ inputs.tests_target }}
-      test_scenario: ${{ inputs.test_scenario }}
-      tests_target: ${{ inputs.tests_target }}
-      integration_tests: ${{ inputs.integration_tests }}
-      test_hardware: ${{ inputs.test_hardware }}
-    secrets: inherit

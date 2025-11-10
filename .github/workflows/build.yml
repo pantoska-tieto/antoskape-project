@@ -289,6 +289,8 @@ jobs:
       # Example for custom application build
       - name: Build app for ${{ env.BOARD_TARGET }}
         shell: bash
+        # Only for Espressif platforms
+        if : ${{ inputs.platform == 'Espressif' }} 
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
             west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky"
@@ -296,6 +298,8 @@ jobs:
       # Conditional flash - for 'native_siFlm' board case
       - name: Flash app if build file is valid
         shell: bash
+        # Only for Espressif platforms
+        if : ${{ inputs.platform == 'Espressif' }} 
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
               if [ -f build/zephyr/zephyr.bin ]; then
@@ -310,16 +314,7 @@ jobs:
     if: ${{ needs.build.outputs.platform == 'Nordic nRF' }}
     uses: ./.github/workflows/nordic-sdk.yml
     with:
-      docker_image: ${{ needs.process-image.outputs.image }}
       runner_label: ${{ needs.process-runner.outputs.label }}
-      platform: ${{ needs.build.outputs.platform }}
-      board_target: ${{ needs.build.outputs.board_target }}
-      test_tag: ${{ needs.build.outputs.test_tag }}
-      test_scenario: ${{ needs.build.outputs.test_scenario }}
-      tests_target: ${{ needs.build.outputs.tests_target }}
-      integration_tests: ${{ needs.build.outputs.integration_tests }}
-      test_hardware: ${{ needs.build.outputs.test_hardware }}
-      testing: ${{ needs.build.outputs.testing }}
     secrets: inherit
 
   start-testing:
