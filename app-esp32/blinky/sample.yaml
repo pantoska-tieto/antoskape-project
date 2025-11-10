@@ -2,7 +2,10 @@ sample:
   name: Blinky Sample
 tests:
   sample.basic.blinky:
-    platform_allow: esp32s3_devkitc/esp32s3/procpu
+    platform_allow:
+      - esp32s3_devkitc/esp32s3/procpu
+      - esp32c3_devkitm
+      - nrf5340dk/nrf5340/cpuapp
     tags:
       - LED
       - gpio
@@ -13,3 +16,4 @@ tests:
       - native_sim/native/64
       - esp32s3_devkitc/esp32s3/procpu
       - esp32c3_devkitm
+      - nrf5340dk/nrf5340/cpuapp

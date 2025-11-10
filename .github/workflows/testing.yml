@@ -11,6 +11,10 @@ on:
         description: Label of the runner specified in Build workflow
         required: true
         type: string
+      platform:
+        description: Target boards platform
+        required: true
+        type: string
       board_target:
         description: Target board for the build
         required: true

@@ -12,7 +12,7 @@ if [[ "$TARGET" == esp32* ]]; then
     PORT="/dev/ttyUSB"
 elif [[ "$TARGET" == nrf* ]]; then
     VENDOR="nrf"
-    PORT="/dev/ttyACM"
+    PORT="/dev/ttyACM1"
 elif [[ "$TARGET" == native_sim* || "$TARGET" == qemu* ]]; then
     echo "Skipped searching for udevadm target for simulation: $TARGET"
     exit 0
@@ -49,8 +49,10 @@ for DEV in ${PORT}*; do
     echo "udevadm: reload-rules..."
     sudo udevadm control --reload-rules || echo "Error for udevadm reload-rules."
 	sudo udevadm trigger || echo "Error for udevadm reload-rules."
-    echo "Show symlinks for serial ports..."
+    echo "Show symlinks for USB serial ports..."
     ls -la /dev/ | grep USB
+    echo "Show symlinks for ACM serial ports..."
+    ls -la /dev/ | grep ACM
     # Increment for further serial port
     ((serial_counter++))
     sleep 2

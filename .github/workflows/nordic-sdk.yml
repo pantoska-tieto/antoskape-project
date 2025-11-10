@@ -1,0 +1,176 @@
+name: Install nRF Connect SDK (NCS)
+
+on:
+  workflow_call:
+    inputs:
+      docker_image:
+        description: Docker image to use in tests
+        required: true
+        type: string
+      runner_label:
+        description: Label of the runner specified in Build workflow
+        required: true
+        type: string
+      platform:
+        description: Target boards platform
+        required: true
+        type: string
+      board_target:
+        description: Target board for the build
+        required: true
+        type: string
+      test_hardware:
+        description: Tests target
+        required: true
+        type: string
+      test_tag:
+        description: Test TAGs to filter tests
+        required: false
+        type: string
+      pytest_args:
+        description: Arguments to the pytest subprocess (extend YAML config)
+        required: false
+        type: string
+      test_scenario:
+        description: Test suite scenario to run
+        required: false
+        type: string
+      tests_target:
+        description: Tests scope to run
+        required: true
+        default: app/repo/shell
+        type: string
+      integration_tests:
+        description: Condition to run integration tests only
+        required: false
+        type: string
+      testing:
+        description: Condition to run testing workflow file
+        required: false
+        type: string
+
+jobs:  
+  install-ncs:
+    name: Install nRF Connect SDK (NCS)
+    runs-on: ${{ inputs.runner_label }}
+    defaults:
+      run:
+        working-directory: /workspace
+    steps:
+      # Install nRF Command Line Tools (AMR64)
+      - name: Download nRF Command Line Tools for ARM64
+        if: ${{ runner.arch == 'ARM64' }} && steps.nrf-cmd-arm64.outputs.cache-hit != 'true'
+        run: |
+            docker exec -u $(id -u):$(id -g) zephyr-env \
+            bash -c "curl ${{ env.NRF_CMDLINE_ARM64_URL }} \
+            -o nrf-command-line-tools_10.24.2_arm64.deb"
+        working-directory: /tmp
+        env:
+          NRF_CMDLINE_ARM64_URL: https://nsscprodmedia.blob.core.windows.net/prod/software-and-other-downloads/desktop-software/nrf-command-line-tools/sw/versions-10-x-x/10-24-2/nrf-command-line-tools_10.24.2_arm64.deb
+
+      - name: Install nRF Command Line Tools for backward compatibility (ARM64)
+        if: ${{ runner.arch == 'ARM64' }}
+        run: |
+            docker exec -u $(id -u):$(id -g) zephyr-env \
+            bash -c "sudo apt-get -y install /tmp/nrf-command-line-tools_10.24.2_arm64.deb"
+
+      # Exclude the udevadm configuration from the J-Link package, because the
+      # host environment is unknown and containers are not compatible.
+      - name: Install SEGGER J-Link tool delivered with nRF Command Line Tools (ARM64)
+        if: ${{ runner.arch == 'ARM64' }}
+        run: |
+            docker exec -u $(id -u):$(id -g) zephyr-env \
+            bash -c "sudo dpkg --unpack /opt/nrf-command-line-tools/share/JLink_Linux_V794e_arm64.deb
+            sudo rm -f /var/lib/dpkg/info/jlink.postinst
+            sudo dpkg --force-all --configure jlink
+            sudo apt-get -y install -f"
+
+      # Install nRF Util tool (X64)
+      - name: Download nRF Util tool (X64)
+        if: ${{ runner.arch == 'X64' }} && steps.nrfutil-x64.outputs.cache-hit != 'true'
+        run: |
+            docker exec -u $(id -u):$(id -g) zephyr-env \
+            bash -c "sudo curl ${{ env.NRFUTIL_X64_URL }} -o nrfutil"
+        working-directory: /usr/local/bin
+        env:
+          NRFUTIL_X64_URL: https://files.nordicsemi.com/artifactory/swtools/external/nrfutil/executables/x86_64-unknown-linux-gnu/nrfutil
+
+      - name: Configure nrfutil tool (X64)
+        if: ${{ runner.arch == 'X64' }}
+        run: |
+            docker exec -u $(id -u):$(id -g) zephyr-env \
+            bash -c "sudo chmod +x /usr/local/bin/nrfutil"
+
+      - name: Ensure the lastest version of nrfutil tool (X64)
+        if: ${{ runner.arch == 'X64' }}
+        run: |
+            docker exec -u $(id -u):$(id -g) zephyr-env \
+            bash -c "nrfutil self-upgrade"
+
+      - name: Install nRF device configuration (X64)
+        if: runner.arch == 'X64'
+        run: |
+            docker exec -u $(id -u):$(id -g) zephyr-env \
+            bash -c "nrfutil install device"
+
+      # Install nRF Connect SDK framework (NCS)
+      - name: Install nRF Connect SDK
+        run: |
+          docker exec -u $(id -u):$(id -g) zephyr-env \
+          bash -c "git clone https://github.com/nrfconnect/sdk-nrf.git nrf
+          rm -rf /workspace/.west
+          west init -l nrf
+          west update -o=--depth=1 -n
+          echo "Current github workspace after NCS initialization:"
+          ls -la
+          cd nrf"
+        working-directory: /workspace
+
+      # Verify NCS workspace after installation
+      - name: Check Zephyr workspace after installation
+        shell: bash
+        run: |
+            docker exec -u $(id -u):$(id -g) zephyr-env \
+            bash -c "echo 'pwd'
+            pwd
+            echo 'Checking out Zephyr NCS env:'
+            echo 'Current github folder:'
+            ls -la
+            echo 'Parent github folder: ls -la ..'
+            ls -la .."
+        working-directory: /workspace/nrf
+
+      # Example for custom application build
+      - name: Build app for ${{ env.BOARD_TARGET }}
+        shell: bash
+        run: |
+            docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
+            west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky"
+       
+      # Conditional flash - for 'native_siFlm' board case
+      - name: Flash app if build file is valid
+        shell: bash
+        run: |
+            docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
+              if [ -f build/zephyr/zephyr.bin ]; then
+                west flash
+              else
+                echo 'Skipping flash: No valid build output found.'
+              fi"
+
+  start_testing:
+    name: Trigger test framework
+    if: ${{ inputs.testing == 'Build with testing' }}
+    uses: ./.github/workflows/testing.yml
+    with:
+      docker_image: ${{ inputs.docker_image }}      
+      runner_label: ${{ inputs.runner_label }}
+      platform: ${{ inputs.platform }}
+      board_target: ${{ inputs.board_target }}
+      test_tag: ${{ inputs.tests_target }}
+      pytest_args: ${{ inputs.pytest_args }}
+      test_scenario: ${{ inputs.test_scenario }}
+      tests_target: ${{ inputs.tests_target }}
+      integration_tests: ${{ inputs.integration_tests }}
+      test_hardware: ${{ inputs.test_hardware }}
+    secrets: inherit

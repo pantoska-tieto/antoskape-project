@@ -13,6 +13,14 @@ on:
         required: true
         default: raspberrypi5-production
         type: string
+      platform:
+        description: Target boards platform
+        required: true
+        default: "Nordic nRF"
+        type: choice
+        options:
+          - "Espressif"
+          - "Nordic nRF"
       board_target:
         description: Target board for the build
         required: true
@@ -68,6 +76,7 @@ on:
     
 env:
   RUNNER_LABEL: raspberrypi5-production
+  PLATFORM: "Nordic nRF"
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
   TESTS_TARGET: app/repo/shell
   TEST_TAG: N/A
@@ -121,6 +130,7 @@ jobs:
     runs-on: ${{ needs.process-runner.outputs.label }}
     outputs:
       testing: ${{ env.RUN_TESTS }}
+      platform: ${{ env.PLATFORM }}
       board_target: ${{ env.BOARD_TARGET }}
       test_tag: ${{ env.TEST_TAG }}
       pytest_args: ${{ env.PYTEST_ARGS }}
@@ -208,6 +218,7 @@ jobs:
         shell: bash
         run: |
             echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
+            echo "PLATFORM=${INPUT_PLATFORM:-$PLATFORM}" >> $GITHUB_ENV
             echo "BOARD_TARGET=${INPUT_BOARD_TARGET:-$BOARD_TARGET}" >> $GITHUB_ENV
             echo "TESTS_TARGET=${INPUT_TESTS_TARGET:-$TESTS_TARGET}" >> $GITHUB_ENV
             echo "TEST_TAG=${INPUT_TEST_TAG:-$TEST_TAG}" >> $GITHUB_ENV
@@ -220,6 +231,7 @@ jobs:
             echo "TEST_HARDWARE=${INPUT_TEST_HARDWARE:-$TEST_HARDWARE}" >> $GITHUB_ENV
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
+          INPUT_PLATFORM: ${{ github.event.inputs.platform }}
           INPUT_BOARD_TARGET: ${{ github.event.inputs.board_target }}
           INPUT_TESTS_TARGET: ${{ github.event.inputs.tests_target }}
           INPUT_TEST_TAG: ${{ github.event.inputs.test_tag }}
@@ -297,3 +309,40 @@ jobs:
               else
                 echo 'Skipping flash: No valid build output found.'
               fi"
+
+  call-nordic:
+    name: Decide to alternative installation workflow - NCS   
+    needs: build
+    if: ${{ needs.build.outputs.platform == 'Nordic nRF' }}
+    uses: ./.github/workflows/nordic-sdk.yml
+    with:
+      docker_image: ${{ needs.process-image.outputs.image }}
+      runner_label: ${{ needs.process-runner.outputs.label }}
+      platform: ${{ needs.build.outputs.platform }}
+      board_target: ${{ needs.build.outputs.board_target }}
+      test_tag: ${{ needs.build.outputs.test_tag }}
+      pytest_args: ${{ needs.build.outputs.pytest_args }}
+      test_scenario: ${{ needs.build.outputs.test_scenario }}
+      tests_target: ${{ needs.build.outputs.tests_target }}
+      integration_tests: ${{ needs.build.outputs.integration_tests }}
+      test_hardware: ${{ needs.build.outputs.test_hardware }}
+      testing: ${{ needs.build.outputs.testing }}
+    secrets: inherit
+
+  start_testing:
+    name: Trigger test framework
+    if: ${{ needs.build.outputs.testing == 'Build with testing' }}
+    needs: [process-runner, process-image, build] 
+    uses: ./.github/workflows/testing.yml
+    with:
+      docker_image: ${{ needs.process-image.outputs.image }}
+      runner_label: ${{ needs.process-runner.outputs.label }}
+      platform: ${{ needs.build.outputs.platform }}
+      board_target: ${{ needs.build.outputs.board_target }}
+      test_tag: ${{ needs.build.outputs.test_tag }}
+      pytest_args: ${{ needs.build.outputs.pytest_args }}
+      test_scenario: ${{ needs.build.outputs.test_scenario }}
+      tests_target: ${{ needs.build.outputs.tests_target }}
+      integration_tests: ${{ needs.build.outputs.integration_tests }}
+      test_hardware: ${{ needs.build.outputs.test_hardware }}
+    secrets: inherit
