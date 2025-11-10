@@ -16,11 +16,11 @@ on:
       platform:
         description: Target boards platform
         required: true
-        default: "Nordic nRF"
+        default: Nordic
         type: choice
         options:
           - "Espressif"
-          - "Nordic nRF"
+          - "Nordic"
       board_target:
         description: Target board for the build
         required: true
