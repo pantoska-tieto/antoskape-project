@@ -72,7 +72,7 @@ on:
     
 env:
   RUNNER_LABEL: raspberrypi5-production
-  PLATFORM: "Nordic nRF"
+  PLATFORM: "Nordic"
   BOARD_TARGET: esp32s3_devkitc/esp32s3/procpu
   TESTS_TARGET: app/repo/shell
   TEST_TAG: N/A
@@ -311,7 +311,7 @@ jobs:
   call-nordic:
     name: Decide to alternative installation workflow - NCS   
     needs: build
-    if: ${{ needs.build.outputs.platform == 'Nordic nRF' }}
+    if: ${{ needs.build.outputs.platform == 'Nordic' }}
     uses: ./.github/workflows/nordic-sdk.yml
     with:
       runner_label: ${{ needs.process-runner.outputs.label }}
