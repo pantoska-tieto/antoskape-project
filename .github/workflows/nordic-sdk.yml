@@ -14,10 +14,11 @@ jobs:
     runs-on: ${{ inputs.runner_label }}
     defaults:
       run:
-        working-directory: /workspace
+        working-directory: ${{ github.workspace }}
     steps:
       # Install nRF Command Line Tools (AMR64)
       - name: Download nRF Command Line Tools for ARM64
+        shell: bash
         if: ${{ runner.arch == 'ARM64' }}
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
@@ -28,6 +29,7 @@ jobs:
           NRF_CMDLINE_ARM64_URL: https://nsscprodmedia.blob.core.windows.net/prod/software-and-other-downloads/desktop-software/nrf-command-line-tools/sw/versions-10-x-x/10-24-2/nrf-command-line-tools_10.24.2_arm64.deb
 
       - name: Install nRF Command Line Tools for backward compatibility (ARM64)
+        shell: bash
         if: ${{ runner.arch == 'ARM64' }}
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
@@ -36,6 +38,7 @@ jobs:
       # Exclude the udevadm configuration from the J-Link package, because the
       # host environment is unknown and containers are not compatible.
       - name: Install SEGGER J-Link tool delivered with nRF Command Line Tools (ARM64)
+        shell: bash
         if: ${{ runner.arch == 'ARM64' }}
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
@@ -46,6 +49,7 @@ jobs:
 
       # Install nRF Util tool (X64)
       - name: Download nRF Util tool (X64)
+        shell: bash
         if: ${{ runner.arch == 'X64' }}
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
@@ -55,18 +59,21 @@ jobs:
           NRFUTIL_X64_URL: https://files.nordicsemi.com/artifactory/swtools/external/nrfutil/executables/x86_64-unknown-linux-gnu/nrfutil
 
       - name: Configure nrfutil tool (X64)
+        shell: bash
         if: ${{ runner.arch == 'X64' }}
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "sudo chmod +x /usr/local/bin/nrfutil"
 
       - name: Ensure the lastest version of nrfutil tool (X64)
+        shell: bash
         if: ${{ runner.arch == 'X64' }}
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "nrfutil self-upgrade"
 
       - name: Install nRF device configuration (X64)
+        shell: bash
         if: runner.arch == 'X64'
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
@@ -74,16 +81,17 @@ jobs:
 
       # Install nRF Connect SDK framework (NCS)
       - name: Install nRF Connect SDK
+        shell: bash
         run: |
           docker exec -u $(id -u):$(id -g) zephyr-env \
           bash -c "git clone https://github.com/nrfconnect/sdk-nrf.git nrf
-          rm -rf /workspace/.west
+          rm -rf ${{ github.workspace }}/.west
           west init -l nrf
           west update -o=--depth=1 -n
           echo "Current github workspace after NCS initialization:"
           ls -la
           cd nrf"
-        working-directory: /workspace
+        working-directory: ${{ github.workspace }}
 
       # Verify NCS workspace after installation
       - name: Check Zephyr workspace after installation
@@ -97,7 +105,7 @@ jobs:
             ls -la
             echo 'Parent github folder: ls -la ..'
             ls -la .."
-        working-directory: /workspace/nrf
+        working-directory: ${{ github.workspace }}/nrf
 
       # Example for custom application build
       - name: Build app for ${{ env.BOARD_TARGET }}
