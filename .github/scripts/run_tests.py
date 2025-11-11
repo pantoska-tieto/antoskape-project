@@ -69,10 +69,10 @@ def define_args():
         help="Condition to run integration tests only",
     )
     parser.add_argument(
-        "--platform",
+        "--vendor",
         required=False,
         default=None,
-        help="Target board platform - Espressif/Nordic",
+        help="Target board vendor - Espressif/Nordic",
     )
     return parser
 
