@@ -94,6 +94,7 @@ jobs:
           rm -rf /workspace/.west
           west init -l nrf
           west update -o=--depth=1 -n
+          west zephyr-export
           echo "Current github workspace after NCS initialization:"
           ls -la"
 
@@ -122,6 +123,7 @@ jobs:
       # Conditional flash - for 'native_sim' exception (X64)
       - name: Flash app if build file is valid
         shell: bash
+        if: ${{ runner.arch == 'X64' }}
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
             HEX_FILE=\$(find build -type f -path '*/zephyr/zephyr.hex' | head -n 1); \
