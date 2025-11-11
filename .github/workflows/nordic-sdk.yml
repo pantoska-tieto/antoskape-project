@@ -33,7 +33,7 @@ jobs:
         if: ${{ runner.arch == 'ARM64' }}
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
-            bash -c "sudo apt-get -y install /tmp/nrf-command-line-tools_10.24.2_arm64.deb"
+            bash -c "sudo dpkg -i /tmp/nrf-command-line-tools_10.24.2_arm64.deb || sudo apt-get -y -f install"
 
       # Exclude the udevadm configuration from the J-Link package, because the
       # host environment is unknown and containers are not compatible.
