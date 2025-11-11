@@ -98,6 +98,31 @@ jobs:
         env:
           INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
 
+      - name: Set build env variables
+        shell: bash
+        run: |
+            echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
+            echo "PLATFORM=${INPUT_PLATFORM:-$PLATFORM}" >> $GITHUB_ENV
+            echo "BOARD_TARGET=${INPUT_BOARD_TARGET:-$BOARD_TARGET}" >> $GITHUB_ENV
+            echo "TESTS_TARGET=${INPUT_TESTS_TARGET:-$TESTS_TARGET}" >> $GITHUB_ENV
+            echo "TEST_TAG=${INPUT_TEST_TAG:-$TEST_TAG}" >> $GITHUB_ENV
+            echo "PYTEST_ARGS=${INPUT_PYTEST_ARGS:-$PYTEST_ARGS}" >> $GITHUB_ENV
+            echo "TEST_SCENARIO=${INPUT_TEST_SCENARIO:-$TEST_SCENARIO}" >> $GITHUB_ENV
+            echo "RUN_TESTS=${INPUT_RUN_TESTS:-$RUN_TESTS}" >> $GITHUB_ENV
+            if [[ ${INPUT_TESTS_TARGET} == 'integration_tests' ]]; then
+            echo "INTEGRATION_TESTS=yes" >> $GITHUB_ENV
+            fi
+            echo "TEST_HARDWARE=${INPUT_TEST_HARDWARE:-$TEST_HARDWARE}" >> $GITHUB_ENV
+        env:
+          INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
+          INPUT_PLATFORM: ${{ github.event.inputs.platform }}
+          INPUT_BOARD_TARGET: ${{ github.event.inputs.board_target }}
+          INPUT_TESTS_TARGET: ${{ github.event.inputs.tests_target }}
+          INPUT_TEST_TAG: ${{ github.event.inputs.test_tag }}
+          INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
+          INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
+          INPUT_TEST_HARDWARE: ${{ github.event.inputs.test_hardware }}
+
   process-image:
     name: Set workflows docker image
     needs: process-runner
@@ -169,6 +194,7 @@ jobs:
             docker run -d --name zephyr-env \
                 --user $(id -u):$(id -g) \
                 --device=/dev/ttyUSB0 \
+                --device=/dev/ttyACM1 \
                 --cgroupns=host \
                 --privileged \
                 --network host \
@@ -202,37 +228,13 @@ jobs:
         run: |            
             export MY_UID=$(id -u)
             export MY_GID=$(id -g)
-            docker exec -u root -e MY_UID=$MY_UID -e MY_GID=$MY_GID zephyr-env \
-            bash -c "getent group $MY_GID > /dev/null || groupadd -g $MY_GID pantoska-tieto
-            id -u pantoska-tieto &> /dev/null || useradd -m -u $MY_UID -g $MY_GID -s /bin/bash pantoska-tieto
-            echo 'pantoska-tieto ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-            usermod -aG dialout pantoska-tieto
-            chmod 666 /dev/ttyUSB0"
-
-      - name: Set build env variables
-        shell: bash
-        run: |
-            echo "RUNNER_LABEL=${INPUT_RUNNER_LABEL:-$RUNNER_LABEL}" >> $GITHUB_ENV
-            echo "PLATFORM=${INPUT_PLATFORM:-$PLATFORM}" >> $GITHUB_ENV
-            echo "BOARD_TARGET=${INPUT_BOARD_TARGET:-$BOARD_TARGET}" >> $GITHUB_ENV
-            echo "TESTS_TARGET=${INPUT_TESTS_TARGET:-$TESTS_TARGET}" >> $GITHUB_ENV
-            echo "TEST_TAG=${INPUT_TEST_TAG:-$TEST_TAG}" >> $GITHUB_ENV
-            echo "PYTEST_ARGS=${INPUT_PYTEST_ARGS:-$PYTEST_ARGS}" >> $GITHUB_ENV
-            echo "TEST_SCENARIO=${INPUT_TEST_SCENARIO:-$TEST_SCENARIO}" >> $GITHUB_ENV
-            echo "RUN_TESTS=${INPUT_RUN_TESTS:-$RUN_TESTS}" >> $GITHUB_ENV
-            if [[ ${INPUT_TESTS_TARGET} == 'integration_tests' ]]; then
-            echo "INTEGRATION_TESTS=yes" >> $GITHUB_ENV
-            fi
-            echo "TEST_HARDWARE=${INPUT_TEST_HARDWARE:-$TEST_HARDWARE}" >> $GITHUB_ENV
-        env:
-          INPUT_RUNNER_LABEL: ${{ github.event.inputs.runner_label }}
-          INPUT_PLATFORM: ${{ github.event.inputs.platform }}
-          INPUT_BOARD_TARGET: ${{ github.event.inputs.board_target }}
-          INPUT_TESTS_TARGET: ${{ github.event.inputs.tests_target }}
-          INPUT_TEST_TAG: ${{ github.event.inputs.test_tag }}
-          INPUT_TEST_SCENARIO: ${{ github.event.inputs.test_scenario }}
-          INPUT_RUN_TESTS: ${{ github.event.inputs.run_tests }}
-          INPUT_TEST_HARDWARE: ${{ github.event.inputs.test_hardware }}
+            docker exec -u root -e MY_UID=$MY_UID -e MY_GID=$MY_GID zephyr-env bash -c "\
+              getent group $MY_GID > /dev/null || groupadd -g $MY_GID pantoska-tieto && \
+              id -u pantoska-tieto &> /dev/null || useradd -m -u $MY_UID -g $MY_GID -s /bin/bash pantoska-tieto && \
+              echo 'pantoska-tieto ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
+              usermod -aG dialout pantoska-tieto && \
+              chmod 666 /dev/ttyUSB0 && \
+              chmod 666 /dev/ttyACM1"
 
       # Install lib extras for testing
       - name: Install lib extras
