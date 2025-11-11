@@ -68,6 +68,12 @@ def define_args():
         default=None,
         help="Condition to run integration tests only",
     )
+    parser.add_argument(
+        "--platform",
+        required=False,
+        default=None,
+        help="Target board platform - Espressif/Nordic",
+    )
     return parser
 
 def run_cmd(cmd):

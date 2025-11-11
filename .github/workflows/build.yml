@@ -172,7 +172,6 @@ jobs:
                 --cgroupns=host \
                 --privileged \
                 --network host \
-                --dns 8.8.8.8 \
                 -v "${GITHUB_WORKSPACE}:/workspace" \
                 -v /var/run/dbus:/var/run/dbus \
                 -v /run/dbus:/run/dbus \
