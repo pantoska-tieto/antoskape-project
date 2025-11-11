@@ -18,7 +18,7 @@ jobs:
     steps:
       # Install nRF Command Line Tools (AMR64)
       - name: Download nRF Command Line Tools for ARM64
-        if: ${{ runner.arch == 'ARM64' }} && steps.nrf-cmd-arm64.outputs.cache-hit != 'true'
+        if: ${{ runner.arch == 'ARM64' }}
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "curl ${{ env.NRF_CMDLINE_ARM64_URL }} \
@@ -46,7 +46,7 @@ jobs:
 
       # Install nRF Util tool (X64)
       - name: Download nRF Util tool (X64)
-        if: ${{ runner.arch == 'X64' }} && steps.nrfutil-x64.outputs.cache-hit != 'true'
+        if: ${{ runner.arch == 'X64' }}
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "sudo curl ${{ env.NRFUTIL_X64_URL }} -o nrfutil"

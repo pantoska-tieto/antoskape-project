@@ -310,7 +310,7 @@ jobs:
 
   call-nordic:
     name: Decide to alternative installation workflow - NCS   
-    needs: build
+    needs: [process-runner, process-image, build]
     if: ${{ needs.build.outputs.platform == 'Nordic' }}
     uses: ./.github/workflows/nordic-sdk.yml
     with:
