@@ -75,6 +75,7 @@ Workflow dispatch panel allows to use 4 types of inputs: `string`, `choice`, `bo
         <tr><td>Use workflow from</td><td>Git branch/Tag, on which the workflow event is triggered and workflow jobs are started. Despite this field is "string" type, the existing GitHub branches are provided in secondary dropdown menu. By entering a string the demanded branch is filtered from all available branch names.</td><td>Branch name/tag by entering a string &amp; selecting branch/tag in dropdown menu.<br /><br /><strong>[STRING]</strong></td>
         </tr>
         <tr><td>Label of the runner to execute the job</td><td><a href="https://docs.github.com/en/actions/how-tos/manage-runners/self-hosted-runners/apply-labels">GitHub runner</a> on which the workflow jobs running. It can be GitHub-hosted runner (not recommended due to the restricted quota) or self-hosted runner (must be registered and pre-installed in advance).</td><td>String with runner-label matching the registered runner in GitHub. Only 1 single string is allowed!<br /><br /><strong>[STRING]</strong><br /><strong>Default = raspberrypi5-production</strong><br /><strong>Example = vmware-test</strong></td></tr>
+        <tr><td>Target boards platform</td><td>Hardware platform of target board - Espressif board (ESP32) or Nordic Semiconductor board (nRF5340 DK etc.)</td><td><strong>[CHOICE]</strong><br /><strong>Default = Nordic</strong><br /><strong>Example = Espressif</strong></td></tr>
         <tr><td>Target board for the build</td><td>Target board Zephyr qualifier (Device Under Test = DUT): The set of additional tokens, separated by a forward slash (<code>/</code>) that follow the <a href="https://docs.zephyrproject.org/latest/glossary.html#term-board-name">board name</a> (and optionally <a href="https://docs.zephyrproject.org/latest/glossary.html#term-board-revision">board revision</a>) to form the <a href="https://docs.zephyrproject.org/latest/glossary.html#term-board-target">board target</a>. The currently accepted qualifiers are <a href="https://docs.zephyrproject.org/latest/glossary.html#term-SoC">SoC</a>, <a href="https://docs.zephyrproject.org/latest/glossary.html#term-CPU-cluster">CPU cluster</a> and <a href="https://docs.zephyrproject.org/latest/glossary.html#term-variant">variant</a>. See <a href="https://docs.zephyrproject.org/latest/hardware/porting/board_porting.html#board-terminology">Board terminology</a> in Zephyr RTOS for additional details.</td><td>Target platform/board qualifier to be build &amp; tested. Only 1 single string is allowed!<br /><br /><strong>[STRING]</strong><br /><strong>Default = esp32s3_devkitc/esp32s3/procpu</strong><br /><strong>Example = nrf5340dk/nrf5340/cpuapp</strong></td></tr>
         <tr><td>Tests target</td><td>Target of executed test - real hardware or simulation/emuation without flashing to real board. It has the impact on using west twister command arguments <code>--device-testing, --device-serial, --flash-before</code> (omitted in case of Simulation/Emulation).<br/>
         When "Real_hardware" option is selected, the Auto mapping of physical USB ports to udev rules is automatically applied and a persistent symbolic links are mapped to physical serial ports. All hardware tests are then executed with serial ports symlinks.</td><td><strong>[CHOICE]</strong><br /><strong>Default = Real_hardware</strong><br /><strong>Example = Simulation_Emulation</strong></td></tr>
@@ -86,7 +87,6 @@ Workflow dispatch panel allows to use 4 types of inputs: `string`, `choice`, `bo
             - userspace
           extra_configs:
           - CONFIG_TEST_USERSPACE=y</td><td>Test tags to filter demanded tests to run. Multiple strings separated by space are allowed!<br /><br /><strong>[STRING]</strong><br /><strong>Default = N/A</strong><br /><strong>Example = unit sanitary&nbsp;</strong></td></tr>
-          <td>Arguments to the pytest subprocess (extend YAML config)</td><td><a href="https://docs.zephyrproject.org/latest/develop/test/twister.html">Additional arguments</a> for Pytest subprocess. This parameter will extend the pytest_args from the harness_config in YAML file.&nbsp;<br /><strong>Example:</strong><br /><code>--pytest-args "--maxfail=2 --disable-warnings"</code><br /><br />This will run Twister and pass the arguments --maxfail=2 --disable-warnings to the pytest subprocess, limiting failures to 2 and disabling warnings output.</td><td>Option(s) to be forwarded to pytest subprocess when running Twister tests. Multiple strings separated by space are allowed! Prepend "--" before each option.<br /><br /><strong>[STRING]</strong><br /><strong>Default = N/A</strong><br /><strong>Example = --maxfail=2 &nbsp;--disable-warnings</strong></td></tr>
           <tr><td>Test suite scenario to run</td><td><p>Each testsuite can consist of multiple <a href="https://docs.zephyrproject.org/latest/develop/test/twister.html">test scenarios.</a> This parameter allows to filter specific scenario to run while other scenarios in the same test suite are ignored.</p><p>Scenarios are named by 'path/relative/to/Zephyr/base/section.subsection_in_testcase_yaml', or just 'section.subsection' identifier. See an example for scenario "esp.wifi.sec.wpa2":</p>
             <code>esp.wifi.sec.none:
       tags: wifi
@@ -149,8 +149,7 @@ Workflow dispatch panel allows users to apply multiple filtering input parameter
     </thead>
       <tbody>
         <tr><td>Test TAGs to filter tests</td><td>0</td></tr>
-        <tr><td>Arguments to the pytest subprocess (extend YAML config)</td><td>1</td></tr>
-        <tr><td>Test suite scenario to run</td><td>2</td></tr>
+        <tr><td>Test suite scenario to run</td><td>1</td></tr>
       </tbody>
 </table>
 <br/>
@@ -172,7 +171,6 @@ west twister -vv --platform esp32s3_devkitc/esp32s3/procpu \
     --west-flash \
     --flash-before \
     --tag net --force-tags \
-    --pytest-args "--maxfail=2 --disable-warnings" \
     -T tests/repo
 ```
 
@@ -184,7 +182,6 @@ west twister -vv --platform esp32s3_devkitc/esp32s3/procpu \
     --west-flash \
     --flash-before \
     --tag net --force-tags \
-    --pytest-args "--maxfail=2 --disable-warnings" \
     --scenario sample.pytest.shell \
     --testsuite-root tests/repo
 ```

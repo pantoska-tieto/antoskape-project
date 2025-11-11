@@ -119,25 +119,30 @@ jobs:
             docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
             west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky"     
        
-      # Conditional flash - for 'native_siFlm' board case (X64)
+      # Conditional flash - for 'native_sim' exception (X64)
       - name: Flash app if build file is valid
         shell: bash
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
-              if [ -f build/zephyr/zephyr.bin ]; then
-                west flash
-              else
-                echo 'Skipping flash: No valid build output found.'
-              fi"
+            HEX_FILE=\$(find build -type f -path '*/zephyr/zephyr.hex' | head -n 1); \
+            if [ -n \"\$HEX_FILE\" ]; then
+              echo \"Found HEX file: \$HEX_FILE\"; \
+              west flash; \
+            else
+              echo 'Skipping flash: No zephyr-binary in build output found.'; \
+            fi"
 
-      # Conditional flash - for 'native_siFlm' board case (AMR64)
+
+      # Conditional flash - for 'native_sim' exception (AMR64)
       - name: Flash app if build file is valid
         shell: bash
         if: ${{ runner.arch == 'ARM64' }}
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
-              if [ -f build/zephyr/zephyr.bin ]; then
-                west flash --runner nrfjprog
-              else
-                echo 'Skipping flash: No valid build output found.'
-              fi"
+            HEX_FILE=\$(find build -type f -path '*/zephyr/zephyr.hex' | head -n 1); \
+            if [ -n \"\$HEX_FILE\" ]; then
+              echo \"Found HEX file: \$HEX_FILE\"; \
+              west flash --runner nrfjprog; \
+            else
+              echo 'Skipping flash: No zephyr-binary in build output found.'; \
+            fi"

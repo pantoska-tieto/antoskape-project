@@ -294,7 +294,7 @@ jobs:
             docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
             west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky"
        
-      # Conditional flash - for 'native_siFlm' board case
+      # Conditional flash - for 'native_sim' exception
       - name: Flash app if build file is valid
         shell: bash
         # Only for Espressif platforms
@@ -302,9 +302,9 @@ jobs:
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
               if [ -f build/zephyr/zephyr.bin ]; then
-                west flash
+                west flash; \
               else
-                echo 'Skipping flash: No valid build output found.'
+                echo 'Skipping flash: No zephyr-binary in build output found.'; \
               fi"
 
   call-nordic:
