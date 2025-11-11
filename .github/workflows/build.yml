@@ -274,9 +274,8 @@ jobs:
         shell: bash
         run: |
             docker exec -u $(id -u):$(id -g) zephyr-env \
-            bash -c "echo 'pwd'
+            bash -c "echo 'Current folder:'
             pwd
-            echo 'Checking out Zephyr env:'
             echo 'Current github folder:'
             ls -la
             echo 'Parent github folder: ls -la ..'
@@ -315,6 +314,7 @@ jobs:
     uses: ./.github/workflows/nordic-sdk.yml
     with:
       runner_label: ${{ needs.process-runner.outputs.label }}
+      board_target: ${{ needs.build.outputs.board_target }}
     secrets: inherit
 
   start-testing:
