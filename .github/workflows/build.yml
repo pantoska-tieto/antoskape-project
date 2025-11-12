@@ -251,12 +251,24 @@ jobs:
       - name: Set runner-user permissions
         shell: bash
         run: |            
-            docker exec -u root zephyr-env bash -c "
-            echo \"$HOST_USER ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers && \
-            usermod -aG dialout $HOST_USER && \
-            [ -e /dev/ttyUSB0 ] && chmod 666 /dev/ttyUSB0 && \
-            [ -e /dev/ttyACM1 ] && chmod 666 /dev/ttyACM0 && \
-            [ -e /dev/ttyACM1 ] && chmod 666 /dev/ttyACM1"
+            HOST_USER=$(id -un)
+            HOST_UID=$(id -u)
+            HOST_GID=$(id -g)
+
+            docker exec -u root \
+              -e HOST_USER=$HOST_USER \
+              -e HOST_UID=$HOST_UID \
+              -e HOST_GID=$HOST_GID \
+              zephyr-env bash -c "
+                if ! id \$HOST_USER &>/dev/null; then
+                  groupadd -g \$HOST_GID \$HOST_USER && \
+                  useradd -m -u \$HOST_UID -g \$HOST_GID -s /bin/bash \$HOST_USER
+                fi
+                echo \"\$HOST_USER ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers
+                usermod -aG dialout \$HOST_USER
+                [ -e /dev/ttyUSB0 ] && chmod 666 /dev/ttyUSB0
+                [ -e /dev/ttyACM0 ] && chmod 666 /dev/ttyACM0
+                [ -e /dev/ttyACM1 ] && chmod 666 /dev/ttyACM1"
 
       # Install lib extras for testing
       - name: Install lib extras
