@@ -74,6 +74,12 @@ def define_args():
         default=None,
         help="Target board vendor - Espressif/Nordic",
     )
+    parser.add_argument(
+        "--arch",
+        required=False,
+        default=None,
+        help="GitHub runner architecture - X64/ARM64",
+    )
     return parser
 
 def run_cmd(cmd):
@@ -148,12 +154,30 @@ if __name__ == "__main__":
                 # TODO! Add looping over ports for all devices
                 elif args.target and "app/robot" in args.target:
                     cmd_test = "pabot"
-                # Only integration tests on platfom(s) hardware
-                elif args.integration_tests and args.integration_tests == "yes" and port and port != "":
+                # Only integration tests on platfom(s) hardware for Nordic on ARM64 runner
+                elif args.integration_tests and \
+                    args.integration_tests == "yes" and \
+                    port and \
+                    port != "" and \
+                    vendor == "Nordic" and \
+                    args.arch == "ARM64":
+                    cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
+                        --device-testing --device-serial {port} --west-runner nrfjprog --tag integration \
+                        --flash-before"
+                # Only integration tests on platfom(s) hardware for others
+                elif args.integration_tests and \
+                    args.integration_tests == "yes" and \
+                    port and \
+                    port != "":
                     cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
                         --device-testing --device-serial {port} --tag integration \
-                        --flash-before"            
-                # All other tests (device HW needed)
+                        --flash-before"           
+                # All other tests (device HW needed) for Nordic on ARM64 runner
+                elif vendor == "Nordic" and \
+                    args.arch == "ARM64":
+                    cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
+                        --device-testing --device-serial {port} --west-runner nrfjprog --flash-before"
+                # All other tests (device HW needed) for others
                 else:
                     cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
                         --device-testing --device-serial {port} --flash-before"

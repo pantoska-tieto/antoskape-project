@@ -13,6 +13,7 @@ if [[ -f "$OUTPUT_FILE" ]]; then
         if [[ -n "$symlink" ]]; then
             echo "Show symlinks for serial ports..."
             ls -la /dev/ | grep USB
+            ls -la /dev/ | grep ACM
             echo "Removing /etc/udev/rules.d/99-$symlink.rules..."
             sudo rm "/etc/udev/rules.d/99-$symlink.rules"
             echo "udevadm: reload-rules..."

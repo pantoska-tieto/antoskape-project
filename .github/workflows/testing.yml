@@ -143,7 +143,8 @@ jobs:
             --target ${{ inputs.tests_target }} \
             --integration_tests ${{ inputs.integration_tests }} \
             --test_hardware ${{ inputs.test_hardware }} \
-            --vendor ${{ inputs.platform }}"
+            --vendor ${{ inputs.platform }} \
+            --arch ${{ runner.arch }}"
 
       # Generate test run metadata json file
       - name: Create metadata json file
