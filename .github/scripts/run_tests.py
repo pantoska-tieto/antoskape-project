@@ -159,7 +159,7 @@ if __name__ == "__main__":
                     args.integration_tests == "yes" and \
                     port and \
                     port != "" and \
-                    vendor == "Nordic" and \
+                    args.vendor == "Nordic" and \
                     args.arch == "ARM64":
                     cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
                         --device-testing --device-serial {port} --west-runner nrfjprog --tag integration \
@@ -173,7 +173,7 @@ if __name__ == "__main__":
                         --device-testing --device-serial {port} --tag integration \
                         --flash-before"           
                 # All other tests (device HW needed) for Nordic on ARM64 runner
-                elif vendor == "Nordic" and \
+                elif args.vendor == "Nordic" and \
                     args.arch == "ARM64":
                     cmd_test = f"west twister -vv --platform {args.platform} --detailed-test-id \
                         --device-testing --device-serial {port} --west-runner nrfjprog --flash-before"
