@@ -331,8 +331,13 @@ jobs:
     secrets: inherit
 
   start-testing:
-    name: Trigger test framework
-    if: ${{ needs.build.outputs.testing == 'Build with testing' }}
+    name: Trigger test framework    
+    if: |
+        always() && needs.build.outputs.testing == 'Build with testing' &&
+        (
+          needs.build.outputs.platform == 'Nordic' ||
+          needs.build.outputs.platform == 'Espressif'
+        )
     needs: [process-runner, process-image, build, call-nordic] 
     uses: ./.github/workflows/testing.yml
     with:
