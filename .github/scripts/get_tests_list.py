@@ -76,7 +76,7 @@ if __name__ == "__main__":
     if args.tests_scope:
         scope, target = get_test_paths(args.tests_scope)
         # Get list of demanded tests
-        test_list = [root for root, dirs, files in os.walk(target, topdown=True) for file in files if file == "prj.conf"]
+        test_list = [root for root, dirs, files in os.walk(target, topdown=True) for file in files if (file == "sample.yaml" or file == "testcase.yaml")]
         # Create demanded tests list in .txt file form
         with open(f"repo_tests.txt", "w") as f:
             for line in test_list:
