@@ -24,7 +24,7 @@ fi
 # Internal counter for multiple ports symlinks
 serial_counter=0
 
-# Loop through all ttyUSB devices
+# Loop through all serial ports devices
 for DEV in ${PORT}*; do
     # Filter existing ports
     [ -e "$DEV" ] || continue

@@ -197,14 +197,9 @@ jobs:
             ls -la
             echo "Parent github folder: ls -la .."
             ls -la ..
-            # Capture host UID/GID and username
-            HOST_UID=$(id -u)
-            HOST_GID=$(id -g)
-            HOST_USER=$(id -un)
-            echo "Host user: $HOST_USER (UID=$HOST_UID, GID=$HOST_GID)"
 
             docker run -d --name zephyr-env \
-                --user $HOST_UID:$HOST_GID \
+                --user $(id -u):$(id -g) \
                 --device=/dev/ttyUSB0 \
                 --device=/dev/ttyACM1 \
                 --cgroupns=host \
@@ -222,28 +217,15 @@ jobs:
                 -v /usr/src:/usr/src \
                 -e DBUS_SESSION_BUS_ADDRESS=unix:path=/run/dbus/system_bus_socket \
                 -e CMAKE_PREFIX_PATH=/opt/toolchains \
-                -e HOST_USER=$HOST_USER \
-                -e HOST_UID=$HOST_UID \
-                -e HOST_GID=$HOST_GID \
                 -w /workspace/customer-application \
                 ${{ needs.process-image.outputs.image }} \
                 sleep infinity
-
-      # Create matching user inside container if missing
-      - name: Create mmatching user inside container if missing
-        shell: bash
-        run: |
-            docker exec zephyr-env bash -c "
-            if ! id $HOST_USER &>/dev/null; then
-              groupadd -g $HOST_GID $HOST_USER && \
-              useradd -m -u $HOST_UID -g $HOST_GID -s /bin/bash $HOST_USER
-            fi"
 
       # Install Zephyr workspace
       - name: Install Zephyr workspace
         shell: bash
         run: |
-            docker exec -u $HOST_UID:$HOST_GID zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "chmod +x .github/scripts/zephyr_workspace_init.sh && \
                 .github/scripts/zephyr_workspace_init.sh"
 
@@ -251,24 +233,19 @@ jobs:
       - name: Set runner-user permissions
         shell: bash
         run: |            
-            HOST_USER=$(id -un)
-            HOST_UID=$(id -u)
-            HOST_GID=$(id -g)
-
-            docker exec -u root \
-              -e HOST_USER=$HOST_USER \
-              -e HOST_UID=$HOST_UID \
-              -e HOST_GID=$HOST_GID \
-              zephyr-env bash -c "
-                if ! id \$HOST_USER &>/dev/null; then
-                  groupadd -g \$HOST_GID \$HOST_USER && \
-                  useradd -m -u \$HOST_UID -g \$HOST_GID -s /bin/bash \$HOST_USER
-                fi
-                echo \"\$HOST_USER ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers
-                usermod -aG dialout \$HOST_USER
-                [ -e /dev/ttyUSB0 ] && chmod 666 /dev/ttyUSB0
-                [ -e /dev/ttyACM0 ] && chmod 666 /dev/ttyACM0
-                [ -e /dev/ttyACM1 ] && chmod 666 /dev/ttyACM1"
+            export MY_UID=$(id -u)
+            export MY_GID=$(id -g)
+            docker exec -u root -e MY_UID=$MY_UID -e MY_GID=$MY_GID zephyr-env bash -c "\
+              EXISTING_USER=\$(getent passwd \$MY_UID | cut -d: -f1); \
+              if [ -z \"\$EXISTING_USER\" ]; then \
+                getent group \$MY_GID >/dev/null || groupadd -g \$MY_GID pantoska-tieto; \
+                useradd -m -u \$MY_UID -g \$MY_GID -s /bin/bash pantoska-tieto; \
+                EXISTING_USER=pantoska-tieto; \
+              fi; \
+              echo \"\$EXISTING_USER ALL=(ALL) NOPASSWD:ALL\" >> /etc/sudoers; \
+              usermod -aG dialout \$EXISTING_USER; \
+              [ -e /dev/ttyUSB0 ] && chmod 666 /dev/ttyUSB0; \
+              [ -e /dev/ttyACM1 ] && chmod 666 /dev/ttyACM1"
 
       # Install lib extras for testing
       - name: Install lib extras
@@ -291,7 +268,7 @@ jobs:
       - name: Setup for test tools
         shell: bash
         run: |
-            docker exec -u $HOST_UID:$HOST_GID zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "go install github.com/apache/mynewt-mcumgr-cli/mcumgr@latest
             echo 'Show mcumgr installation:'
             ls -la ~/go/bin
@@ -309,7 +286,7 @@ jobs:
       - name: Check Zephyr workspace after installation
         shell: bash
         run: |
-            docker exec -u $HOST_UID:$HOST_GID zephyr-env \
+            docker exec -u $(id -u):$(id -g) zephyr-env \
             bash -c "echo 'Current folder:'
             pwd
             echo 'Current github folder:'
@@ -327,7 +304,7 @@ jobs:
         # Only for Espressif platforms
         if : ${{ inputs.platform == 'Espressif' }} 
         run: |
-            docker exec -u $HOST_UID:$HOST_GID zephyr-env bash -c " \
+            docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
             west build -p always -b ${{ env.BOARD_TARGET }} app-esp32/blinky"
        
       # Conditional flash - for 'native_sim' exception
@@ -336,7 +313,7 @@ jobs:
         # Only for Espressif platforms
         if : ${{ inputs.platform == 'Espressif' }} 
         run: |
-            docker exec -u $HOST_UID:$HOST_GID zephyr-env bash -c " \
+            docker exec -u $(id -u):$(id -g) zephyr-env bash -c " \
               if [ -f build/zephyr/zephyr.bin ]; then
                 west flash; \
               else
