@@ -12,7 +12,7 @@ if [[ "$TARGET" == esp32* ]]; then
     PORT="/dev/ttyUSB"
 elif [[ "$TARGET" == nrf* ]]; then
     VENDOR="nrf"
-    PORT="/dev/ttyACM1"
+    PORT="/dev/ttyACM"
 elif [[ "$TARGET" == native_sim* || "$TARGET" == qemu* ]]; then
     echo "Skipped searching for udevadm target for simulation: $TARGET"
     exit 0
